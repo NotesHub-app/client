@@ -1,0 +1,13 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    font-size: 12px;
+}
+
+.error {
+    color: $intent-danger;
+}
+
+.warning {
+    color: $intent-warning;
+}

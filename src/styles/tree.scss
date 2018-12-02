@@ -1,0 +1,54 @@
+@import 'variables.scss';
+
+.VTTree__Node {
+    box-sizing: border-box;
+    display: flex;
+
+    user-select: none;
+
+    &.selected {
+        background-color: $blue3;
+        color: #fff;
+        .node-icon {
+            color: $white;
+        }
+
+        .VTTree__NodeExpander {
+            fill: $white;
+        }
+    }
+
+    .VTTree__NodeExpander {
+        fill: #5c7080;
+    }
+
+    .node-icon {
+        color: #5c7080;
+        margin-right: 7px;
+
+        &.device-icon {
+            color: $intent-warning;
+        }
+    }
+}
+
+.VTTree__NodeExpander {
+    align-self: center;
+    display: inline-block;
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 16px;
+    max-height: 16px;
+    margin-left: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.VTTree__NodeContent {
+    align-self: center;
+    width: 100%;
+    overflow: hidden;
+    padding: 0 0.5em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

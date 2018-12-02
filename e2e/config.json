@@ -1,0 +1,8 @@
+{
+    "testMatch": ["**/e2e/index.js"],
+    "bail": true,
+    "verbose": true,
+    "transform": {
+        "^.+\\.js$": "babel-jest"
+    }
+}

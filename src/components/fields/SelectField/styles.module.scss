@@ -1,0 +1,28 @@
+.wide {
+    width: 100%;
+
+    :global {
+        .bp3-popover-wrapper,
+        .bp3-overlay-content,
+        .bp3-select-popover {
+            width: 100%;
+        }
+
+        .bp3-menu-item {
+            text-align: center;
+        }
+
+        .selectButton {
+            width: 100%;
+
+            .bp3-button-text {
+                margin-right: 0;
+            }
+
+            .bp3-icon {
+                position: absolute;
+                right: 10px;
+            }
+        }
+    }
+}

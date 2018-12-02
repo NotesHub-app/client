@@ -1,0 +1,21 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    height: 100%;
+    padding-top: 40px;
+}
+
+.electron {
+    padding-top: calc(40px - 2px);
+}
+
+.borderLayer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid $dark-gray5;
+    z-index: 999;
+    pointer-events: none;
+}

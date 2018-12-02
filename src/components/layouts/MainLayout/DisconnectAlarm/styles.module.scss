@@ -1,0 +1,26 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba($gray5, 0.5);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.card {
+    width: 400px;
+}
+
+.message {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 16px;
+}

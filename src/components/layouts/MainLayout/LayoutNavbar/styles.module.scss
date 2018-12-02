@@ -1,0 +1,51 @@
+@import 'src/styles/variables.scss';
+
+.electron {
+    -ms-overflow-style: scrollbar;
+    -webkit-app-region: drag;
+
+    padding-right: 5px !important;
+
+    :global {
+        input[type='submit'],
+        input[type='reset'],
+        input[type='button'],
+        input[type='text'],
+        button,
+        textarea {
+            -webkit-app-region: no-drag;
+        }
+    }
+}
+.root {
+    padding-left: 30px !important;
+    min-width: 1140px;
+}
+
+.leftColorBorder {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 15px;
+    margin-right: 5px;
+    background-color: $red5;
+}
+
+.heading {
+    margin-top: -3px;
+    line-height: 15px;
+    user-select: none;
+    cursor: pointer;
+}
+.headingSmallLabel {
+    font-size: 12px;
+    color: #ced9e0;
+}
+
+.headingBigLabel {
+}
+
+.activeButton {
+    background-color: $gray2 !important;
+}

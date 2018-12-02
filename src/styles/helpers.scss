@@ -1,0 +1,65 @@
+@import './variables.scss';
+
+.no-select {
+    user-select: none;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.wide {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.text-strong {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-strong {
+    font-weight: bold;
+}
+
+.text-highlight {
+    background-color: rgba($gold5, 0.7);
+}
+
+.margin-right-5 {
+    margin-right: 5px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
+.margin-left-5 {
+    margin-left: 5px;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.no-margin{
+    margin: 0;
+}
+
+.no-padding{
+    padding: 0;
+}

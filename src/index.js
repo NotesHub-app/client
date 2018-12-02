@@ -1,10 +1,42 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import configureStore, { history } from './redux/store';
+import Root from './components/main/Root';
+import './styles/index.scss';
+import { prepareBrowserEnv } from './utils/browser';
+import { isElectron } from './utils/electron-helpers';
+
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+prepareBrowserEnv();
+
+(async () => {
+    // Инициализирует redux-store
+    const store = configureStore();
+
+    // Инициализируем electron
+    if (isElectron()) {
+        const { default: initElectron } = await import('./initElectron');
+        initElectron(store);
+    }
+
+    // Монтируем React контейнер на страницу
+    const target = document.querySelector('#root');
+    ReactDOM.render(<Root history={history} store={store} />, target);
+
+    if (isElectron()) {
+        // Заворачиваем в таймаут чтоб не показывать процесс монтирования содержимого
+        setTimeout(() => {
+            window.ipcRenderer.send('open-main-window');
+        }, 500);
+    }
+
+    if (module.hot) {
+        module.hot.accept('./components/main/Root', () => {
+            ReactDOM.render(<Root history={history} store={store} />, target);
+        });
+    }
+})();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
