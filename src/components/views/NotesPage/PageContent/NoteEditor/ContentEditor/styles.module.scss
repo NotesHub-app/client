@@ -1,0 +1,12 @@
+@import 'src/styles/variables.scss';
+
+.root{
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    background-color: $white;
+}
+.area{
+    height: 100%;
+
+}

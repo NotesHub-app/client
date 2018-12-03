@@ -1,0 +1,19 @@
+@import 'src/styles/variables.scss';
+
+.rootNode {
+    $borderColor: $light-gray1;
+    background-color: $light-gray3;
+    border-top: 1px solid $borderColor;
+    //border-bottom: 1px solid $borderColor;
+    box-shadow: 0 1px 0 $gray3;
+    z-index: 1;
+}
+
+.noteNode {
+    cursor: pointer;
+    transition: background-color 150ms ;
+}
+
+.activeNode {
+    background-color: lighten($blue1, 60%);
+}

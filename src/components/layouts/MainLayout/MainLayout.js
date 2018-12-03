@@ -6,14 +6,18 @@ import LayoutNavbar from './LayoutNavbar';
 import styles from './styles.module.scss';
 import DisconnectAlarm from './DisconnectAlarm';
 import { isElectron } from '../../../utils/electron-helpers';
-import { userSelector } from '../../../redux/selectors';
+import { dataReadySelector, userSelector } from '../../../redux/selectors';
 
 export class MainLayout extends React.Component {
     render() {
-        const { children, user } = this.props;
+        const { children, user, dataReady } = this.props;
 
         if (!user) {
             return <Redirect to="/login" />;
+        }
+
+        if (!dataReady) {
+            return <div>ЗАГРУЗКА ДАННЫХ...</div>;
         }
 
         return (
@@ -30,7 +34,11 @@ export class MainLayout extends React.Component {
 function mapStateToProps(state, ownProps) {
     return {
         user: userSelector(state),
+        dataReady: dataReadySelector(state),
     };
 }
 
-export default connect(mapStateToProps, {})(MainLayout);
+export default connect(
+    mapStateToProps,
+    {}
+)(MainLayout);

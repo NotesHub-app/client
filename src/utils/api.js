@@ -1,4 +1,3 @@
-import * as Immutable from 'immutable';
 import superagent from 'superagent';
 import { logout } from '../redux/modules/user';
 
@@ -10,7 +9,7 @@ export function callApi({ endpoint, method, params, requireAuth = true }) {
 
         // Если метод требует авторизацию - прикрепляем токен JWT
         if (requireAuth) {
-            request = request.set('Authorization', `Bearer ${getState().user.get(['token'])}`);
+            request = request.set('Authorization', `${getState().user.get('token')}`);
         }
 
         if (params && method !== 'get') {
@@ -21,7 +20,7 @@ export function callApi({ endpoint, method, params, requireAuth = true }) {
 
         try {
             const result = await request;
-            return Promise.resolve(Immutable.fromJS(JSON.parse(result.text)), endpoint, params);
+            return Promise.resolve(JSON.parse(result.text), endpoint, params);
         } catch (err) {
             // При неавторизованных действиях - всегда разлогиниваемся
             if (err.status === 401) {

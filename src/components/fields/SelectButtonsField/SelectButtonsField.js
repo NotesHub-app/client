@@ -5,10 +5,10 @@ import FieldErrorLabel from '../../common/FieldErrorLabel/FieldErrorLabel';
 export default class SelectButtonsField extends React.Component {
     render() {
         return (
-            <div>
+            <React.Fragment>
                 <SelectButtons {...this.props} {...this.props.input} />
                 <FieldErrorLabel {...this.props} />
-            </div>
+            </React.Fragment>
         );
     }
 }

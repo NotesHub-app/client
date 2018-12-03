@@ -1,3 +1,4 @@
+import * as  Immutable from 'immutable';
 import { SET_USER } from './actionTypes';
 import { callApi } from '../../../utils/api';
 
@@ -8,9 +9,10 @@ import { callApi } from '../../../utils/api';
  */
 export function login({ email, password }) {
     return async (dispatch, getState) => {
-        const user = await dispatch(
+        let user = await dispatch(
             callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false }),
         );
+        user = Immutable.fromJS(user);
 
         return dispatch({
             type: SET_USER,

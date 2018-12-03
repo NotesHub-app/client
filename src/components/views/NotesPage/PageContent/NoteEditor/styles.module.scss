@@ -1,0 +1,19 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: $light-gray3;
+    padding: 5px 10px;
+    border-bottom: 1px solid $gray5;
+    display: flex;
+    min-height: 40px;
+}
+
+.content {
+}

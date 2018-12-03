@@ -1,18 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Immutable from 'immutable';
 import configureStore, { history } from './redux/store';
 import Root from './components/main/Root';
 import './styles/index.scss';
 import { prepareBrowserEnv } from './utils/browser';
 import { isElectron } from './utils/electron-helpers';
-
 import * as serviceWorker from './serviceWorker';
+import { SET_USER } from './redux/modules/user';
 
 prepareBrowserEnv();
 
 (async () => {
     // Инициализирует redux-store
     const store = configureStore();
+
+    const savedUserData = localStorage.getItem('noteshub:user');
+    if (savedUserData) {
+        try {
+            const user = Immutable.fromJS(JSON.parse(savedUserData));
+            store.dispatch({
+                type: SET_USER,
+                user,
+            });
+        } catch (e) {
+            // не получилось восстановить пользователя
+        }
+    }
 
     // Инициализируем electron
     if (isElectron()) {

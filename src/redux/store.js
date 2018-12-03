@@ -1,15 +1,16 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware } from 'connected-react-router'
+import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import createHashHistory from 'history/createHashHistory';
-import createRootReducer from './modules'
+import createRootReducer from './modules';
+import usersDataMiddleware from './middlewares/usersDataMiddleware';
 
 export const history = createHashHistory();
 
 const configureStore = () => {
     const initialState = {};
     const enhancers = [];
-    const middleware = [thunk, routerMiddleware(history)];
+    const middleware = [thunk, routerMiddleware(history), usersDataMiddleware];
 
     if (process.env.NODE_ENV !== 'production') {
         const { devToolsExtension } = window;
@@ -19,7 +20,10 @@ const configureStore = () => {
         }
     }
 
-    const composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
+    const composedEnhancers = compose(
+        applyMiddleware(...middleware),
+        ...enhancers
+    );
 
     const store = createStore(createRootReducer(history), initialState, composedEnhancers);
 

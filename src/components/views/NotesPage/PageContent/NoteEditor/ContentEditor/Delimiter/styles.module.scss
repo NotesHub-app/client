@@ -1,0 +1,21 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    width: 5px;
+    background-color: $light-gray5;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.active{
+    background-color: $light-gray3;
+}
+
+.movingLayer {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
