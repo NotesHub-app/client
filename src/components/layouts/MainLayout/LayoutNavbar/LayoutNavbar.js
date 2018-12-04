@@ -14,13 +14,13 @@ export class LayoutNavbar extends React.Component {
     render() {
         return (
             <Navbar
-                className={classNames('bp3-fixed-top bp3-dark layout', styles.root, {
+                className={classNames('bp3-fixed-top bp3-dark layout', {
                     [styles.electron]: isElectron(),
                 })}
             >
-                <div className={styles.leftColorBorder} />
+
                 <NavbarGroup align={Alignment.LEFT}>
-                    <NavbarHeading className={classNames(styles.heading, tc('logo'))}>NotesHub</NavbarHeading>
+                    <NavbarHeading className={tc('logo')}>NotesHub</NavbarHeading>
                     <NavbarDivider />
                     {isElectron() && <ElectronNavigation />}
                 </NavbarGroup>

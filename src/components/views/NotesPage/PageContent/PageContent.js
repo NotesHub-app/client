@@ -35,7 +35,7 @@ export class PageContent extends React.Component {
             return <div>ЗАГРУЗКА ЗАМЕТКИ...</div>;
         }
 
-        return <NoteEditor note={note} />;
+        return <NoteEditor {...this.props} />;
     }
 }
 

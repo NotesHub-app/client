@@ -13,7 +13,7 @@ export class ContentEditor extends React.Component {
             case 'editor': {
                 return (
                     <div className={styles.area}>
-                        <Editor />
+                        <Editor {...this.props}/>
                     </div>
                 );
             }
@@ -21,11 +21,11 @@ export class ContentEditor extends React.Component {
                 return (
                     <React.Fragment>
                         <div className={styles.area} style={{ width: `${noteEditorWidth}%` }}>
-                            <Editor />
+                            <Editor {...this.props}/>
                         </div>
                         <Delimiter />
                         <div className={styles.area} style={{ width: `${100 - noteEditorWidth}%` }}>
-                            <Preview />
+                            <Preview {...this.props}/>
                         </div>
                     </React.Fragment>
                 );
@@ -33,7 +33,7 @@ export class ContentEditor extends React.Component {
             case 'preview': {
                 return (
                     <div className={styles.area}>
-                        <Preview />
+                        <Preview {...this.props}/>
                     </div>
                 );
             }

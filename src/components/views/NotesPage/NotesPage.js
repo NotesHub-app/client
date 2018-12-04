@@ -9,7 +9,8 @@ import NavigationFilter from './NavigationFilter';
 
 export class NotesPage extends React.Component {
     render() {
-        const { navigationSidebarWidth, noteId } = this.props;
+        const { navigationSidebarWidth, ...contentProps } = this.props;
+        const { noteId } = this.props;
 
         return (
             <div className={styles.root}>
@@ -21,13 +22,16 @@ export class NotesPage extends React.Component {
                 >
                     <div className={styles.sidebarInner}>
                         <NavigationFilter />
-                        <NotesNavigation activeNoteId={noteId} />
+                        <div style={{flexGrow: 1}}>
+                            <NotesNavigation activeNoteId={noteId} />
+                        </div>
+
                     </div>
 
                     <NavigationSidebarResizer />
                 </div>
                 <div className={styles.content} style={{ marginLeft: navigationSidebarWidth + 1 }}>
-                    {noteId ? <PageContent noteId={noteId} /> : <div>Выбери заметку!</div>}
+                    {noteId ? <PageContent {...contentProps} /> : <div>Выбери заметку!</div>}
                 </div>
             </div>
         );

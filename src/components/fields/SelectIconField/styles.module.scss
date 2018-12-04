@@ -1,0 +1,13 @@
+@import 'src/styles/variables.scss';
+
+.popover {
+    width: 200px;
+    background-color: $white;
+    position: relative;
+
+    :global{
+        .bp3-popover-content{
+            padding: 5px;
+        }
+    }
+}

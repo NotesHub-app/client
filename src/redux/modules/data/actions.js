@@ -1,4 +1,5 @@
 import * as Immutable from 'immutable';
+import forEach from 'lodash/forEach';
 import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA } from './actionTypes';
 import { callApi } from '../../../utils/api';
 import { listToMap } from '../../../utils/immutable';
@@ -11,6 +12,26 @@ export function getNotes() {
         dispatch({
             type: SET_NOTES,
             notes,
+        });
+    };
+}
+
+export function updateNote(noteId, noteContent) {
+    return async (dispatch, getState) => {
+        const data = {};
+        const currentNote = getState().data.getIn(['notes', noteId]);
+        let updatedNote = currentNote;
+        forEach(noteContent, (value, field) => {
+            if (currentNote.get(field) !== value) {
+                data[field] = value;
+                updatedNote = updatedNote.set(field, value);
+            }
+        });
+        await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
+
+        dispatch({
+            type: SET_NOTE,
+            note: updatedNote,
         });
     };
 }

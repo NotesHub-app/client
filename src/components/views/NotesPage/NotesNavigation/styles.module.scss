@@ -10,10 +10,16 @@
 }
 
 .noteNode {
-    cursor: pointer;
-    transition: background-color 150ms ;
+    // cursor: pointer;
+    //transition: background-color 150ms ;
+
+    &:hover {
+        background-color: rgba($gray5, 0.4);
+    }
 }
 
 .activeNode {
-    background-color: lighten($blue1, 60%);
+    background-color: $blue3 !important;
+    color: $white;
+    //background-color: lighten($blue1, 60%);
 }

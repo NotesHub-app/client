@@ -11,15 +11,21 @@ import styles from './styles.module.scss';
 import classNames from 'classnames';
 
 const NodeContentComponent = props => {
-    const { node } = props;
+    const {
+        node,
+        additionalData: { activeNoteId },
+    } = props;
 
     switch (node.type) {
-        case 'note':
+        case 'note': {
+            const activeItem = node.data.get('id') === activeNoteId;
             return (
                 <div className="VTTree__NodeContent">
-                    <Icon icon={node.data.get('icon')} color={node.data.get('iconColor')} /> {node.data.get('title')}
+                    <Icon icon={node.data.get('icon')} color={!activeItem && node.data.get('iconColor')} />{' '}
+                    {node.data.get('title')}
                 </div>
             );
+        }
         case 'group':
             return <div className="VTTree__NodeContent">{node.data.get('title')}</div>;
         case 'personal':
@@ -65,6 +71,18 @@ export class NotesNavigation extends React.Component {
         }
     };
 
+    getNodeStyle = ({ node }) => {
+        const { activeNoteId } = this.props;
+        if (node.type === 'note') {
+            const activeItem = node.data.get('id') === activeNoteId;
+            if (activeItem) {
+                return {
+                    boxShadow: activeItem && `inset 10px 0 0px 0px ${node.data.get('iconColor')}`,
+                };
+            }
+        }
+    };
+
     handleNodeClick = (e, { node }) => {
         const { push } = this.props;
         if (node.type === 'note') {
@@ -73,7 +91,7 @@ export class NotesNavigation extends React.Component {
     };
 
     render() {
-        const { nodes, expendedNavigationTreeNodes } = this.props;
+        const { nodes, expendedNavigationTreeNodes, activeNoteId } = this.props;
 
         return (
             <SizeMe>
@@ -92,7 +110,8 @@ export class NotesNavigation extends React.Component {
                         nodeContentComponent={NodeContentComponent}
                         levelPadding={41}
                         nodeClassName={this.getNodeClassName}
-                        // additionalData={{ expandedNodes }}
+                        nodeStyle={this.getNodeStyle}
+                        additionalData={{ activeNoteId }}
                         onNodeClick={this.handleNodeClick}
                         // onNodeDoubleClick={this.handleDoubleClickNode}
                         // onNodeContextMenu={this.handleContextMenu}

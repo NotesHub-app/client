@@ -2,14 +2,18 @@
 @import '~@blueprintjs/core/lib/css/blueprint.css';
 @import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
 @import '~@blueprintjs/select/lib/css/blueprint-select.css';
+@import '~prismjs/themes/prism.css';
 @import '~flexboxgrid/dist/flexboxgrid.css';
+@import '~github-markdown-css/github-markdown.css';
 
 @import 'variables.scss';
 @import 'fonts.scss';
 @import 'helpers.scss';
 @import 'visibility.scss';
 @import 'tree.scss';
+@import 'markdown.scss';
 @import 'blueprint-overrides/navbar.scss';
+
 
 html,
 body,

@@ -44,14 +44,14 @@ export class NavigationFilter extends React.Component {
     render() {
         const { editingValue } = this.state;
         const style = this.props.style || {};
-        const { width, icon, inputClassName } = this.props;
+        const { width, inputClassName } = this.props;
 
         const placeholder = this.props.placeholder || 'Фильтр...';
 
         return (
             <div className={styles.root}>
                 <div className="bp3-input-group" style={{ display: 'inline', ...style }}>
-                    <span className={`bp3-icon bp3-icon-filter`} style={{ margin: '2px 5px' }} />
+                    <span className={`bp3-icon bp3-icon-filter-list`} style={{ margin: '2px 5px' }} />
                     <input
                         type="text"
                         className={classNames('bp3-input', { 'bp3-intent-warning': !!editingValue }, inputClassName)}
