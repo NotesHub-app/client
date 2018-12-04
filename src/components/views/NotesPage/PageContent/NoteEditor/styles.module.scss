@@ -10,7 +10,7 @@
 .header {
     background-color: $light-gray5;
     padding: 5px;
-    border-bottom: 1px solid $light-gray1;
+    box-shadow: $light-gray1 0px -1px 0px 0px inset;
     display: flex;
     min-height: 40px;
 
