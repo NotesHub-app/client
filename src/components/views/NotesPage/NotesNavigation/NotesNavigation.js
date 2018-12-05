@@ -21,8 +21,18 @@ const NodeContentComponent = props => {
             const activeItem = node.data.get('id') === activeNoteId;
             return (
                 <div className="VTTree__NodeContent">
-                    <Icon icon={node.data.get('icon')} color={!activeItem && node.data.get('iconColor')} />{' '}
+                    <Icon
+                        icon={node.data.get('icon')}
+                        color={!activeItem ? node.data.get('iconColor') : undefined}
+                        className={styles.nodeIcon}
+                    />
                     {node.data.get('title')}
+                    {activeItem && (
+                        <div
+                            className={styles.activeNodeMark}
+                            style={{ backgroundColor: node.data.get('iconColor') }}
+                        />
+                    )}
                 </div>
             );
         }
@@ -71,17 +81,17 @@ export class NotesNavigation extends React.Component {
         }
     };
 
-    getNodeStyle = ({ node }) => {
-        const { activeNoteId } = this.props;
-        if (node.type === 'note') {
-            const activeItem = node.data.get('id') === activeNoteId;
-            if (activeItem) {
-                return {
-                    boxShadow: activeItem && `inset 10px 0 0px 0px ${node.data.get('iconColor')}`,
-                };
-            }
-        }
-    };
+    // getNodeStyle = ({ node }) => {
+    //     const { activeNoteId } = this.props;
+    //     if (node.type === 'note') {
+    //         const activeItem = node.data.get('id') === activeNoteId;
+    //         if (activeItem) {
+    //             return {
+    //                 boxShadow: activeItem && `inset 10px 0 0px 0px ${node.data.get('iconColor')}`,
+    //             };
+    //         }
+    //     }
+    // };
 
     handleNodeClick = (e, { node }) => {
         const { push } = this.props;
@@ -108,9 +118,9 @@ export class NotesNavigation extends React.Component {
                         isNodeExpandedSelector={node => expendedNavigationTreeNodes.has(node.treeId)}
                         nodeContentSelector={() => null}
                         nodeContentComponent={NodeContentComponent}
-                        levelPadding={41}
+                        // levelPadding={41}
                         nodeClassName={this.getNodeClassName}
-                        nodeStyle={this.getNodeStyle}
+                        // nodeStyle={this.getNodeStyle}
                         additionalData={{ activeNoteId }}
                         onNodeClick={this.handleNodeClick}
                         // onNodeDoubleClick={this.handleDoubleClickNode}

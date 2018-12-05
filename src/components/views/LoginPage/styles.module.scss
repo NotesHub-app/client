@@ -1,37 +1,17 @@
 @import 'src/styles/variables.scss';
 
-.form {
-    padding-top: 20px;
-    width: 400px;
-    margin: auto;
-
-    :global {
-        .bp3-form-group {
-            //margin: 0 0 15px;
-        }
-    }
-}
-
-.formTitle {
-    background-color: $gray5;
-    color: $dark-gray5;
-    font-weight: bold;
-    padding: 5px 0;
-    text-align: center;
-    font-size: 15px;
-}
-
-.separator{
-    border: 0;
-    height: 1px;
-    background: $light-gray1;
-    margin: 20px -20px;
-}
-
-.content {
-    padding: 20px;
-}
-
 .errorText {
-    padding-top: 5px;
+    margin-top: 10px;
+}
+
+.noAccountBlock {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.afterMessage{
+    color: $intent-success;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 17px;
 }

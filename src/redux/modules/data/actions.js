@@ -4,6 +4,9 @@ import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA } from './actionTypes';
 import { callApi } from '../../../utils/api';
 import { listToMap } from '../../../utils/immutable';
 
+/**
+ * Получение заметок
+ */
 export function getNotes() {
     return async (dispatch, getState) => {
         let { notes } = await dispatch(callApi({ endpoint: 'notes', method: 'get' }));
@@ -16,6 +19,11 @@ export function getNotes() {
     };
 }
 
+/**
+ * Обновление заметки
+ * @param noteId
+ * @param noteContent
+ */
 export function updateNote(noteId, noteContent) {
     return async (dispatch, getState) => {
         const data = {};
@@ -36,6 +44,9 @@ export function updateNote(noteId, noteContent) {
     };
 }
 
+/**
+ * Получение своих групп
+ */
 export function getGroups() {
     return async (dispatch, getState) => {
         let { groups } = await dispatch(callApi({ endpoint: 'groups', method: 'get' }));
@@ -48,6 +59,11 @@ export function getGroups() {
     };
 }
 
+/**
+ * Получение полное содержимое заметки
+ * @param noteId
+ * @returns {Function}
+ */
 export function getNoteDetails(noteId) {
     return async (dispatch, getState) => {
         let { note } = await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'get' }));
@@ -61,6 +77,10 @@ export function getNoteDetails(noteId) {
     };
 }
 
+/**
+ * Получение минимальных пользовательских данных для работы программы
+ * @returns {Function}
+ */
 export function getInitialData() {
     return async (dispatch, getState) => {
         dispatch(getNotes());
@@ -68,8 +88,12 @@ export function getInitialData() {
     };
 }
 
+/**
+ * Сброс загруженных данных
+ */
 export function resetData() {
     return {
         type: RESET_DATA,
     };
 }
+

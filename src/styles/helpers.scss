@@ -40,6 +40,22 @@
     background-color: rgba($gold5, 0.7);
 }
 
+.text-danger {
+    color: $intent-danger;
+}
+
+.text-warning {
+    color: $intent-warning;
+}
+
+.text-success {
+    color: $intent-success;
+}
+
+.text-muted {
+    color: $gray3;
+}
+
 .margin-right-5 {
     margin-right: 5px;
 }
@@ -56,10 +72,10 @@
     margin-left: 10px;
 }
 
-.no-margin{
+.no-margin {
     margin: 0;
 }
 
-.no-padding{
+.no-padding {
     padding: 0;
 }

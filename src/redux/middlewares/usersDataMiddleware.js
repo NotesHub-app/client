@@ -18,8 +18,6 @@ export default store => next => action => {
     // Если залогинились
     if (!beforeUser && afterUser) {
         store.dispatch(getInitialData());
-
-        localStorage.setItem('noteshub:user', JSON.stringify(afterUser.toJS()));
     }
 
     return result;

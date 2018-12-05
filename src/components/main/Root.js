@@ -6,6 +6,8 @@ import MainToaster from './MainToaster';
 import MainLayout from '../layouts/MainLayout';
 import NotesPage from '../views/NotesPage';
 import LoginPage from '../views/LoginPage';
+import RegistrationPage from '../views/RegistrationPage';
+import RestorePasswordPage from '../views/RestorePasswordPage';
 
 const LayoutRoute = ({ component: Component, layout: Layout, ...rest }) => (
     <Route
@@ -33,6 +35,8 @@ export default class Root extends React.Component {
                             <LayoutRoute exact path="/notes" component={NotesPage} layout={MainLayout} />
                             <LayoutRoute exact path="/notes/:id" component={NotesPage} layout={MainLayout} />
                             <Route exact path="/login" component={LoginPage} />
+                            <Route exact path="/registration" component={RegistrationPage} />
+                            <Route exact path="/restore-password" component={RestorePasswordPage} />
                         </Switch>
                     </ConnectedRouter>
                 </React.Fragment>

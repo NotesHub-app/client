@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { getUrlQueryParameterByName } from '../utils/url';
 
 /**
  * Выборка авторизованного пользователя
@@ -60,4 +61,13 @@ export const navigationNodesSelector = createSelector(
 
         return results;
     }
+);
+
+export const loginFormUrlParamsSelector = createSelector(
+    url => url,
+    url => ({
+        afterRegistration: !!getUrlQueryParameterByName('afterRegistration', url),
+        afterRestorePassword: !!getUrlQueryParameterByName('afterRestorePassword', url),
+        email: getUrlQueryParameterByName('email', url),
+    })
 );

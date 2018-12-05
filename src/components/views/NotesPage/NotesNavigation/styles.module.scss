@@ -3,19 +3,12 @@
 .rootNode {
     $borderColor: $light-gray1;
     background-color: $light-gray3;
-    //border-top: 1px solid $borderColor;
-    //border-bottom: 1px solid $borderColor;
     box-shadow: inset 0 -1px 0 $light-gray1;
-    //box-shadow: inset 0 0 8px $light-gray1;
     z-index: 1;
 }
 
 .noteNode {
-    // cursor: pointer;
-    //transition: background-color 150ms ;
-
     &:hover {
-        //background-color: rgba($gray5, 0.4);
         background-color: $light-gray5;
     }
 }
@@ -23,5 +16,18 @@
 .activeNode {
     background-color: $blue3 !important;
     color: $white;
-    //background-color: lighten($blue1, 60%);
 }
+
+.activeNodeMark {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    border-right: 2px solid $light-gray5;
+}
+
+.nodeIcon{
+    margin-right: 5px;
+}
+

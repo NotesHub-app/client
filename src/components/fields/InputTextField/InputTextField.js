@@ -11,11 +11,12 @@ export default class InputTextField extends React.Component {
     };
 
     render() {
+        const {className, ...props} = this.props;
         return (
-            <React.Fragment>
-                <InputGroup {...this.props} {...this.props.input} />
-                <FieldErrorLabel {...this.props} />
-            </React.Fragment>
+            <div className={className}>
+                <InputGroup {...props} {...props.input} />
+                <FieldErrorLabel {...props} />
+            </div>
         );
     }
 }

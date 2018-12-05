@@ -1,0 +1,36 @@
+.app-loginForm {
+    width: 400px;
+    margin: auto;
+
+    .app-formTitle {
+        background-color: $gray5;
+        color: $dark-gray5;
+        font-weight: bold;
+        padding: 5px 0;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    .app-separator{
+        border: 0;
+        height: 1px;
+        background: $light-gray1;
+        margin: 20px -20px;
+    }
+
+    .app-content {
+        padding: 17px;
+    }
+
+    .app-confirmCodeDescription {
+        text-align: center;
+        background-color: $light-gray5;
+        border-color: $light-gray1;
+        border-style: solid;
+        border-width: 1px 0 1px 0;
+        margin: 0px -17px 17px -17px !important;
+        padding: 10px 20px;
+    }
+}
+
+

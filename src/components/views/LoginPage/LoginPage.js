@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
-import { userSelector } from '../../../redux/selectors';
+import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selectors';
 import { login } from '../../../redux/modules/user';
 import InputTextField from '../../fields/InputTextField';
+import CheckboxField from '../../fields/CheckboxField/CheckboxField';
 
 export class LoginPage extends Component {
     state = {
@@ -25,6 +27,8 @@ export class LoginPage extends Component {
         const { login, push } = this.props;
 
         try {
+            localStorage.setItem('noteshub:lastEmail', params.email);
+
             await login(params);
             push('/');
         } catch (e) {
@@ -33,7 +37,7 @@ export class LoginPage extends Component {
     };
 
     render() {
-        const { handleSubmit, pristine, submitting, error } = this.props;
+        const { handleSubmit, submitting, error, afterRegistration, afterRestorePassword } = this.props;
 
         return (
             <div className="row full-height no-margin middle-xs">
@@ -41,10 +45,21 @@ export class LoginPage extends Component {
                     onSubmit={handleSubmit(this.onSubmit)}
                     className="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 col-xs"
                 >
-                    <div className={classNames('bp3-card bp3-elevation-3 no-padding', styles.form)}>
-                        <div className={styles.formTitle}>NotesHub</div>
+                    <div className={classNames('bp3-card bp3-elevation-2 no-padding app-loginForm')}>
+                        <div className="app-formTitle">NotesHub</div>
 
-                        <div className={styles.content}>
+                        <div className="app-content">
+                            {afterRegistration && (
+                                <div className={styles.afterMessage}>
+                                    Спасибо за регистрацию!<br /> Теперь вы можете авторизоваться.
+                                </div>
+                            )}
+                            {afterRestorePassword && (
+                                <div className={styles.afterMessage}>
+                                    Пароль успешно восстановлен. <br /> Используйте его для входа в систему.
+                                </div>
+                            )}
+
                             <Field
                                 name="email"
                                 component={InputTextField}
@@ -60,17 +75,29 @@ export class LoginPage extends Component {
                                 type="password"
                                 placeholder="Пароль..."
                                 leftIcon="lock"
+                                className="bp3-form-group"
+                                autoFocus={afterRegistration || afterRestorePassword}
                             />
 
-                            <hr className={styles.separator} />
+                            <div className="row">
+                                <div className="col-xs-6">
+                                    <Field name="remember" component={CheckboxField} label="Запомнить меня" />
+                                </div>
+                                <div className="col-xs-6 end-xs">
+                                    <Link to="/restore-password">Восстановить пароль</Link>
+                                </div>
+                            </div>
 
-                            <button
-                                type="submit"
-                                disabled={false && (pristine || submitting)}
-                                className="bp3-button bp3-intent-primary bp3-fill bp3-icon-log-in"
-                            >
-                                {submitting ? 'Вход...' : 'Войти'}
-                            </button>
+                            <div className="text-center">
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    style={{ marginTop: 5 }}
+                                    className="bp3-button bp3-intent-primary bp3-fill bp3-icon-log-in"
+                                >
+                                    {submitting ? 'Вход...' : 'Войти'}
+                                </button>
+                            </div>
 
                             {error ? (
                                 <div className={classNames('text-danger text-center', styles.errorText)}>
@@ -79,6 +106,10 @@ export class LoginPage extends Component {
                             ) : null}
                         </div>
                     </div>
+
+                    <div className={classNames(styles.noAccountBlock)}>
+                        Нет аккаунта? <Link to="/registration">Зарегистрироваться!</Link>
+                    </div>
                 </form>
             </div>
         );
@@ -86,20 +117,26 @@ export class LoginPage extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
+    const loginFormUrlParams = loginFormUrlParamsSelector(window.location.href);
+    const lastEmail = localStorage.getItem('noteshub:lastEmail') || '';
     return {
         user: userSelector(state),
+        afterRegistration: loginFormUrlParams.afterRegistration,
+        afterRestorePassword: loginFormUrlParams.afterRestorePassword,
         initialValues: {
-            email: 'admin@email.com',
-            password: 'password',
+            email: loginFormUrlParams.email || lastEmail,
         },
     };
 }
 
-export default connect(mapStateToProps, {
-    login,
-    push,
-})(
+export default connect(
+    mapStateToProps,
+    {
+        login,
+        push,
+    }
+)(
     reduxForm({
         form: 'LoginForm',
-    })(LoginPage),
+    })(LoginPage)
 );
