@@ -1,4 +1,4 @@
-import { getInitialData, resetData } from '../modules/data';
+import { getInitialData, resetData } from '../modules/data/actions';
 
 export default store => next => action => {
     const beforeUser = store.getState().user;

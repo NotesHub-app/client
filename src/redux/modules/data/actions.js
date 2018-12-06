@@ -44,6 +44,27 @@ export function updateNote(noteId, noteContent) {
     };
 }
 
+export function createNote(params) {
+    return async (dispatch, getState) => {
+        const data = {
+            title: 'Новая заметка',
+            icon: 'document',
+            iconColor: '#5c7080',
+            content: '',
+            ...params,
+        };
+        let { note } = await dispatch(callApi({ endpoint: `notes`, method: 'post', params: data }));
+        note = Immutable.fromJS(note).set('_loaded', true);
+
+        dispatch({
+            type: SET_NOTE,
+            note,
+        });
+
+        return note;
+    };
+}
+
 /**
  * Получение своих групп
  */
@@ -96,4 +117,3 @@ export function resetData() {
         type: RESET_DATA,
     };
 }
-

@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { getUrlQueryParameterByName } from '../utils/url';
+import { getNoteNodeTreeId, getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../utils/navigation';
 
 /**
  * Выборка авторизованного пользователя
@@ -22,10 +23,10 @@ export const navigationNodesSelector = createSelector(
     (notes, groups) => {
         // TODO сначала отсортировать сущности по возрасту
 
-        let results = [{ treeId: 'rootPersonal', type: 'personal', parentTreeId: null }];
+        let results = [{ treeId: getRootPersonalNodeTreeId(), type: 'personal', parentTreeId: null }];
         groups.forEach(group => {
             results.push({
-                treeId: `rootGroup_${group.get('id')}`,
+                treeId: getRootGroupNodeTreeId(group.get('id')),
                 type: 'group',
                 parentTreeId: null,
                 data: group,
@@ -38,7 +39,7 @@ export const navigationNodesSelector = createSelector(
 
             const resultItem = {
                 type: 'note',
-                treeId: `note_${note.get('id')}`,
+                treeId: getNoteNodeTreeId(note.get('id')),
                 data: note,
             };
             // Если есть родитель

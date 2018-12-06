@@ -17,17 +17,3 @@
     background-color: $blue3 !important;
     color: $white;
 }
-
-.activeNodeMark {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    border-right: 2px solid $light-gray5;
-}
-
-.nodeIcon{
-    margin-right: 5px;
-}
-

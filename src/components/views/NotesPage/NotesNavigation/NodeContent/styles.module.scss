@@ -1,0 +1,55 @@
+@import 'src/styles/variables.scss';
+
+.nodeContent{
+    display: flex;
+    height: 100%;
+    line-height: 25px;
+}
+
+.activeNodeMark {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    border-right: 2px solid $light-gray5;
+}
+
+.nodeIcon{
+    margin-right: 5px;
+}
+
+.main{
+    flex-grow: 1;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.control{
+
+    padding-left: 5px;
+
+}
+
+.controlButton{
+    background-color: $light-gray3;
+    border: 0;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity, background-color 100ms;
+    height: 20px;
+    margin-top: 2px;
+
+
+    &:active {
+        background-color: $light-gray1 !important;
+    }
+
+    &:hover{
+        opacity: 1;
+        background-color: $light-gray2;
+    }
+}

@@ -7,7 +7,7 @@ import './styles/index.scss';
 import { prepareBrowserEnv } from './utils/browser';
 import { isElectron } from './utils/electron-helpers';
 import * as serviceWorker from './serviceWorker';
-import { SET_USER } from './redux/modules/user';
+import { SET_USER } from './redux/modules/user/actionTypes';
 
 prepareBrowserEnv();
 

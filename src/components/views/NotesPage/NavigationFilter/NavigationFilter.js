@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
-import {Icon} from '@blueprintjs/core';
-import { setUiSettingsValues } from '../../../../redux/modules/uiSettings';
+import { setUiSettingsValues } from '../../../../redux/modules/uiSettings/actions';
 
 export class NavigationFilter extends React.Component {
     constructor(props) {
@@ -83,5 +82,5 @@ export default connect(
     mapStateToProps,
     {
         setUiSettingsValues,
-    },
+    }
 )(NavigationFilter);

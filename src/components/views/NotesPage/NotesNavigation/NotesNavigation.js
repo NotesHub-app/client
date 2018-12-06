@@ -3,47 +3,12 @@ import { connect } from 'react-redux';
 import SizeMe from '@avinlab/react-size-me';
 import PropTypes from 'prop-types';
 import Tree from 'react-vt-tree';
-import { Icon } from '@blueprintjs/core';
 import { push } from 'connected-react-router';
-import { setUiSettingsValues } from '../../../../redux/modules/uiSettings';
+import classNames from 'classnames';
+import { expendNavigationTreeNode, collapseNavigationTreeNode } from '../../../../redux/modules/uiSettings/actions';
 import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
-import classNames from 'classnames';
-
-const NodeContentComponent = props => {
-    const {
-        node,
-        additionalData: { activeNoteId },
-    } = props;
-
-    switch (node.type) {
-        case 'note': {
-            const activeItem = node.data.get('id') === activeNoteId;
-            return (
-                <div className="VTTree__NodeContent">
-                    <Icon
-                        icon={node.data.get('icon')}
-                        color={!activeItem ? node.data.get('iconColor') : undefined}
-                        className={styles.nodeIcon}
-                    />
-                    {node.data.get('title')}
-                    {activeItem && (
-                        <div
-                            className={styles.activeNodeMark}
-                            style={{ backgroundColor: node.data.get('iconColor') }}
-                        />
-                    )}
-                </div>
-            );
-        }
-        case 'group':
-            return <div className="VTTree__NodeContent">{node.data.get('title')}</div>;
-        case 'personal':
-            return <div className={'VTTree__NodeContent'}>Персональные заметки</div>;
-        default:
-            return <span />;
-    }
-};
+import NodeContent from './NodeContent';
 
 export class NotesNavigation extends React.Component {
     static propTypes = {
@@ -51,13 +16,13 @@ export class NotesNavigation extends React.Component {
     };
 
     handleNodeExpand = (e, { node }) => {
-        const { setUiSettingsValues, expendedNavigationTreeNodes } = this.props;
-        setUiSettingsValues({ expendedNavigationTreeNodes: expendedNavigationTreeNodes.add(node.treeId) });
+        const { expendNavigationTreeNode } = this.props;
+        expendNavigationTreeNode(node.treeId);
     };
 
     handleNodeCollapse = (e, { node }) => {
-        const { setUiSettingsValues, expendedNavigationTreeNodes } = this.props;
-        setUiSettingsValues({ expendedNavigationTreeNodes: expendedNavigationTreeNodes.delete(node.treeId) });
+        const { collapseNavigationTreeNode } = this.props;
+        collapseNavigationTreeNode(node.treeId);
     };
 
     getChildNodes = node => {
@@ -80,18 +45,6 @@ export class NotesNavigation extends React.Component {
                 return null;
         }
     };
-
-    // getNodeStyle = ({ node }) => {
-    //     const { activeNoteId } = this.props;
-    //     if (node.type === 'note') {
-    //         const activeItem = node.data.get('id') === activeNoteId;
-    //         if (activeItem) {
-    //             return {
-    //                 boxShadow: activeItem && `inset 10px 0 0px 0px ${node.data.get('iconColor')}`,
-    //             };
-    //         }
-    //     }
-    // };
 
     handleNodeClick = (e, { node }) => {
         const { push } = this.props;
@@ -117,10 +70,9 @@ export class NotesNavigation extends React.Component {
                         hasChildrenSelector={node => node.hasChildren}
                         isNodeExpandedSelector={node => expendedNavigationTreeNodes.has(node.treeId)}
                         nodeContentSelector={() => null}
-                        nodeContentComponent={NodeContentComponent}
+                        nodeContentComponent={NodeContent}
                         // levelPadding={41}
                         nodeClassName={this.getNodeClassName}
-                        // nodeStyle={this.getNodeStyle}
                         additionalData={{ activeNoteId }}
                         onNodeClick={this.handleNodeClick}
                         // onNodeDoubleClick={this.handleDoubleClickNode}
@@ -142,7 +94,8 @@ function mapStateToProps(state, ownProps) {
 export default connect(
     mapStateToProps,
     {
-        setUiSettingsValues,
+        expendNavigationTreeNode,
+        collapseNavigationTreeNode,
         push,
     }
 )(NotesNavigation);

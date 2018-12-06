@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
-import { setUiSettingsValues } from '../../../../redux/modules/uiSettings';
+import { setUiSettingsValues } from '../../../../redux/modules/uiSettings/actions';
 
 export class NavigationSidebarResizer extends React.Component {
     state = {

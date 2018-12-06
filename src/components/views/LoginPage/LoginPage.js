@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
 import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selectors';
-import { login } from '../../../redux/modules/user';
+import { login } from '../../../redux/modules/user/actions';
 import InputTextField from '../../fields/InputTextField';
 import CheckboxField from '../../fields/CheckboxField/CheckboxField';
 

@@ -1,5 +1,5 @@
 import superagent from 'superagent';
-import { logout } from '../redux/modules/user';
+import { logout } from '../redux/modules/user/actions';
 
 export function callApi({ endpoint, method, params, requireAuth = true }) {
     return async (dispatch, getState) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Popover, Menu, MenuItem, Position } from '@blueprintjs/core';
-import { logout } from '../../../../../redux/modules/user';
+import { logout } from '../../../../../redux/modules/user/actions';
 import UserSettingsDialog from '../../../../dialogs/UserSettingsDialog';
 
 export class UserButton extends React.Component {
