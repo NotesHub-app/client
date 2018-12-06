@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
-import { SET_NOTES, SET_NOTE, SET_GROUPS, SET_USERS, SET_FILES, RESET_DATA } from './actionTypes';
+import { SET_NOTES, SET_NOTE, SET_GROUPS, SET_USERS, SET_FILES, RESET_DATA, REMOVE_NOTE } from './actionTypes';
+import { removeNoteWithChildren } from '../../../utils/data';
 
 const initialState = new Immutable.Map({
     notes: null,
@@ -22,6 +23,11 @@ export default function reducer(state = initialState, action = {}) {
             const { note } = action;
 
             return state.setIn(['notes', note.get('id')], note);
+        }
+        case REMOVE_NOTE: {
+            const { noteId } = action;
+
+            return state.set('notes', removeNoteWithChildren(state.get('notes', new Immutable.Map()), noteId));
         }
         case SET_GROUPS: {
             const { groups } = action;

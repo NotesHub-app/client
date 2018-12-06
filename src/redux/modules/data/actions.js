@@ -1,6 +1,6 @@
 import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
-import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA } from './actionTypes';
+import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE } from './actionTypes';
 import { callApi } from '../../../utils/api';
 import { listToMap } from '../../../utils/immutable';
 
@@ -44,6 +44,11 @@ export function updateNote(noteId, noteContent) {
     };
 }
 
+/**
+ * Создать заметку
+ * @param params
+ * @returns {function(*, *): *}
+ */
 export function createNote(params) {
     return async (dispatch, getState) => {
         const data = {
@@ -62,6 +67,21 @@ export function createNote(params) {
         });
 
         return note;
+    };
+}
+
+/**
+ * Удалить заметку
+ * @param noteId
+ * @returns {Function}
+ */
+export function removeNote(noteId) {
+    return async (dispatch, getState) => {
+        await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'delete' }));
+        dispatch({
+            type: REMOVE_NOTE,
+            noteId,
+        });
     };
 }
 

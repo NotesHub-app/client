@@ -4,3 +4,4 @@ export const SET_GROUPS = 'app/data/SET_GROUPS';
 export const SET_USERS = 'app/data/SET_USERS';
 export const SET_FILES = 'app/data/SET_FILES';
 export const RESET_DATA = 'app/data/RESET_DATA';
+export const REMOVE_NOTE = 'app/data/REMOVE_NOTE';

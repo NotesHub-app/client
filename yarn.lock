@@ -9513,10 +9513,10 @@ react-transition-group@^2.2.1, react-transition-group@^2.5.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-vt-tree@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/react-vt-tree/-/react-vt-tree-0.2.2.tgz#6a80bf5a9eadbf09b4ab2dd8aa8204cdfd31b9ac"
-  integrity sha512-WHY0Cu2LlMnsCPpVpsjWPQjNFjfcKV0i+UA1yOC88ovjYMAC8Y2N/dLu8Nec9X0q3Pr/y+B44Wa/jecA3nCucA==
+react-vt-tree@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-vt-tree/-/react-vt-tree-0.2.3.tgz#0672502f90a844d9f83a20b3cb17b9a0b361ea6d"
+  integrity sha512-fYHcVgIHZf/P3KMg9xZQXpIw8q47KbY4qXpK3KayVCVMooF3HTG1CT00dXULS+dRm86jbEfaUF17ZAdrQjvHLw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     classnames "^2.2.6"

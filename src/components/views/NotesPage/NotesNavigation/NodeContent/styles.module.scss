@@ -42,6 +42,9 @@
     transition: opacity, background-color 100ms;
     height: 20px;
     margin-top: 2px;
+    padding: 1px 4px;
+
+    animation: fadein 100ms;
 
 
     &:active {
@@ -52,4 +55,10 @@
         opacity: 1;
         background-color: $light-gray2;
     }
+}
+
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 0.5; }
 }
