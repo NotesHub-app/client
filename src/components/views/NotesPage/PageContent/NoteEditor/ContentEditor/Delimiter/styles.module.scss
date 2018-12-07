@@ -5,6 +5,9 @@
     background-color: $light-gray5;
     height: 100%;
     cursor: col-resize;
+
+    border-right:1px solid $light-gray3;
+    border-left:1px solid $light-gray3;
 }
 
 .active{
