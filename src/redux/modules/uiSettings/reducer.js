@@ -5,9 +5,13 @@ const initialState = new Immutable.Map({
     connectionProblem: false,
     navigationSidebarWidth: 300,
     expendedNavigationTreeNodes: new Immutable.Set(),
-    noteEditorViewMode: 'combo',
+    noteContentViewMode: 'combo',
     noteEditorWidth: 50, // проценты
     navigationFilter: '',
+    removeNoteAlert: new Immutable.Map({
+        isOpen: false,
+        noteIs: null
+    })
 });
 
 export default function reducer(state = initialState, action = {}) {

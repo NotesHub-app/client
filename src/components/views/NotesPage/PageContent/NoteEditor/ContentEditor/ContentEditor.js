@@ -12,7 +12,7 @@ export class ContentEditor extends React.Component {
         switch (viewMode) {
             case 'editor': {
                 return (
-                    <div className={styles.area}>
+                    <div className={styles.area} style={{width: '100%'}}>
                         <Editor {...this.props}/>
                     </div>
                 );
@@ -49,7 +49,7 @@ export class ContentEditor extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     return {
-        viewMode: state.uiSettings.get('noteEditorViewMode'),
+        viewMode: state.uiSettings.get('noteContentViewMode'),
         noteEditorWidth: state.uiSettings.get('noteEditorWidth'),
     };
 }

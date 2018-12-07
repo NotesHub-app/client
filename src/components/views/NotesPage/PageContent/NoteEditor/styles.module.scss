@@ -21,3 +21,12 @@
 
 .content {
 }
+
+.separator{
+    width: 1px;
+    margin: 3px 10px 3px 5px !important;
+    //margin-top: 3px;
+    //margin-bottom: 3px;
+
+    background-color: $light-gray3;
+}

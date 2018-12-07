@@ -2,21 +2,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
-import { Button, Intent } from '@blueprintjs/core';
+import {
+    Button,
+    Intent,
+    Popover,
+    Position,
+} from '@blueprintjs/core';
 import styles from './styles.module.scss';
 import ContentEditor from './ContentEditor';
 import InputTextField from '../../../../fields/InputTextField';
 import SelectIconField from '../../../../fields/SelectIconField';
 import SelectColorField from '../../../../fields/SelectColorField';
 import AlarmLeavingDirtyForm from '../../../../hocs/AlarmLeavingDirtyForm';
-import { updateNote } from '../../../../../redux/modules/data/actions';
+import { createNote, updateNote } from '../../../../../redux/modules/data/actions';
+import ViewModeSelect from './ViewModeSelect';
+import NoteMenu from '../../../../menus/NoteMenu';
+import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
+import { push } from 'connected-react-router';
 
 export class NoteEditor extends React.Component {
     static propTypes = {
         note: PropTypes.object.isRequired,
     };
 
-    onSubmit =  async values => {
+    onSubmit = async values => {
         const { disableLeaveConfirm, updateNote, noteId } = this.props;
         try {
             disableLeaveConfirm();
@@ -30,7 +39,16 @@ export class NoteEditor extends React.Component {
     };
 
     render() {
-        const { noteId, handleSubmit, dirty } = this.props;
+        const {
+            noteId,
+            note,
+            handleSubmit,
+            dirty,
+            setRemoveNoteAlertStatus,
+            expendNavigationTreeNode,
+            createNote,
+            push,
+        } = this.props;
         return (
             <form className={styles.root} onSubmit={handleSubmit(this.onSubmit)}>
                 <div className={styles.header}>
@@ -47,9 +65,32 @@ export class NoteEditor extends React.Component {
                     </div>
 
                     <div>
+                        <Popover
+                            position={Position.BOTTOM}
+                            content={
+                                <NoteMenu
+                                    {...{
+                                        setRemoveNoteAlertStatus,
+                                        expendNavigationTreeNode,
+                                        createNote,
+                                        push,
+                                    }}
+                                    noteId={note.get('id')}
+                                />
+                            }
+                        >
+                            <Button icon="chevron-down" minimal />
+                        </Popover>
+                    </div>
+
+                    <div>
                         <Button type="submit" intent={Intent.SUCCESS} icon="floppy-disk" disabled={!dirty}>
                             Сохранить
                         </Button>
+                    </div>
+                    <div className={styles.separator} />
+                    <div>
+                        <ViewModeSelect />
                     </div>
                 </div>
                 <Field name="content" component={ContentEditor} noteId={noteId} />
@@ -74,7 +115,12 @@ function mapStateToProps(state, ownProps) {
 export default connect(
     mapStateToProps,
     {
-        updateNote
+        updateNote,
+
+        setRemoveNoteAlertStatus,
+        expendNavigationTreeNode,
+        createNote,
+        push,
     }
 )(
     reduxForm({

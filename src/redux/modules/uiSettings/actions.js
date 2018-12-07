@@ -29,3 +29,21 @@ export function collapseNavigationTreeNode(nodeTreeId) {
         dispatch(setUiSettingsValues({ expendedNavigationTreeNodes: expendedNavigationTreeNodes.delete(nodeTreeId) }));
     };
 }
+
+/**
+ * Выставить статус алерта удаления заметки
+ * @param noteId
+ * @param isOpen
+ * @returns {{type: string, values: any}}
+ */
+export function setRemoveNoteAlertStatus({ noteId, isOpen }) {
+    return {
+        type: SET_UI_SETTINGS_VALUES,
+        values: Immutable.fromJS({
+            removeNoteAlert: Immutable.fromJS({
+                noteId,
+                isOpen,
+            }),
+        }),
+    };
+}

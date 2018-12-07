@@ -6,6 +6,7 @@ import NotesNavigation from './NotesNavigation';
 import NavigationSidebarResizer from './NavigationSidebarResizer';
 import PageContent from './PageContent';
 import NavigationFilter from './NavigationFilter';
+import RemoveNoteAlert from './RemoveNoteAlert';
 
 export class NotesPage extends React.Component {
     render() {
@@ -33,6 +34,8 @@ export class NotesPage extends React.Component {
                 <div className={styles.content} style={{ marginLeft: navigationSidebarWidth + 1 }}>
                     {noteId ? <PageContent {...contentProps} /> : <div>Выбери заметку!</div>}
                 </div>
+
+                <RemoveNoteAlert />
             </div>
         );
     }

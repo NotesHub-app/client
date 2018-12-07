@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Tree from 'react-vt-tree';
 import { push } from 'connected-react-router';
 import classNames from 'classnames';
-import { Alert, Intent } from '@blueprintjs/core';
 import { expendNavigationTreeNode, collapseNavigationTreeNode } from '../../../../redux/modules/uiSettings/actions';
 import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
@@ -15,11 +14,6 @@ import { removeNote } from '../../../../redux/modules/data/actions';
 export class NotesNavigation extends React.Component {
     static propTypes = {
         activeNoteId: PropTypes.string,
-    };
-
-    state = {
-        isOpenRemoveNoteAlert: false,
-        removingNoteId: null,
     };
 
     handleNodeExpand = (e, { node }) => {
@@ -60,32 +54,8 @@ export class NotesNavigation extends React.Component {
         }
     };
 
-    handleOpenRemoveNoteAlert = node => {
-        this.setState({
-            isOpenRemoveNoteAlert: true,
-            removingNoteId: node.data.get('id'),
-        });
-    };
-
-    handleCloseRemoveNoteAlert = () => {
-        this.setState({
-            isOpenRemoveNoteAlert: false,
-            removingNoteId: null,
-        });
-    };
-
-    handleConfirmRemoveNoteAlert = () => {
-        const { removeNote } = this.props;
-        const { removingNoteId } = this.state;
-
-        removeNote(removingNoteId);
-
-        this.handleCloseRemoveNoteAlert();
-    };
-
     render() {
         const { nodes, expendedNavigationTreeNodes, activeNoteId } = this.props;
-        const { isOpenRemoveNoteAlert } = this.state;
 
         return (
             <React.Fragment>
@@ -105,24 +75,13 @@ export class NotesNavigation extends React.Component {
                             nodeContentComponent={NodeContent}
                             noExpanderSpaceWidth={23}
                             nodeClassName={this.getNodeClassName}
-                            additionalData={{ activeNoteId, onRemoveNote: this.handleOpenRemoveNoteAlert }}
+                            additionalData={{ activeNoteId }}
                             onNodeClick={this.handleNodeClick}
                             // onNodeDoubleClick={this.handleDoubleClickNode}
                             // onNodeContextMenu={this.handleContextMenu}
                         />
                     )}
                 </SizeMe>
-                <Alert
-                    icon="trash"
-                    intent={Intent.DANGER}
-                    isOpen={isOpenRemoveNoteAlert}
-                    confirmButtonText="Удалить"
-                    cancelButtonText="Отмена"
-                    onConfirm={this.handleConfirmRemoveNoteAlert}
-                    onCancel={this.handleCloseRemoveNoteAlert}
-                >
-                    <p>Точно хотите удалить выбранную заметку???</p>
-                </Alert>
             </React.Fragment>
         );
     }

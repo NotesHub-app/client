@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { push } from 'connected-react-router';
 import NoteEditor from './NoteEditor';
 import { getNoteDetails } from '../../../../redux/modules/data/actions';
+import LoadingPage from '../../LoadingPage';
 
 export class PageContent extends React.Component {
     static propTypes = {
         noteId: PropTypes.string,
-        note: PropTypes.object.isRequired,
+        note: PropTypes.object,
     };
 
     checkNoteLoaded() {
@@ -49,7 +50,7 @@ export class PageContent extends React.Component {
         }
 
         if (!note.get('_loaded')) {
-            return <div>ЗАГРУЗКА ЗАМЕТКИ...</div>;
+            return <LoadingPage />;
         }
 
         return <NoteEditor {...this.props} />;

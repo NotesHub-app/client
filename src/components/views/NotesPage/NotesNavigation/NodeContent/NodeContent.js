@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Icon, Menu, MenuItem, ContextMenu, Intent } from '@blueprintjs/core';
+import { Icon, ContextMenuTarget } from '@blueprintjs/core';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
-import { expendNavigationTreeNode } from '../../../../../redux/modules/uiSettings/actions';
+import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
 import { createNote } from '../../../../../redux/modules/data/actions';
 import { getNoteNodeTreeId, getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../../../../../utils/navigation';
+import NoteMenu from '../../../../menus/NoteMenu';
 
 export class NodeContent extends React.Component {
     state = {
@@ -21,37 +22,21 @@ export class NodeContent extends React.Component {
         this.setState({ isHover: false });
     };
 
-    handleContextMenu = e => {
-        e.preventDefault();
+    renderContextMenu() {
+        const { node, setRemoveNoteAlertStatus, expendNavigationTreeNode, createNote, push } = this.props;
 
-        const {
-            node,
-            additionalData: { onRemoveNote },
-        } = this.props;
-
-        switch (node.type) {
-            case 'note': {
-                // render a Menu without JSX...
-                const menu = React.createElement(
-                    Menu,
-                    {},
-                    React.createElement(MenuItem, {
-                        onClick: () => {
-                            onRemoveNote(node);
-                        },
-                        icon: 'trash',
-                        intent: Intent.DANGER,
-                        text: 'Удалить',
-                    })
-                );
-
-                ContextMenu.show(menu, { left: e.clientX, top: e.clientY });
-
-                break;
-            }
-            default:
-        }
-    };
+        return (
+            <NoteMenu
+                {...{
+                    setRemoveNoteAlertStatus,
+                    expendNavigationTreeNode,
+                    createNote,
+                    push,
+                }}
+                noteId={node.data.get('id')}
+            />
+        );
+    }
 
     handleClickAddSubNote = async nodeId => {
         const { push, createNote, expendNavigationTreeNode } = this.props;
@@ -204,7 +189,6 @@ export class NodeContent extends React.Component {
                 className={classNames('VTTree__NodeContent', styles.nodeContent)}
                 onMouseEnter={this.handleMouserEnter}
                 onMouseLeave={this.handleMouserLeave}
-                onContextMenu={this.handleContextMenu}
             >
                 {content}
             </div>
@@ -222,5 +206,6 @@ export default connect(
         createNote,
         expendNavigationTreeNode,
         push,
+        setRemoveNoteAlertStatus,
     }
-)(NodeContent);
+)(ContextMenuTarget(NodeContent));

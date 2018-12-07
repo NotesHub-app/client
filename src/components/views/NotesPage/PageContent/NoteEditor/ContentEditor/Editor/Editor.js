@@ -39,8 +39,8 @@ export default class Editor extends React.Component {
     componentDidMount() {
         const {editor} = this.reactAceComponent;
         editor.renderer.setScrollMargin(5, 5);
-        editor.container.style.lineHeight = 1.5
-        editor.renderer.updateFontSize()
+        // editor.container.style.lineHeight = 1.5
+        // editor.renderer.updateFontSize()
     }
 
     render() {
@@ -68,7 +68,7 @@ export default class Editor extends React.Component {
                         showPrintMargin: false,
                         fontFamily: 'Ubuntu Monospace',
                         fontSize: '12pt',
-                        highlightActiveLine: false,
+                        //highlightActiveLine: false,
                     }}
                 />
             </div>
