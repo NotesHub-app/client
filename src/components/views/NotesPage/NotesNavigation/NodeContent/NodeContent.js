@@ -1,25 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Icon, ContextMenuTarget } from '@blueprintjs/core';
+import { Icon, ContextMenuTarget, Position, Popover } from '@blueprintjs/core';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
 import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
 import { createNote } from '../../../../../redux/modules/data/actions';
-import { getNoteNodeTreeId, getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../../../../../utils/navigation';
+import { getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../../../../../utils/navigation';
 import NoteMenu from '../../../../menus/NoteMenu';
 
 export class NodeContent extends React.Component {
     state = {
-        isHover: false,
+        isOpenControlPopover: false,
     };
 
-    handleMouserEnter = () => {
-        this.setState({ isHover: true });
+    handleOpenControlPopover = () => {
+        this.setState({
+            isOpenControlPopover: true,
+        });
     };
 
-    handleMouserLeave = () => {
-        this.setState({ isHover: false });
+    handleCloseControlPopover = () => {
+        this.setState({
+            isOpenControlPopover: false,
+        });
     };
 
     renderContextMenu() {
@@ -37,18 +41,6 @@ export class NodeContent extends React.Component {
             />
         );
     }
-
-    handleClickAddSubNote = async nodeId => {
-        const { push, createNote, expendNavigationTreeNode } = this.props;
-
-        const note = await createNote({ parentId: nodeId });
-
-        // Раскрываем текущую заметку
-        expendNavigationTreeNode(getNoteNodeTreeId(nodeId));
-
-        // Перейти в созданную заметку
-        push(`/notes/${note.get('id')}`);
-    };
 
     handleClickAddGroupNote = async nodeId => {
         const { push, createNote, expendNavigationTreeNode } = this.props;
@@ -82,8 +74,13 @@ export class NodeContent extends React.Component {
         const {
             node,
             additionalData: { activeNoteId },
+
+            setRemoveNoteAlertStatus,
+            expendNavigationTreeNode,
+            createNote,
+            push,
         } = this.props;
-        const { isHover } = this.state;
+        const { isOpenControlPopover } = this.state;
 
         const activeItem = node.data.get('id') === activeNoteId;
 
@@ -104,14 +101,31 @@ export class NodeContent extends React.Component {
                     )}
                 </div>
 
-                {isHover && (
+                {(isOpenControlPopover || activeItem) && (
                     <div className={styles.control}>
-                        <button
-                            className={styles.controlButton}
-                            onClick={() => this.handleClickAddSubNote(node.data.get('id'))}
+                        <Popover
+                            position={Position.BOTTOM}
+                            isOpen={isOpenControlPopover}
+                            onClose={this.handleCloseControlPopover}
+                            content={
+                                <NoteMenu
+                                    {...{
+                                        setRemoveNoteAlertStatus,
+                                        expendNavigationTreeNode,
+                                        createNote,
+                                        push,
+                                    }}
+                                    noteId={node.data.get('id')}
+                                />
+                            }
                         >
-                            <Icon icon="plus" />
-                        </button>
+                            <button
+                                className={classNames(styles.controlButton, { [styles.active]: isOpenControlPopover })}
+                                onClick={this.handleOpenControlPopover}
+                            >
+                                <Icon icon="more" />
+                            </button>
+                        </Popover>
                     </div>
                 )}
             </React.Fragment>
@@ -120,45 +134,42 @@ export class NodeContent extends React.Component {
 
     renderGroupRootNode() {
         const { node } = this.props;
-        const { isHover } = this.state;
 
         return (
             <React.Fragment>
                 <div className={styles.main}>{node.data.get('title')}</div>
 
-                {isHover && (
-                    <div className={styles.control}>
-                        <button
-                            className={styles.controlButton}
-                            onClick={() => this.handleOpenGroupConfiguration(node.data.get('id'))}
-                        >
-                            <Icon icon="cog" />
-                        </button>
-                        <button
-                            className={styles.controlButton}
-                            onClick={() => this.handleClickAddGroupNote(node.data.get('id'))}
-                        >
-                            <Icon icon="plus" />
-                        </button>
-                    </div>
-                )}
+                <div className={styles.control}>
+                    <button
+                        className={classNames(styles.controlButton, styles.controlButtonRoot)}
+                        onClick={() => this.handleOpenGroupConfiguration(node.data.get('id'))}
+                    >
+                        <Icon icon="cog" />
+                    </button>
+                    <button
+                        className={classNames(styles.controlButton, styles.controlButtonRoot)}
+                        onClick={() => this.handleClickAddGroupNote(node.data.get('id'))}
+                    >
+                        <Icon icon="plus" />
+                    </button>
+                </div>
             </React.Fragment>
         );
     }
 
     renderPersonalRootNode() {
-        const { isHover } = this.state;
         return (
             <React.Fragment>
                 <div className={styles.main}>Персональные заметки</div>
 
-                {isHover && (
-                    <div className={styles.control}>
-                        <button className={styles.controlButton} onClick={() => this.handleAddPersonalNote()}>
-                            <Icon icon="plus" />
-                        </button>
-                    </div>
-                )}
+                <div className={styles.control}>
+                    <button
+                        className={classNames(styles.controlButton, styles.controlButtonRoot)}
+                        onClick={() => this.handleAddPersonalNote()}
+                    >
+                        <Icon icon="plus" />
+                    </button>
+                </div>
             </React.Fragment>
         );
     }
@@ -184,15 +195,7 @@ export class NodeContent extends React.Component {
             default:
         }
 
-        return (
-            <div
-                className={classNames('VTTree__NodeContent', styles.nodeContent)}
-                onMouseEnter={this.handleMouserEnter}
-                onMouseLeave={this.handleMouserLeave}
-            >
-                {content}
-            </div>
-        );
+        return <div className={classNames('VTTree__NodeContent', styles.nodeContent)}>{content}</div>;
     }
 }
 
