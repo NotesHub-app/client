@@ -2,12 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
-import {
-    Button,
-    Intent,
-    Popover,
-    Position,
-} from '@blueprintjs/core';
+import { Button, Intent, Popover, Position } from '@blueprintjs/core';
+import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
 import ContentEditor from './ContentEditor';
 import InputTextField from '../../../../fields/InputTextField';
@@ -18,7 +14,8 @@ import { createNote, updateNote } from '../../../../../redux/modules/data/action
 import ViewModeSelect from './ViewModeSelect';
 import NoteMenu from '../../../../menus/NoteMenu';
 import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
-import { push } from 'connected-react-router';
+import Footer from './Footer';
+import DragFileArea from './DragFileArea';
 
 export class NoteEditor extends React.Component {
     static propTypes = {
@@ -51,6 +48,7 @@ export class NoteEditor extends React.Component {
         } = this.props;
         return (
             <form className={styles.root} onSubmit={handleSubmit(this.onSubmit)}>
+                <DragFileArea noteId={noteId}/>
                 <div className={styles.header}>
                     <div>
                         <Field name="icon" component={SelectIconField} />
@@ -94,6 +92,7 @@ export class NoteEditor extends React.Component {
                     </div>
                 </div>
                 <Field name="content" component={ContentEditor} noteId={noteId} />
+                <Footer noteId={noteId}/>
             </form>
         );
     }
@@ -121,10 +120,10 @@ export default connect(
         expendNavigationTreeNode,
         createNote,
         push,
-    }
+    },
 )(
     reduxForm({
         form: 'NoteEditor',
         enableReinitialize: true,
-    })(AlarmLeavingDirtyForm(NoteEditor))
+    })(AlarmLeavingDirtyForm(NoteEditor)),
 );

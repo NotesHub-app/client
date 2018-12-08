@@ -31,6 +31,21 @@ export function collapseNavigationTreeNode(nodeTreeId) {
 }
 
 /**
+ * Переключить состояние раскрытости ветку в дереве навигации по заметкам
+ * @param nodeTreeId
+ */
+export function toggleNavigationTreeNode(nodeTreeId) {
+    return (dispatch, getState) => {
+        const expendedNavigationTreeNodes = getState().uiSettings.get('expendedNavigationTreeNodes');
+        if (expendedNavigationTreeNodes.has(nodeTreeId)) {
+            dispatch(collapseNavigationTreeNode(nodeTreeId));
+        } else {
+            dispatch(expendNavigationTreeNode(nodeTreeId));
+        }
+    };
+}
+
+/**
  * Выставить статус алерта удаления заметки
  * @param noteId
  * @param isOpen
@@ -45,5 +60,21 @@ export function setRemoveNoteAlertStatus({ noteId, isOpen }) {
                 isOpen,
             }),
         }),
+    };
+}
+
+/**
+ * Выставить активный таб для футера заметок
+ * @param tabName
+ * @returns {Function}
+ */
+export function setActiveNoteFooterTab(tabName) {
+    return (dispatch, getState) => {
+        const activeNoteFooterTab = getState().uiSettings.get('activeNoteFooterTab');
+        if (tabName === activeNoteFooterTab) {
+            dispatch(setUiSettingsValues({ activeNoteFooterTab: null }));
+        } else {
+            dispatch(setUiSettingsValues({ activeNoteFooterTab: tabName }));
+        }
     };
 }

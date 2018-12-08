@@ -5,7 +5,11 @@ import PropTypes from 'prop-types';
 import Tree from 'react-vt-tree';
 import { push } from 'connected-react-router';
 import classNames from 'classnames';
-import { expendNavigationTreeNode, collapseNavigationTreeNode } from '../../../../redux/modules/uiSettings/actions';
+import {
+    expendNavigationTreeNode,
+    collapseNavigationTreeNode,
+    toggleNavigationTreeNode,
+} from '../../../../redux/modules/uiSettings/actions';
 import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
 import NodeContent from './NodeContent';
@@ -48,9 +52,12 @@ export class NotesNavigation extends React.Component {
     };
 
     handleNodeClick = (e, { node }) => {
-        const { push } = this.props;
+        const { push, toggleNavigationTreeNode } = this.props;
         if (node.type === 'note') {
             push(`/notes/${node.data.get('id')}`);
+        }
+        if (node.type === 'group' || node.type === 'personal') {
+            toggleNavigationTreeNode(node.treeId);
         }
     };
 
@@ -94,12 +101,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        expendNavigationTreeNode,
-        collapseNavigationTreeNode,
-        push,
-        removeNote,
-    }
-)(NotesNavigation);
+export default connect(mapStateToProps, {
+    expendNavigationTreeNode,
+    collapseNavigationTreeNode,
+    toggleNavigationTreeNode,
+    push,
+    removeNote,
+})(NotesNavigation);

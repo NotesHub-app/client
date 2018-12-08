@@ -1,0 +1,29 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    position: absolute;
+    z-index: 2;
+    height: 6px;
+    left: 0;
+    right: 0;
+    cursor: row-resize;
+    background-color: rgba($light-gray1, 0);
+    transition: background-color 200ms;
+
+    &:hover {
+        background-color: rgba($light-gray1, 0.2);
+    }
+}
+
+.active {
+    background-color: rgba($light-gray1, 0.3);
+}
+
+.movingLayer {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

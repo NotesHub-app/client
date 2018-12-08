@@ -42,7 +42,8 @@ export class NodeContent extends React.Component {
         );
     }
 
-    handleClickAddGroupNote = async nodeId => {
+    handleClickAddGroupNote = async (e, nodeId) => {
+        e.stopPropagation();
         const { push, createNote, expendNavigationTreeNode } = this.props;
 
         const note = await createNote({ groupId: nodeId });
@@ -54,7 +55,8 @@ export class NodeContent extends React.Component {
         push(`/notes/${note.get('id')}`);
     };
 
-    handleAddPersonalNote = async () => {
+    handleAddPersonalNote = async (e) => {
+        e.stopPropagation();
         const { push, createNote, expendNavigationTreeNode } = this.props;
 
         const note = await createNote({});
@@ -66,7 +68,8 @@ export class NodeContent extends React.Component {
         push(`/notes/${note.get('id')}`);
     };
 
-    handleOpenGroupConfiguration = groupId => {
+    handleOpenGroupConfiguration = (e, groupId) => {
+        e.stopPropagation();
         alert(groupId);
     };
 
@@ -142,13 +145,13 @@ export class NodeContent extends React.Component {
                 <div className={styles.control}>
                     <button
                         className={classNames(styles.controlButton, styles.controlButtonRoot)}
-                        onClick={() => this.handleOpenGroupConfiguration(node.data.get('id'))}
+                        onClick={(e) => this.handleOpenGroupConfiguration(e, node.data.get('id'))}
                     >
                         <Icon icon="cog" />
                     </button>
                     <button
                         className={classNames(styles.controlButton, styles.controlButtonRoot)}
-                        onClick={() => this.handleClickAddGroupNote(node.data.get('id'))}
+                        onClick={(e) => this.handleClickAddGroupNote(e, node.data.get('id'))}
                     >
                         <Icon icon="plus" />
                     </button>
@@ -165,7 +168,7 @@ export class NodeContent extends React.Component {
                 <div className={styles.control}>
                     <button
                         className={classNames(styles.controlButton, styles.controlButtonRoot)}
-                        onClick={() => this.handleAddPersonalNote()}
+                        onClick={this.handleAddPersonalNote}
                     >
                         <Icon icon="plus" />
                     </button>

@@ -11,7 +11,9 @@ const initialState = new Immutable.Map({
     removeNoteAlert: new Immutable.Map({
         isOpen: false,
         noteIs: null
-    })
+    }),
+    activeNoteFooterTab: null,
+    footerContentHeight: 200,
 });
 
 export default function reducer(state = initialState, action = {}) {

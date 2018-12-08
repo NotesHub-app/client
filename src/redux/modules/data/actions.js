@@ -1,7 +1,7 @@
 import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
 import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE } from './actionTypes';
-import { callApi } from '../../../utils/api';
+import { callApi, uploadFile } from '../../../utils/api';
 import { listToMap } from '../../../utils/immutable';
 
 /**
@@ -82,6 +82,32 @@ export function removeNote(noteId) {
             type: REMOVE_NOTE,
             noteId,
         });
+    };
+}
+
+export function uploadNoteFile({ noteId, fileObj, path }) {
+    return async (dispatch, getState) => {
+        const { file } = await dispatch(
+            callApi({
+                endpoint: `files`,
+                method: 'post',
+                params: {
+                    fileName: fileObj.name,
+                    description: '',
+                    noteId,
+                },
+            }),
+        );
+
+        const result = await dispatch(
+            uploadFile({
+                endpoint: `files/${file.id}/upload`,
+                method: 'post',
+                file: fileObj,
+            }),
+        );
+
+        console.log(result);
     };
 }
 
