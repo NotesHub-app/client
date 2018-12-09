@@ -7,23 +7,19 @@
     position: relative;
 }
 
-.tabs{
-
+.tabs {
     background-color: $light-gray5;
     padding: 5px;
-    //border-top: 1px solid $light-gray1;
-    box-shadow: $light-gray1 0px 1px 0px 0px inset;
-    //height: 46px;
+    box-shadow: $light-gray1 0 1px 0 0px inset;
 
-    & > *{
+    & > * {
         margin-right: 5px;
     }
 }
 
 .content {
     flex: 1;
-    //border-top: 1px solid $light-gray1;
-    box-shadow: $light-gray1 0px 1px 0px 0px inset;
+    box-shadow: $light-gray1 0 1px 0 0px inset;
     background-color: $white;
-    //height: 200px;
+    overflow: auto;
 }

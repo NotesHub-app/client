@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
-import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE } from './actionTypes';
+import { batchActions } from 'redux-batched-actions';
+import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE, SET_FILE, REMOVE_FILE } from './actionTypes';
 import { callApi, uploadFile } from '../../../utils/api';
 import { listToMap } from '../../../utils/immutable';
 
@@ -47,7 +48,6 @@ export function updateNote(noteId, noteContent) {
 /**
  * Создать заметку
  * @param params
- * @returns {function(*, *): *}
  */
 export function createNote(params) {
     return async (dispatch, getState) => {
@@ -73,7 +73,6 @@ export function createNote(params) {
 /**
  * Удалить заметку
  * @param noteId
- * @returns {Function}
  */
 export function removeNote(noteId) {
     return async (dispatch, getState) => {
@@ -85,9 +84,23 @@ export function removeNote(noteId) {
     };
 }
 
+/**
+ * Удалить файл
+ * @param fileId
+ */
+export function removeFile(fileId){
+    return async (dispatch, getState) => {
+        await dispatch(callApi({ endpoint: `files/${fileId}`, method: 'delete' }));
+        dispatch({
+            type: REMOVE_FILE,
+            fileId,
+        });
+    };
+}
+
 export function uploadNoteFile({ noteId, fileObj, path }) {
     return async (dispatch, getState) => {
-        const { file } = await dispatch(
+        let { file } = await dispatch(
             callApi({
                 endpoint: `files`,
                 method: 'post',
@@ -99,15 +112,44 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
             }),
         );
 
-        const result = await dispatch(
+        file = Immutable.fromJS(file).set('_uploadProgress', 0);
+
+        // Добавляем файл к заметке
+        let note = getState().data.getIn(['notes', noteId]);
+        note = note.set('fileIds', note.get('fileIds', new Immutable.List()).push(file.get('id')));
+
+        dispatch(
+            batchActions([
+                {
+                    type: SET_FILE,
+                    file,
+                },
+                {
+                    type: SET_NOTE,
+                    note,
+                },
+            ]),
+        );
+
+        const { file: uploadedFile } = await dispatch(
             uploadFile({
-                endpoint: `files/${file.id}/upload`,
+                endpoint: `files/${file.get('id')}/upload`,
                 method: 'post',
                 file: fileObj,
+                progressHandler: ({ percent }) => {
+                    file = file.set('_uploadProgress', percent);
+                    dispatch({
+                        type: SET_FILE,
+                        file,
+                    });
+                },
             }),
         );
 
-        console.log(result);
+        dispatch({
+            type: SET_FILE,
+            file: Immutable.fromJS(uploadedFile),
+        });
     };
 }
 
@@ -136,11 +178,28 @@ export function getNoteDetails(noteId) {
         let { note } = await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'get' }));
 
         note = Immutable.fromJS(note).set('_loaded', true);
+        let files = new Immutable.List();
+        let fileIds = new Immutable.List();
 
-        dispatch({
+        note.get('files').forEach(file => {
+            files = files.push(file);
+            fileIds = fileIds.push(file.get('id'));
+        });
+
+        note = note.delete('files').set('fileIds', fileIds);
+
+        const actions = [];
+        files.forEach(file => {
+            actions.push({
+                type: SET_FILE,
+                file,
+            });
+        });
+        actions.push({
             type: SET_NOTE,
             note,
         });
+        dispatch(batchActions(actions));
     };
 }
 

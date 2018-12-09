@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import * as Immutable from 'immutable';
 import { getUrlQueryParameterByName } from '../utils/url';
 import { getNoteNodeTreeId, getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../utils/navigation';
 
@@ -61,14 +62,44 @@ export const navigationNodesSelector = createSelector(
         });
 
         return results;
-    }
+    },
 );
 
+/**
+ * Селектор параметров УРЛ-а для страницы авторизации
+ */
 export const loginFormUrlParamsSelector = createSelector(
     url => url,
     url => ({
         afterRegistration: !!getUrlQueryParameterByName('afterRegistration', url),
         afterRestorePassword: !!getUrlQueryParameterByName('afterRestorePassword', url),
         email: getUrlQueryParameterByName('email', url),
-    })
+    }),
+);
+
+/**
+ * Список файлов заметки
+ */
+export const noteFilesListSelector = createSelector(
+    (state, noteId) => state.data.getIn(['notes', noteId]),
+    state => state.data.get('files'),
+    (note, files) => {
+        let result = new Immutable.List();
+        note.get('fileIds').forEach(fileId => {
+            let file = files.get(fileId);
+            // Файл может быть удален, но ссылка на него еще осталась
+            if (file) {
+                file = file.set(
+                    'ext',
+                    file
+                        .get('fileName', '')
+                        .split('.')
+                        .pop(),
+                );
+                result = result.push(file);
+            }
+        });
+
+        return result;
+    },
 );

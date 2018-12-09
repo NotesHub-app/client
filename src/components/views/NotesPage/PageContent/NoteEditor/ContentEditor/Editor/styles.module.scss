@@ -12,6 +12,7 @@
     padding: 2px 5px;
     box-shadow: $light-gray3 0px -1px 0px 0px inset;
     display: flex;
+    min-height: 27px;
 
     :global{
         .separator{

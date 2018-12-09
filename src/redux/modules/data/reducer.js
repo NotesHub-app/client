@@ -1,5 +1,15 @@
 import * as Immutable from 'immutable';
-import { SET_NOTES, SET_NOTE, SET_GROUPS, SET_USERS, SET_FILES, RESET_DATA, REMOVE_NOTE } from './actionTypes';
+import {
+    SET_NOTES,
+    SET_NOTE,
+    SET_GROUPS,
+    SET_USERS,
+    SET_FILES,
+    SET_FILE,
+    RESET_DATA,
+    REMOVE_NOTE,
+    REMOVE_FILE,
+} from './actionTypes';
 import { removeNoteWithChildren } from '../../../utils/data';
 
 const initialState = new Immutable.Map({
@@ -14,6 +24,8 @@ export default function reducer(state = initialState, action = {}) {
         case RESET_DATA: {
             return initialState;
         }
+
+        // Notes
         case SET_NOTES: {
             const { notes } = action;
 
@@ -29,20 +41,34 @@ export default function reducer(state = initialState, action = {}) {
 
             return state.set('notes', removeNoteWithChildren(state.get('notes', new Immutable.Map()), noteId));
         }
+
+        // Groups
         case SET_GROUPS: {
             const { groups } = action;
 
             return state.set('groups', groups);
         }
+
+        // Users
         case SET_USERS: {
             const { users } = action;
 
             return state.set('users', users);
         }
+
+        // Files
         case SET_FILES: {
             const { files } = action;
 
             return state.set('files', files);
+        }
+        case SET_FILE: {
+            const { file } = action;
+            return state.setIn(['files', file.get('id')], file);
+        }
+        case REMOVE_FILE: {
+            const { fileId } = action;
+            return state.set('files', state.get('files', new Immutable.Map()).delete(fileId));
         }
 
         default:

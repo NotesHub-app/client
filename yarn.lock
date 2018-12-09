@@ -2435,7 +2435,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2, classnames@^2.2.6:
+classnames@^2.2, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -5386,7 +5386,7 @@ https-proxy-agent@^2.2.1:
     agent-base "^4.1.0"
     debug "^3.1.0"
 
-husky@^1.1.3, husky@^1.2.0:
+husky@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/husky/-/husky-1.2.0.tgz#d631dda1e4a9ee8ba69a10b0c51a0e2c66e711e5"
   integrity sha512-/ib3+iycykXC0tYIxsyqierikVa9DA2DrT32UEirqNEFVqOj1bFMTgP3jAz8HM7FgC/C8pc/BTUa9MV2GEkZaA==
@@ -7163,7 +7163,7 @@ memoize-one@^3.1.1:
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-3.1.1.tgz#ef609811e3bc28970eac2884eece64d167830d17"
   integrity sha512-YqVh744GsMlZu6xkhGslPSqSurOv6P+kLN2J3ysBZfagLcL5FdRK/0UpgLoL8hwjjEvvAVkjJZyFP+1T6p1vgA==
 
-memoize-one@^4.0.2:
+memoize-one@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.0.3.tgz#cdfdd942853f1a1b4c71c5336b8c49da0bf0273c"
   integrity sha512-QmpUu4KqDmX0plH4u+tf0riMc1KHE1+lw95cMrLlXQAFOx/xnBtwhZ52XJxd9X2O6kwKBqX32kmhbhlobD0cuw==
@@ -9122,7 +9122,7 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@^15.6.1, prop-types@^15.6.2:
+prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   integrity sha512-3pboPvLiWD7dkI3qf3KbUe6hKFKa52w+AE0VCqECtf+QHAKgOL37tTaNCnuX1nAAQ4ZhyP+kYVKf8rLmJ/feDQ==
@@ -9382,6 +9382,14 @@ react-dom@^16.6.3:
     prop-types "^15.6.2"
     scheduler "^0.11.2"
 
+react-draggable@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.0.5.tgz#c031e0ed4313531f9409d6cd84c8ebcec0ddfe2d"
+  integrity sha512-qo76q6+pafyGllbmfc+CgWfOkwY9v3UoJa3jp6xG2vdsRY8uJTN1kqNievLj0uVNjEqCvZ0OFiEBxlAJNj3OTg==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-error-overlay@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.0.tgz#c516995a5652e7bfbed8b497910d5280df74a7e8"
@@ -9513,24 +9521,25 @@ react-transition-group@^2.2.1, react-transition-group@^2.5.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-vt-tree@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/react-vt-tree/-/react-vt-tree-0.2.3.tgz#0672502f90a844d9f83a20b3cb17b9a0b361ea6d"
-  integrity sha512-fYHcVgIHZf/P3KMg9xZQXpIw8q47KbY4qXpK3KayVCVMooF3HTG1CT00dXULS+dRm86jbEfaUF17ZAdrQjvHLw==
+react-vt-table@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/react-vt-table/-/react-vt-table-0.6.6.tgz#f6d143148144e840d3535b7d3264735eb9176061"
+  integrity sha512-eYyDXsOYVr2p/ZifZJRm1JVyG0//DXxeL1qLx/Jg1/TPiT1fk+ji3jcBlITuKnUsg06ZawGpg9ObSbzATlhQKA==
+  dependencies:
+    classnames "^2.2.6"
+    memoize-one "^4.0.3"
+    react-draggable "^3.0.5"
+    react-window "^1.3.1"
+
+react-vt-tree@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/react-vt-tree/-/react-vt-tree-0.2.4.tgz#38ba947d371f255f14303d145f4270d97af5eada"
+  integrity sha512-+dbcMXTV4T35CNKJAzFDtnVv7XrJrw+2ZISz0rjplNdEpfg0qMLAP+f4ScATkw1AyEv0rht5CqdjmR3c3eK6qA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     classnames "^2.2.6"
-    husky "^1.1.3"
-    memoize-one "^4.0.2"
-    react-window "^1.2.4"
-
-react-window@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.2.4.tgz#21ff1a52205451e59523bb636225e6db682f660d"
-  integrity sha512-xuxVvp4Mpf/vx/yktRihHQ6BjxjyMMLaBhE1hpUSqQ+YAAAEpPdoKHY+hfeXxw2x7NJe6Q8vCF85sKwNqOHRtA==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    memoize-one "^3.1.1"
+    memoize-one "^4.0.3"
+    react-window "^1.3.1"
 
 react-window@^1.3.1:
   version "1.3.1"
@@ -9680,6 +9689,11 @@ redent@^1.0.0:
   dependencies:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
+
+redux-batched-actions@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/redux-batched-actions/-/redux-batched-actions-0.4.1.tgz#a8de8cef50a1db4f009d5222820c836515597e22"
+  integrity sha512-r6tLDyBP3U9cXNLEHs0n1mX5TQfmk6xE0Y9uinYZ5HOyAWDgIJxYqRRkU/bC6XrJ4nS7tasNbxaHJHVmf9UdkA==
 
 redux-form@^7.4.2:
   version "7.4.2"

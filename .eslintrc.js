@@ -8,11 +8,17 @@ module.exports = {
     rules: {
         indent: ['error', 4, { SwitchCase: 1 }],
         'max-len': ['error', 120],
-        'no-underscore-dangle': ['error'],
+
         'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
         'no-mixed-operators': 'off',
         'no-await-in-loop': 'off',
         'func-names': ['error', 'never'],
+        'no-underscore-dangle': [
+            'error',
+            {
+                allow: ['__REDUX_DEVTOOLS_EXTENSION__'],
+            },
+        ],
         'prefer-destructuring': [
             'error',
             {

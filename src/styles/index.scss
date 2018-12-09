@@ -5,6 +5,7 @@
 @import '~prismjs/themes/prism.css';
 @import '~flexboxgrid/dist/flexboxgrid.css';
 @import '~github-markdown-css/github-markdown.css';
+@import '~react-vt-table/dist/style.css';
 
 @import 'variables.scss';
 @import 'fonts.scss';
@@ -14,6 +15,7 @@
 @import 'markdown.scss';
 @import 'loginForm.scss';
 @import 'animations.scss';
+@import 'react-vt-table.scss';
 @import 'blueprint-overrides/navbar.scss';
 
 html,
@@ -26,6 +28,7 @@ body,
     font-family: 'Ubuntu', sans-serif !important;
     background-color: $light-gray5;
     min-width: 1140px;
+    min-height: 600px;
 }
 
 .page {

@@ -12,7 +12,7 @@ const initialState = new Immutable.Map({
         isOpen: false,
         noteIs: null
     }),
-    activeNoteFooterTab: null,
+    activeNoteFooterTab: 'files',
     footerContentHeight: 200,
 });
 

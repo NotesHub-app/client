@@ -34,7 +34,7 @@ export class FooterResizer extends React.Component {
         const diffY = this.initY - e.clientY ;
 
         let newHeight = this.originalHeight + diffY;
-        newHeight = Math.max(100, newHeight);
+        newHeight = Math.max(200, newHeight);
         newHeight = Math.min(600, newHeight);
 
         setUiSettingsValues({ footerContentHeight: newHeight });

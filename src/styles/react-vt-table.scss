@@ -1,0 +1,14 @@
+@import 'src/styles/variables.scss';
+
+.VTHeader {
+    background-color: $light-gray5;
+    box-sizing: border-box;
+    border-top: 1px solid $light-gray1;
+    border-bottom: 1px solid $light-gray1;
+    font-weight: bold;
+    color: $gray1;
+}
+
+.VTCellContent {
+    width: 100%;
+}

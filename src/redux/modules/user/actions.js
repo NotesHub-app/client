@@ -2,6 +2,9 @@ import * as Immutable from 'immutable';
 import { SET_USER } from './actionTypes';
 import { callApi } from '../../../utils/api';
 
+let refreshTokenTimoutId = null;
+const refreshTokenTime = 8 * 60 * 1000; // 8min
+
 /**
  * Авторизация пользователя
  * @param email
@@ -11,17 +14,41 @@ import { callApi } from '../../../utils/api';
 export function login({ email, password, remember }) {
     return async (dispatch, getState) => {
         let user = await dispatch(
-            callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false })
+            callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false }),
         );
         if (remember) {
             localStorage.setItem('noteshub:user', JSON.stringify(user));
         }
         user = Immutable.fromJS(user);
 
-        return dispatch({
+        dispatch({
             type: SET_USER,
             user,
         });
+
+        refreshTokenTimoutId = setTimeout(() => {
+            dispatch(refreshToken(remember));
+        }, refreshTokenTime);
+    };
+}
+
+function refreshToken(remember) {
+    return async (dispatch, getState) => {
+        let user = await dispatch(callApi({ endpoint: 'auth/keep-token', method: 'get' }));
+
+        if (remember) {
+            localStorage.setItem('noteshub:user', JSON.stringify(user));
+        }
+        user = Immutable.fromJS(user);
+
+        dispatch({
+            type: SET_USER,
+            user,
+        });
+
+        refreshTokenTimoutId = setTimeout(() => {
+            dispatch(refreshToken(remember));
+        }, refreshTokenTime);
     };
 }
 
@@ -29,9 +56,15 @@ export function login({ email, password, remember }) {
  * Выход пользователя
  */
 export function logout() {
-    return {
-        type: SET_USER,
-        user: null,
+    return (dispatch, getState) => {
+        if (refreshTokenTimoutId) {
+            clearTimeout(refreshTokenTimoutId);
+            refreshTokenTimoutId = null;
+        }
+        return {
+            type: SET_USER,
+            user: null,
+        };
     };
 }
 
@@ -57,7 +90,7 @@ export function restorePassword(params) {
     return async (dispatch, getState) => {
         if (params.code) {
             await dispatch(
-                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false })
+                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false }),
             );
         } else {
             await dispatch(callApi({ endpoint: `restorePassword`, method: 'post', params, requireAuth: false }));
