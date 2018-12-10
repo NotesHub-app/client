@@ -8,7 +8,7 @@ import { noteFilesListSelector } from '../../../../../../../redux/selectors';
 import styles from './styles.module.scss';
 import { humanFileSize } from '../../../../../../../utils/human';
 import RemoveItemAlert from '../../../../../../dialogs/RemoveItemAlert';
-import { removeFile, uploadNoteFile } from '../../../../../../../redux/modules/data/actions';
+import { removeManyFiles, uploadNoteFile } from '../../../../../../../redux/modules/data/actions';
 import { maxArr, minArr, rangeArr } from '../../../../../../../utils/helpers';
 import config from '../../../../../../../config';
 import { downloadURI } from '../../../../../../../utils/browser';
@@ -87,12 +87,12 @@ export class Files extends React.Component {
     };
 
     handleConfirmRemoveAlert = async () => {
-        const { removeFile } = this.props;
+        const { removeManyFiles } = this.props;
         const { removingFileIds } = this.state;
 
-        for (const fileId of removingFileIds) {
-            await removeFile(fileId);
-        }
+
+        await removeManyFiles(removingFileIds);
+
 
         window.showToast({ message: 'Удаление завершено!', intent: Intent.SUCCESS, icon: 'tick' });
 
@@ -111,8 +111,8 @@ export class Files extends React.Component {
         return result;
     };
 
-    handleDownloadSelectedFiles = () => {
-        this.handleDownloadFiles(this.getSelectedFilesIds());
+    handleDownloadSelectedFiles = async () => {
+        await this.handleDownloadFiles(this.getSelectedFilesIds());
     };
 
     handleRemoveSelectedFiles = () => {
@@ -290,7 +290,7 @@ function mapStateToProps(state, ownProps) {
 export default connect(
     mapStateToProps,
     {
-        removeFile,
+        removeManyFiles,
         uploadNoteFile,
     }
 )(Files);

@@ -102,7 +102,31 @@ export function removeFile(fileId) {
         });
     };
 }
+/**
+ * Удалить много файлов за раз
+ * @param fileIds
+ */
+export function removeManyFiles(fileIds) {
+    return async (dispatch, getState) => {
+        await dispatch(callApi({ endpoint: `files`, method: 'delete', params: { ids: fileIds } }));
 
+        const actions = [];
+        fileIds.forEach(fileId => {
+            actions.push({
+                type: REMOVE_FILE,
+                fileId,
+            });
+        });
+        dispatch(batchActions(actions));
+    };
+}
+
+/**
+ * Загрузить файл для заметки
+ * @param noteId
+ * @param fileObj
+ * @param path
+ */
 export function uploadNoteFile({ noteId, fileObj, path }) {
     return async (dispatch, getState) => {
         let { file } = await dispatch(
@@ -114,7 +138,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     description: '',
                     noteId,
                 },
-            })
+            }),
         );
 
         file = Immutable.fromJS(file).set('_uploadProgress', 0);
@@ -133,7 +157,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     type: SET_NOTE,
                     note,
                 },
-            ])
+            ]),
         );
 
         const { file: uploadedFile } = await dispatch(
@@ -147,7 +171,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                         file,
                     });
                 },
-            })
+            }),
         );
 
         dispatch({
@@ -175,7 +199,6 @@ export function getGroups() {
 /**
  * Получение полное содержимое заметки
  * @param noteId
- * @returns {Function}
  */
 export function getNoteDetails(noteId) {
     return async (dispatch, getState) => {
@@ -209,7 +232,6 @@ export function getNoteDetails(noteId) {
 
 /**
  * Получение минимальных пользовательских данных для работы программы
- * @returns {Function}
  */
 export function getInitialData() {
     return async (dispatch, getState) => {
