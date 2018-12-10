@@ -8,6 +8,7 @@ import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../
 import { createNote } from '../../../../../redux/modules/data/actions';
 import { getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../../../../../utils/navigation';
 import NoteMenu from '../../../../menus/NoteMenu';
+import Substring from 'react-substring';
 
 export class NodeContent extends React.Component {
     state = {
@@ -29,17 +30,23 @@ export class NodeContent extends React.Component {
     renderContextMenu() {
         const { node, setRemoveNoteAlertStatus, expendNavigationTreeNode, createNote, push } = this.props;
 
-        return (
-            <NoteMenu
-                {...{
-                    setRemoveNoteAlertStatus,
-                    expendNavigationTreeNode,
-                    createNote,
-                    push,
-                }}
-                noteId={node.data.get('id')}
-            />
-        );
+        switch (node.type) {
+            case 'note': {
+                return (
+                    <NoteMenu
+                        {...{
+                            setRemoveNoteAlertStatus,
+                            expendNavigationTreeNode,
+                            createNote,
+                            push,
+                        }}
+                        noteId={node.data.get('id')}
+                    />
+                );
+            }
+            default:
+        }
+        return <span />;
     }
 
     handleClickAddGroupNote = async (e, nodeId) => {
@@ -55,7 +62,7 @@ export class NodeContent extends React.Component {
         push(`/notes/${note.get('id')}`);
     };
 
-    handleAddPersonalNote = async (e) => {
+    handleAddPersonalNote = async e => {
         e.stopPropagation();
         const { push, createNote, expendNavigationTreeNode } = this.props;
 
@@ -76,7 +83,7 @@ export class NodeContent extends React.Component {
     renderNoteNode() {
         const {
             node,
-            additionalData: { activeNoteId },
+            additionalData: { activeNoteId, navigationFilter },
 
             setRemoveNoteAlertStatus,
             expendNavigationTreeNode,
@@ -95,7 +102,17 @@ export class NodeContent extends React.Component {
                         color={!activeItem ? node.data.get('iconColor') : undefined}
                         className={styles.nodeIcon}
                     />
-                    {node.data.get('title')}
+                    <Substring
+                        substrings={[
+                            {
+                                match: navigationFilter,
+                                className: 'text-highlight',
+                            },
+                        ]}
+                    >
+                        {node.data.get('title')}
+                    </Substring>
+
                     {activeItem && (
                         <div
                             className={styles.activeNodeMark}
@@ -145,13 +162,13 @@ export class NodeContent extends React.Component {
                 <div className={styles.control}>
                     <button
                         className={classNames(styles.controlButton, styles.controlButtonRoot)}
-                        onClick={(e) => this.handleOpenGroupConfiguration(e, node.data.get('id'))}
+                        onClick={e => this.handleOpenGroupConfiguration(e, node.data.get('id'))}
                     >
                         <Icon icon="cog" />
                     </button>
                     <button
                         className={classNames(styles.controlButton, styles.controlButtonRoot)}
-                        onClick={(e) => this.handleClickAddGroupNote(e, node.data.get('id'))}
+                        onClick={e => this.handleClickAddGroupNote(e, node.data.get('id'))}
                     >
                         <Icon icon="plus" />
                     </button>

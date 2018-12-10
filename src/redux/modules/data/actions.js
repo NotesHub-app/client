@@ -59,7 +59,12 @@ export function createNote(params) {
             ...params,
         };
         let { note } = await dispatch(callApi({ endpoint: `notes`, method: 'post', params: data }));
-        note = Immutable.fromJS(note).set('_loaded', true);
+        note = Immutable.fromJS(note);
+
+        note = note
+            .delete('files')
+            .set('fileIds', new Immutable.List())
+            .set('_loaded', true);
 
         dispatch({
             type: SET_NOTE,
@@ -88,7 +93,7 @@ export function removeNote(noteId) {
  * Удалить файл
  * @param fileId
  */
-export function removeFile(fileId){
+export function removeFile(fileId) {
     return async (dispatch, getState) => {
         await dispatch(callApi({ endpoint: `files/${fileId}`, method: 'delete' }));
         dispatch({
@@ -109,7 +114,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     description: '',
                     noteId,
                 },
-            }),
+            })
         );
 
         file = Immutable.fromJS(file).set('_uploadProgress', 0);
@@ -128,13 +133,12 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     type: SET_NOTE,
                     note,
                 },
-            ]),
+            ])
         );
 
         const { file: uploadedFile } = await dispatch(
             uploadFile({
                 endpoint: `files/${file.get('id')}/upload`,
-                method: 'post',
                 file: fileObj,
                 progressHandler: ({ percent }) => {
                     file = file.set('_uploadProgress', percent);
@@ -143,7 +147,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                         file,
                     });
                 },
-            }),
+            })
         );
 
         dispatch({

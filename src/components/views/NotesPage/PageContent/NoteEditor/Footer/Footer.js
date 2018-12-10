@@ -30,31 +30,42 @@ export class Footer extends React.Component {
         return <span />;
     }
 
+    handleCloseFooter = () => {
+        const { setActiveNoteFooterTab } = this.props;
+        setActiveNoteFooterTab(null);
+    };
+
     render() {
         const { activeTab, footerContentHeight } = this.props;
 
         return (
             <div
                 className={styles.root}
-                style={{ minHeight: activeTab ? footerContentHeight : 40, maxHeight: footerContentHeight }}
+                // style={{ minHeight: activeTab ? footerContentHeight : 40, maxHeight: footerContentHeight }}
+                style={{ height: activeTab ? footerContentHeight : 40 }}
             >
                 {activeTab && <FooterResizer />}
                 <div className={styles.tabs}>
-                    {[
-                        { icon: 'import', type: 'files', label: 'Файлы' },
-                        { icon: 'history', type: 'history', label: 'История' },
-                    ].map(({ icon, type, label }) => (
-                        <Button
-                            key={type}
-                            minimal
-                            icon={icon}
-                            data-type={type}
-                            active={activeTab === type}
-                            onClick={this.handleClickTabButton}
-                        >
-                            {label}
-                        </Button>
-                    ))}
+                    <div>
+                        {[
+                            { icon: 'import', type: 'files', label: 'Файлы' },
+                            { icon: 'history', type: 'history', label: 'История' },
+                        ].map(({ icon, type, label }) => (
+                            <Button
+                                key={type}
+                                minimal
+                                icon={icon}
+                                data-type={type}
+                                active={activeTab === type}
+                                onClick={this.handleClickTabButton}
+                            >
+                                {label}
+                            </Button>
+                        ))}
+                    </div>
+                    <div style={{ flexGrow: 1, textAlign: 'right' }}>
+                        {!!activeTab && <Button minimal icon="cross" onClick={this.handleCloseFooter} />}
+                    </div>
                 </div>
                 {activeTab && <div className={styles.content}>{this.renderContent()}</div>}
             </div>
@@ -69,6 +80,9 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    setActiveNoteFooterTab,
-})(Footer);
+export default connect(
+    mapStateToProps,
+    {
+        setActiveNoteFooterTab,
+    }
+)(Footer);

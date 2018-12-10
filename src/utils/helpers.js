@@ -10,3 +10,38 @@ export function tc(value) {
     }
     return undefined;
 }
+
+/**
+ * Генерация массива значений от и до
+ * @param from
+ * @param to
+ * @returns {Array}
+ */
+export function rangeArr(from, to) {
+    const result = [];
+    if (to < from) {
+        [from, to] = [to, from];
+    }
+    for (let i = from; i <= to; i += 1) {
+        result.push(i);
+    }
+    return result;
+}
+
+/**
+ * Минимальное значение в массиве
+ * @param arr
+ * @returns {*}
+ */
+export function minArr(arr) {
+    return arr.reduce((result, i) => (i < result ? i : result), arr[0]);
+}
+
+/**
+ * Максимальное знаечние в массиве
+ * @param arr
+ * @returns {*}
+ */
+export function maxArr(arr) {
+    return arr.reduce((result, i) => (i > result ? i : result), arr[0]);
+}

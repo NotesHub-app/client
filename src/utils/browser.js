@@ -10,3 +10,12 @@ export function prepareBrowserEnv() {
     // Отключаем фокус по клику
     FocusStyleManager.onlyShowFocusOnTabs();
 }
+
+/**
+ * Скачать файл по ссылке
+ * @param uri
+ * @param name
+ */
+export function downloadURI(uri, name) {
+    window.location = uri;
+}

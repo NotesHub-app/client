@@ -1,5 +1,6 @@
 import * as Immutable from 'immutable';
 import { SET_UI_SETTINGS_VALUES } from './actionTypes';
+import { navigationNodesSelector } from '../../selectors';
 
 export function setUiSettingsValues(values) {
     return {
@@ -76,5 +77,49 @@ export function setActiveNoteFooterTab(tabName) {
         } else {
             dispatch(setUiSettingsValues({ activeNoteFooterTab: tabName }));
         }
+    };
+}
+
+/**
+ * Выставить значение фильтра заметок
+ * @param filterStr
+ * @returns {Function}
+ */
+export function setNavigationFilter(filterStr) {
+    return (dispatch, getState) => {
+        const nodes = navigationNodesSelector(getState());
+        let expendedNodes = new Immutable.Set();
+
+        const uiSettings = {
+            navigationFilter: filterStr,
+        };
+
+        if (filterStr) {
+            filterStr = filterStr.toLowerCase();
+            const expandParents = node => {
+                const parent = nodes.find(i => i.treeId === node.parentTreeId);
+
+                expendedNodes = expendedNodes.add(parent.treeId);
+
+                if (parent.parentTreeId) {
+                    expandParents(parent);
+                }
+            };
+
+            nodes.forEach(node => {
+                let title = '';
+                if (node.data) {
+                    title = node.data.get('title').toLowerCase();
+                }
+
+                if (title.includes(filterStr)) {
+                    expandParents(node);
+                }
+            });
+
+            uiSettings.expendedNavigationTreeNodes = expendedNodes;
+        }
+
+        dispatch(setUiSettingsValues(uiSettings));
     };
 }

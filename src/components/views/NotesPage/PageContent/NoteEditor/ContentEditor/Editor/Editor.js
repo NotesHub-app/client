@@ -8,7 +8,9 @@ import styles from './styles.module.scss';
 
 export default class Editor extends React.Component {
     setContent = _.debounce(content => {
-        const { input: { onChange } } = this.props;
+        const {
+            input: { onChange },
+        } = this.props;
 
         onChange(content);
     }, 100);
@@ -25,7 +27,9 @@ export default class Editor extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { input: { value } } = this.props;
+        const {
+            input: { value },
+        } = this.props;
         if (prevProps.noteId !== this.props.noteId) {
             this.fromSetValue = true;
             this.reactAceComponent.editor.setValue(value, 1);
@@ -105,7 +109,9 @@ export default class Editor extends React.Component {
     };
 
     render() {
-        const { input: { value } } = this.props;
+        const {
+            input: { value },
+        } = this.props;
 
         return (
             <div className={styles.root}>
@@ -199,27 +205,29 @@ export default class Editor extends React.Component {
                         />
                     </div>
                 </div>
-                <AceEditor
-                    ref={i => {
-                        this.reactAceComponent = i;
-                    }}
-                    width="100%"
-                    height="100%"
-                    defaultValue={value}
-                    fontSize={14}
-                    mode="markdown"
-                    theme="github"
-                    onChange={this.handleChange}
-                    showGutter={false}
-                    name="editor"
-                    editorProps={{ $blockScrolling: true }}
-                    setOptions={{
-                        showPrintMargin: false,
-                        fontFamily: 'Ubuntu Monospace',
-                        fontSize: '12pt',
-                        // highlightActiveLine: false,
-                    }}
-                />
+                <div className={styles.editorContainer}>
+                    <AceEditor
+                        ref={i => {
+                            this.reactAceComponent = i;
+                        }}
+                        width="100%"
+                        maxLines={Infinity}
+                        defaultValue={value}
+                        fontSize={14}
+                        mode="markdown"
+                        theme="github"
+                        onChange={this.handleChange}
+                        showGutter={false}
+                        name="editor"
+                        editorProps={{ $blockScrolling: true }}
+                        setOptions={{
+                            showPrintMargin: false,
+                            fontFamily: 'Ubuntu Monospace',
+                            fontSize: '12pt',
+                            // highlightActiveLine: false,
+                        }}
+                    />
+                </div>
             </div>
         );
     }

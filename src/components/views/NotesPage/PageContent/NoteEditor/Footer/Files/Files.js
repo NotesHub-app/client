@@ -1,136 +1,280 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { Button, Intent, ProgressBar } from '@blueprintjs/core';
+import { Button, Intent, ProgressBar, Position, Tooltip } from '@blueprintjs/core';
 import SizeMe from '@avinlab/react-size-me';
 import { Table, Column } from 'react-vt-table';
 import { noteFilesListSelector } from '../../../../../../../redux/selectors';
 import styles from './styles.module.scss';
 import { humanFileSize } from '../../../../../../../utils/human';
 import RemoveItemAlert from '../../../../../../dialogs/RemoveItemAlert';
-import { removeFile } from '../../../../../../../redux/modules/data/actions';
+import { removeFile, uploadNoteFile } from '../../../../../../../redux/modules/data/actions';
+import { maxArr, minArr, rangeArr } from '../../../../../../../utils/helpers';
+import config from '../../../../../../../config';
+import { downloadURI } from '../../../../../../../utils/browser';
 
 export class Files extends React.Component {
     state = {
         isOpenRemoveAlert: false,
-        removingFileId: null,
+        removingFileIds: null,
+        selection: [],
     };
 
-    handleOpenRemoveAlert = fileId => {
+    clearSelection = () => {
+        this.setState({
+            selection: [],
+        });
+    };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.noteId !== this.props.noteId) {
+            this.clearSelection();
+        }
+    }
+
+    handleRowMouseDown = (event, { rowIndex }) => {
+        const { selection } = this.state;
+
+        if (event.ctrlKey) {
+            if (!selection.includes(rowIndex)) {
+                this.setState({ selection: [...selection, rowIndex] });
+            } else {
+                const newSelection = selection.filter(i => i !== rowIndex);
+                this.setState({ selection: [...newSelection] });
+            }
+        } else if (event.shiftKey && selection.length) {
+            selection.push(rowIndex);
+            this.setState({ selection: rangeArr(minArr(selection), maxArr(selection)) });
+        } else {
+            this.setState({ selection: [rowIndex] });
+        }
+    };
+
+    handleDoubleClickRow = (event, { rowData }) => {
+        const { fileToken } = this.props;
+        const fileId = rowData.get('id');
+        downloadURI(`${config.apiUrl}/directDownload/${fileId}?token=${fileToken}`);
+    };
+
+    handleDownloadFiles = async fileIds => {
+        const { fileToken } = this.props;
+        for (const fileId of fileIds) {
+            downloadURI(`${config.apiUrl}/directDownload/${fileId}?token=${fileToken}`);
+            await Promise.delay(200);
+        }
+    };
+
+    getRowClassName = rowIndex => {
+        const { selection } = this.state;
+        if (selection.includes(rowIndex)) {
+            return styles.rowSelected;
+        }
+        return '';
+    };
+
+    handleOpenRemoveAlert = fileIds => {
         this.setState({
             isOpenRemoveAlert: true,
-            removingFileId: fileId,
+            removingFileIds: fileIds,
         });
     };
 
     handleCloseRemoveAlert = () => {
         this.setState({
             isOpenRemoveAlert: false,
-            removingFileId: null,
+            removingFileIds: null,
         });
     };
 
-    handleConfirmRemoveAlert = () => {
+    handleConfirmRemoveAlert = async () => {
         const { removeFile } = this.props;
-        const { removingFileId } = this.state;
+        const { removingFileIds } = this.state;
 
-        removeFile(removingFileId);
+        for (const fileId of removingFileIds) {
+            await removeFile(fileId);
+        }
+
+        window.showToast({ message: 'Удаление завершено!', intent: Intent.SUCCESS, icon: 'tick' });
 
         this.handleCloseRemoveAlert();
+
+        this.clearSelection();
     };
 
-    handleDownloadFile = file => {};
+    getSelectedFilesIds = () => {
+        const { selection } = this.state;
+        const { files } = this.props;
+        const result = [];
+        selection.forEach(index => {
+            result.push(files.getIn([index, 'id']));
+        });
+        return result;
+    };
+
+    handleDownloadSelectedFiles = () => {
+        this.handleDownloadFiles(this.getSelectedFilesIds());
+    };
+
+    handleRemoveSelectedFiles = () => {
+        this.handleOpenRemoveAlert(this.getSelectedFilesIds());
+    };
+
+    handleClickUploadFile = () => {
+        const { uploadNoteFile, noteId } = this.props;
+        const fileInput = document.createElement('input');
+        fileInput.multiple = true;
+        const changeHandler = async () => {
+            for (const fileObj of fileInput.files) {
+                await uploadNoteFile({ noteId, fileObj });
+            }
+            fileInput.removeEventListener('change', changeHandler);
+        };
+        fileInput.addEventListener('change', changeHandler);
+        fileInput.type = 'file';
+        fileInput.click();
+    };
 
     render() {
         const { files } = this.props;
-        const { isOpenRemoveAlert } = this.state;
+        const { isOpenRemoveAlert, selection } = this.state;
 
         // TODO {file.get('_uploadProgress')}
 
         return (
-            <React.Fragment>
-                <SizeMe>
-                    {({ width, height }) => (
-                        <Table
-                            className="MyTable"
-                            width={width}
-                            height={height}
-                            data={files}
-                            rowHeight={30}
-                            dynamicColumnWidth={true}
-                            overflowWidth={8}
-                            noItemsLabel="Файлов нет"
-                            disableHeader={false}
-                        >
-                            <Column
-                                label=""
-                                dataKey="ext"
-                                width={50}
-                                cellRenderer={({ dataKey, rowData }) => (
-                                    <div className="VTCellContent text-center">
-                                        <span
-                                            className={classNames(
-                                                'fiv-sqo',
-                                                `fiv-icon-${rowData.get(dataKey)}`,
-                                                styles.fileIcon,
-                                            )}
-                                        />
-                                    </div>
-                                )}
-                            />
-                            <Column
-                                label="Имя файла"
-                                dataKey="fileName"
-                                cellRenderer={({ dataKey, rowData }) => (
-                                    <div className="VTCellContent">
-                                        {rowData.get('fileName')}
-                                        {rowData.get('_uploadProgress') !== undefined && (
-                                            <ProgressBar
-                                                intent={Intent.PRIMARY}
-                                                animate
-                                                value={rowData.get('_uploadProgress') / 100}
-                                            />
+            <div className={styles.root}>
+                <div className={styles.controls}>
+                    <Tooltip content="Загрузить файлы" position={Position.RIGHT} hoverOpenDelay={500}>
+                        <Button
+                            className={styles.controlItem}
+                            icon="cloud-upload"
+                            minimal
+                            small
+                            onClick={this.handleClickUploadFile}
+                        />
+                    </Tooltip>
+
+                    <Tooltip
+                        content="Скачать файлы"
+                        position={Position.RIGHT}
+                        hoverOpenDelay={500}
+                        disabled={!selection.length}
+                    >
+                        <Button
+                            className={styles.controlItem}
+                            icon="cloud-download"
+                            minimal
+                            small
+                            disabled={!selection.length}
+                            onClick={this.handleDownloadSelectedFiles}
+                        />
+                    </Tooltip>
+
+                    <Tooltip
+                        content="Удалить файлы"
+                        position={Position.RIGHT}
+                        hoverOpenDelay={500}
+                        disabled={!selection.length}
+                    >
+                        <Button
+                            className={styles.controlItem}
+                            icon="cross"
+                            minimal
+                            intent={Intent.DANGER}
+                            small
+                            disabled={!selection.length}
+                            onClick={this.handleRemoveSelectedFiles}
+                        />
+                    </Tooltip>
+                </div>
+                <div className={styles.main}>
+                    <React.Fragment>
+                        <SizeMe>
+                            {({ width, height }) => (
+                                <Table
+                                    className={styles.filesTable}
+                                    width={width}
+                                    height={height}
+                                    data={files}
+                                    rowHeight={30}
+                                    dynamicColumnWidth={true}
+                                    overflowWidth={8}
+                                    noItemsLabel="Файлов нет"
+                                    disableHeader={false}
+                                    onRowMouseDown={this.handleRowMouseDown}
+                                    onRowDoubleClick={this.handleDoubleClickRow}
+                                    rowClassName={this.getRowClassName}
+                                >
+                                    <Column
+                                        label=""
+                                        dataKey="ext"
+                                        width={50}
+                                        cellRenderer={({ dataKey, rowData }) => (
+                                            <div className="VTCellContent text-center">
+                                                <span
+                                                    className={classNames(
+                                                        'fiv-sqo',
+                                                        `fiv-icon-${rowData.get(dataKey)}`,
+                                                        styles.fileIcon
+                                                    )}
+                                                />
+                                            </div>
                                         )}
-                                    </div>
-                                )}
-                            />
-                            <Column
-                                label="Размер"
-                                dataKey="size"
-                                width={120}
-                                cellRenderer={({ dataKey, rowData }) => (
-                                    <div className="VTCellContent">{humanFileSize(rowData.get(dataKey))}</div>
-                                )}
-                            />
-                            <Column
-                                label=""
-                                dataKey="id"
-                                width={40}
-                                cellRenderer={({ dataKey, rowData }) => (
-                                    <div className="VTCellContent">
-                                        <Button
-                                            icon="cross"
-                                            intent={Intent.DANGER}
-                                            minimal
-                                            small
-                                            onClick={e => {
-                                                e.stopPropagation();
-                                                this.handleOpenRemoveAlert(rowData.get('id'));
-                                            }}
-                                        />
-                                    </div>
-                                )}
-                            />
-                        </Table>
-                    )}
-                </SizeMe>
-                <RemoveItemAlert
-                    isOpen={isOpenRemoveAlert}
-                    onConfirm={this.handleConfirmRemoveAlert}
-                    onCancel={this.handleCloseRemoveAlert}
-                    text="Точно хотите удалить выбранный файл???"
-                />
-            </React.Fragment>
+                                    />
+                                    <Column
+                                        label="Имя файла"
+                                        dataKey="fileName"
+                                        cellRenderer={({ dataKey, rowData }) => (
+                                            <div className="VTCellContent">
+                                                {rowData.get('fileName')}
+                                                {rowData.get('_uploadProgress') !== undefined && (
+                                                    <ProgressBar
+                                                        intent={Intent.PRIMARY}
+                                                        animate
+                                                        value={rowData.get('_uploadProgress') / 100}
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+                                    />
+                                    <Column
+                                        label="Размер"
+                                        dataKey="size"
+                                        width={120}
+                                        cellRenderer={({ dataKey, rowData }) => (
+                                            <div className="VTCellContent">{humanFileSize(rowData.get(dataKey))}</div>
+                                        )}
+                                    />
+                                    <Column
+                                        label=""
+                                        dataKey="id"
+                                        width={40}
+                                        cellRenderer={({ dataKey, rowData }) => (
+                                            <div className="VTCellContent">
+                                                <Button
+                                                    icon="trash"
+                                                    intent={Intent.DANGER}
+                                                    minimal
+                                                    small
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        this.handleOpenRemoveAlert([rowData.get('id')]);
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                </Table>
+                            )}
+                        </SizeMe>
+                        <RemoveItemAlert
+                            isOpen={isOpenRemoveAlert}
+                            onConfirm={this.handleConfirmRemoveAlert}
+                            onCancel={this.handleCloseRemoveAlert}
+                            text="Действительно хотите удалить выбранные файлы?"
+                        />
+                    </React.Fragment>
+                </div>
+            </div>
         );
     }
 }
@@ -139,9 +283,14 @@ function mapStateToProps(state, ownProps) {
     const { noteId } = ownProps;
     return {
         files: noteFilesListSelector(state, noteId),
+        fileToken: state.user.get('fileToken'),
     };
 }
 
-export default connect(mapStateToProps, {
-    removeFile,
-})(Files);
+export default connect(
+    mapStateToProps,
+    {
+        removeFile,
+        uploadNoteFile,
+    }
+)(Files);

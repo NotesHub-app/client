@@ -62,7 +62,7 @@ export const navigationNodesSelector = createSelector(
         });
 
         return results;
-    },
+    }
 );
 
 /**
@@ -74,7 +74,7 @@ export const loginFormUrlParamsSelector = createSelector(
         afterRegistration: !!getUrlQueryParameterByName('afterRegistration', url),
         afterRestorePassword: !!getUrlQueryParameterByName('afterRestorePassword', url),
         email: getUrlQueryParameterByName('email', url),
-    }),
+    })
 );
 
 /**
@@ -85,6 +85,7 @@ export const noteFilesListSelector = createSelector(
     state => state.data.get('files'),
     (note, files) => {
         let result = new Immutable.List();
+
         note.get('fileIds').forEach(fileId => {
             let file = files.get(fileId);
             // Файл может быть удален, но ссылка на него еще осталась
@@ -94,12 +95,12 @@ export const noteFilesListSelector = createSelector(
                     file
                         .get('fileName', '')
                         .split('.')
-                        .pop(),
+                        .pop()
                 );
                 result = result.push(file);
             }
         });
 
         return result;
-    },
+    }
 );

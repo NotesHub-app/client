@@ -62,7 +62,7 @@ export class NotesNavigation extends React.Component {
     };
 
     render() {
-        const { nodes, expendedNavigationTreeNodes, activeNoteId } = this.props;
+        const { nodes, expendedNavigationTreeNodes, activeNoteId, navigationFilter } = this.props;
 
         return (
             <React.Fragment>
@@ -82,10 +82,8 @@ export class NotesNavigation extends React.Component {
                             nodeContentComponent={NodeContent}
                             noExpanderSpaceWidth={23}
                             nodeClassName={this.getNodeClassName}
-                            additionalData={{ activeNoteId }}
+                            additionalData={{ activeNoteId, navigationFilter }}
                             onNodeClick={this.handleNodeClick}
-                            // onNodeDoubleClick={this.handleDoubleClickNode}
-                            // onNodeContextMenu={this.handleContextMenu}
                         />
                     )}
                 </SizeMe>
@@ -97,14 +95,18 @@ export class NotesNavigation extends React.Component {
 function mapStateToProps(state, ownProps) {
     return {
         expendedNavigationTreeNodes: state.uiSettings.get('expendedNavigationTreeNodes'),
+        navigationFilter: state.uiSettings.get('navigationFilter'),
         nodes: navigationNodesSelector(state),
     };
 }
 
-export default connect(mapStateToProps, {
-    expendNavigationTreeNode,
-    collapseNavigationTreeNode,
-    toggleNavigationTreeNode,
-    push,
-    removeNote,
-})(NotesNavigation);
+export default connect(
+    mapStateToProps,
+    {
+        expendNavigationTreeNode,
+        collapseNavigationTreeNode,
+        toggleNavigationTreeNode,
+        push,
+        removeNote,
+    }
+)(NotesNavigation);

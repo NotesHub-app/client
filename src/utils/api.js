@@ -1,11 +1,20 @@
 import superagent from 'superagent';
 import { logout } from '../redux/modules/user/actions';
+import config from '../config';
 
-export function callApi({ endpoint, method, params, requireAuth = true }) {
+/**
+ * Вызов API функции сервера
+ * @param endpoint
+ * @param method
+ * @param params
+ * @param requireAuth
+ * @returns {Function}
+ */
+export function callApi({ endpoint, method = 'post', params, requireAuth = true }) {
     return async (dispatch, getState) => {
         method = method || 'post';
 
-        let request = superagent[method](`/api/${endpoint}`);
+        let request = superagent[method](`${config.apiUrl}/${endpoint}`);
 
         // Если метод требует авторизацию - прикрепляем токен JWT
         if (requireAuth) {
@@ -24,7 +33,7 @@ export function callApi({ endpoint, method, params, requireAuth = true }) {
         } catch (err) {
             // При неавторизованных действиях - всегда разлогиниваемся
             if (err.status === 401) {
-                dispatch(logout());
+                return dispatch(logout());
             }
 
             throw err;
@@ -32,16 +41,17 @@ export function callApi({ endpoint, method, params, requireAuth = true }) {
     };
 }
 
-export function uploadFile({ endpoint, method, file, requireAuth = true, progressHandler = () => {} }) {
+/**
+ * Загрузка файла на сервер
+ * @param endpoint
+ * @param file
+ * @param progressHandler
+ */
+export function uploadFile({ endpoint, file, progressHandler = () => {} }) {
     return async (dispatch, getState) => {
-        method = method || 'post';
+        let request = superagent.post(`${config.apiUrl}/${endpoint}`);
 
-        let request = superagent[method](`/api/${endpoint}`);
-
-        // Если метод требует авторизацию - прикрепляем токен JWT
-        if (requireAuth) {
-            request = request.set('Authorization', `${getState().user.get('token')}`);
-        }
+        request = request.set('Authorization', `${getState().user.get('token')}`);
 
         request = request.attach('file', file).on('progress', progressHandler);
 

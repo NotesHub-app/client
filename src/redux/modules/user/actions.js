@@ -14,7 +14,7 @@ const refreshTokenTime = 8 * 60 * 1000; // 8min
 export function login({ email, password, remember }) {
     return async (dispatch, getState) => {
         let user = await dispatch(
-            callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false }),
+            callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false })
         );
         if (remember) {
             localStorage.setItem('noteshub:user', JSON.stringify(user));
@@ -61,10 +61,10 @@ export function logout() {
             clearTimeout(refreshTokenTimoutId);
             refreshTokenTimoutId = null;
         }
-        return {
+        dispatch({
             type: SET_USER,
             user: null,
-        };
+        });
     };
 }
 
@@ -90,7 +90,7 @@ export function restorePassword(params) {
     return async (dispatch, getState) => {
         if (params.code) {
             await dispatch(
-                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false }),
+                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false })
             );
         } else {
             await dispatch(callApi({ endpoint: `restorePassword`, method: 'post', params, requireAuth: false }));
