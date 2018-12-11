@@ -4,7 +4,49 @@ import * as _ from 'lodash';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import { Button } from '@blueprintjs/core';
+import SizeMe from '@avinlab/react-size-me';
 import styles from './styles.module.scss';
+
+class CodeEditor extends React.Component {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        // Ресайзим вручную
+        if (this.props.width !== nextProps.width || this.props.height !== nextProps.height) {
+            const { editor } = this.aceEditorComponent;
+
+            const editorEl = document.getElementById('editor');
+
+            editorEl.style.width = `${nextProps.width}px`;
+            editorEl.style.height = `${nextProps.height}px`;
+
+            editor.resize();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    componentDidMount() {
+        const { onEditorMount } = this.props;
+        onEditorMount();
+    }
+
+    render() {
+        const { width, height, onEditorMount, editorRef, ...editorProps } = this.props;
+
+        return (
+            <AceEditor
+                {...editorProps}
+                width={`${width}px`}
+                height={`${height}px`}
+                ref={i => {
+                    this.aceEditorComponent = i;
+                    editorRef(i);
+                }}
+            />
+        );
+    }
+}
 
 export default class Editor extends React.Component {
     setContent = _.debounce(content => {
@@ -37,10 +79,17 @@ export default class Editor extends React.Component {
         }
     }
 
-    componentDidMount() {
+    handleEditorMount = () => {
         const { editor } = this.reactAceComponent;
         editor.renderer.setScrollMargin(5, 5);
-    }
+        // editor.getSession().setUseWrapMode(true);
+        // editor.setAutoScrollEditorIntoView(true);
+    };
+
+    handleFocusEditor = () => {
+        const { editor } = this.reactAceComponent;
+        editor.focus();
+    };
 
     handleToolbarContentAction = actionType => {
         const { editor } = this.reactAceComponent;
@@ -205,28 +254,33 @@ export default class Editor extends React.Component {
                         />
                     </div>
                 </div>
-                <div className={styles.editorContainer}>
-                    <AceEditor
-                        ref={i => {
-                            this.reactAceComponent = i;
-                        }}
-                        width="100%"
-                        maxLines={Infinity}
-                        defaultValue={value}
-                        fontSize={14}
-                        mode="markdown"
-                        theme="github"
-                        onChange={this.handleChange}
-                        showGutter={false}
-                        name="editor"
-                        editorProps={{ $blockScrolling: true }}
-                        setOptions={{
-                            showPrintMargin: false,
-                            fontFamily: 'Ubuntu Monospace',
-                            fontSize: '12pt',
-                            // highlightActiveLine: false,
-                        }}
-                    />
+                <div className={styles.editorContainer} onClick={this.handleFocusEditor}>
+                    <SizeMe>
+                        {({ width, height }) => (
+                            <CodeEditor
+                                editorRef={i => {
+                                    this.reactAceComponent = i;
+                                }}
+                                onEditorMount={this.handleEditorMount}
+                                value={value}
+                                fontSize={14}
+                                mode="markdown"
+                                theme="github"
+                                onChange={this.handleChange}
+                                showGutter={false}
+                                name="editor"
+                                editorProps={{ $blockScrolling: true }}
+                                setOptions={{
+                                    showPrintMargin: false,
+                                    fontFamily: 'Ubuntu Monospace',
+                                    fontSize: '12pt',
+                                    // highlightActiveLine: false,
+                                }}
+                                width={width}
+                                height={height}
+                            />
+                        )}
+                    </SizeMe>
                 </div>
             </div>
         );

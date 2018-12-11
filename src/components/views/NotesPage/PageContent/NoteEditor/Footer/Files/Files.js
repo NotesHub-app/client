@@ -12,6 +12,7 @@ import { removeManyFiles, uploadNoteFile } from '../../../../../../../redux/modu
 import { maxArr, minArr, rangeArr } from '../../../../../../../utils/helpers';
 import config from '../../../../../../../config';
 import { downloadURI } from '../../../../../../../utils/browser';
+import CopyTextButton from '../../../../../../common/CopyTextButton';
 
 export class Files extends React.Component {
     state = {
@@ -90,9 +91,7 @@ export class Files extends React.Component {
         const { removeManyFiles } = this.props;
         const { removingFileIds } = this.state;
 
-
         await removeManyFiles(removingFileIds);
-
 
         window.showToast({ message: 'Удаление завершено!', intent: Intent.SUCCESS, icon: 'tick' });
 
@@ -250,16 +249,42 @@ export class Files extends React.Component {
                                         width={40}
                                         cellRenderer={({ dataKey, rowData }) => (
                                             <div className="VTCellContent">
-                                                <Button
-                                                    icon="trash"
+                                                <Tooltip
+                                                    content="Копировать ссылку для заметки"
+                                                    hoverOpenDelay={700}
+                                                >
+                                                    <CopyTextButton
+                                                        textToCopy={`file://${rowData.get('id')}`}
+                                                        minimal
+                                                        small
+                                                        icon="link"
+                                                    />
+                                                </Tooltip>
+                                            </div>
+                                        )}
+                                    />
+                                    <Column
+                                        label=""
+                                        dataKey="id"
+                                        width={40}
+                                        cellRenderer={({ dataKey, rowData }) => (
+                                            <div className="VTCellContent">
+                                                <Tooltip
+                                                    content="Удалить файл"
                                                     intent={Intent.DANGER}
-                                                    minimal
-                                                    small
-                                                    onClick={e => {
-                                                        e.stopPropagation();
-                                                        this.handleOpenRemoveAlert([rowData.get('id')]);
-                                                    }}
-                                                />
+                                                    hoverOpenDelay={700}
+                                                >
+                                                    <Button
+                                                        icon="trash"
+                                                        intent={Intent.DANGER}
+                                                        minimal
+                                                        small
+                                                        onClick={e => {
+                                                            e.stopPropagation();
+                                                            this.handleOpenRemoveAlert([rowData.get('id')]);
+                                                        }}
+                                                    />
+                                                </Tooltip>
                                             </div>
                                         )}
                                     />

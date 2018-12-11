@@ -2,25 +2,15 @@
 
 .root {
     height: 100%;
-    //overflow: auto;
     display: flex;
     flex-direction: column;
-    //position: relative;
-
 }
 
 .toolbar {
-    //position: absolute;
-    //top: 0px;
-    //left: 0px;
-    //right: 0px;
-    //z-index: 100;
-
     background-color: $light-gray5;
     padding: 2px 5px;
     box-shadow: $light-gray3 0px -1px 0px 0px inset;
     display: flex;
-    //min-height: 27px;
     flex-grow: 0;
     flex-shrink: 0;
 
@@ -36,5 +26,4 @@
 .editorContainer {
     flex-grow: 1;
     overflow: auto;
-
 }

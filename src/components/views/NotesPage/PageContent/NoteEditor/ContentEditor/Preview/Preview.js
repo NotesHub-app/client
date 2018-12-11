@@ -1,30 +1,52 @@
 import React from 'react';
-import marked from 'marked';
-import prism from 'prismjs';
+import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
+import config from '../../../../../../../config';
+import CodeRenderer from './CodeRenderer';
 
-export default class NotePreview extends React.Component {
+export class NotePreview extends React.Component {
+    transformUri = uri => {
+        const { fileToken } = this.props;
+
+        // Трансформируем file:// урлы на директСсылка к атаченным файлам
+        if (uri && uri.startsWith('file://')) {
+            const matchRes = uri.match(/file:\/\/(.*)/);
+            if (matchRes) {
+                uri = `${config.apiUrl}/directDownload/${matchRes[1]}?token=${fileToken}`;
+            }
+        }
+        return uri;
+    };
+
     render() {
         const {
             input: { value },
         } = this.props;
 
-        let htmlContent = '';
-        if (value) {
-            htmlContent = marked(value, {
-                highlight: (code, lang) => {
-                    const language = prism.languages[lang || 'markup'] || prism.languages.markup;
-                    return prism.highlight(code, language);
-                },
-            });
-        }
-
         return (
-            <div
+            <ReactMarkdown
                 className={classNames('markdown-body', styles.root)}
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                source={value}
+                transformImageUri={this.transformUri}
+                transformLinkUri={this.transformUri}
+                renderers={{
+                    code: CodeRenderer,
+                    codeBlock: CodeRenderer,
+                }}
             />
         );
     }
 }
+
+function mapStateToProps(state, ownProps) {
+    return {
+        fileToken: state.user.get('fileToken'),
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    {}
+)(NotePreview);
