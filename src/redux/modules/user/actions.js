@@ -2,8 +2,8 @@ import * as Immutable from 'immutable';
 import { SET_USER } from './actionTypes';
 import { callApi } from '../../../utils/api';
 
-let refreshTokenTimoutId = null;
-const refreshTokenTime = 8 * 60 * 1000; // 8min
+// let refreshTokenTimoutId = null;
+// const refreshTokenTime = 8 * 60 * 1000; // 8min
 
 /**
  * Авторизация пользователя
@@ -14,53 +14,65 @@ const refreshTokenTime = 8 * 60 * 1000; // 8min
 export function login({ email, password, remember }) {
     return async (dispatch, getState) => {
         let user = await dispatch(
-            callApi({ endpoint: 'auth/login', method: 'post', params: { email, password }, requireAuth: false })
+            callApi({
+                endpoint: 'auth/login',
+                method: 'post',
+                params: { email, password, remember },
+                requireAuth: false,
+            })
         );
+        user = Immutable.fromJS(user);
+
         if (remember) {
             localStorage.setItem('noteshub:user', JSON.stringify(user));
         }
-        user = Immutable.fromJS(user);
+
+        localStorage.setItem('noteshub:refreshToken', user.get('refreshToken'));
 
         dispatch({
             type: SET_USER,
             user,
         });
 
-        refreshTokenTimoutId = setTimeout(() => {
-            dispatch(refreshToken(remember));
-        }, refreshTokenTime);
+        // refreshTokenTimoutId = setTimeout(() => {
+        //     dispatch(refreshToken(remember));
+        // }, refreshTokenTime);
     };
 }
 
-function refreshToken(remember) {
-    return async (dispatch, getState) => {
-        let user = await dispatch(callApi({ endpoint: 'auth/keep-token', method: 'get' }));
-
-        if (remember) {
-            localStorage.setItem('noteshub:user', JSON.stringify(user));
-        }
-        user = Immutable.fromJS(user);
-
-        dispatch({
-            type: SET_USER,
-            user,
-        });
-
-        refreshTokenTimoutId = setTimeout(() => {
-            dispatch(refreshToken(remember));
-        }, refreshTokenTime);
-    };
-}
+// function refreshToken(remember) {
+//     return async (dispatch, getState) => {
+//         let user = await dispatch(callApi({ endpoint: 'auth/keep-token', method: 'get', requireRefreshToken: true, }));
+//
+//         if (remember) {
+//             localStorage.setItem('noteshub:user', JSON.stringify(user));
+//         }
+//         user = Immutable.fromJS(user);
+//
+//         dispatch({
+//             type: SET_USER,
+//             user,
+//         });
+//
+//         refreshTokenTimoutId = setTimeout(() => {
+//             dispatch(refreshToken(remember));
+//         }, refreshTokenTime);
+//     };
+// }
 
 /**
  * Выход пользователя
  */
 export function logout() {
     return (dispatch, getState) => {
-        if (refreshTokenTimoutId) {
-            clearTimeout(refreshTokenTimoutId);
-            refreshTokenTimoutId = null;
-        }
+        // if (refreshTokenTimoutId) {
+        //     clearTimeout(refreshTokenTimoutId);
+        //     refreshTokenTimoutId = null;
+        // }
+
+        localStorage.removeItem('noteshub:refreshToken');
+        localStorage.removeItem('noteshub:user');
+
         dispatch({
             type: SET_USER,
             user: null,

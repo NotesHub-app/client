@@ -1,6 +1,8 @@
 import superagent from 'superagent';
+import * as Immutable from 'immutable';
 import { logout } from '../redux/modules/user/actions';
 import config from '../config';
+import { SET_USER } from '../redux/modules/user/actionTypes';
 
 /**
  * Вызов API функции сервера
@@ -8,9 +10,11 @@ import config from '../config';
  * @param method
  * @param params
  * @param requireAuth
+ * @param noRefresh - не делать попыток обновить токен
+ * @param token
  * @returns {Function}
  */
-export function callApi({ endpoint, method = 'post', params, requireAuth = true }) {
+export function callApi({ endpoint, method = 'post', params, requireAuth = true, tryRefreshToken = true, token }) {
     return async (dispatch, getState) => {
         method = method || 'post';
 
@@ -18,7 +22,8 @@ export function callApi({ endpoint, method = 'post', params, requireAuth = true 
 
         // Если метод требует авторизацию - прикрепляем токен JWT
         if (requireAuth) {
-            request = request.set('Authorization', `${getState().user.get('token')}`);
+            token = token || getState().user.get('token');
+            request = request.set('Authorization', `${token}`);
         }
 
         if (params && method !== 'get') {
@@ -31,9 +36,41 @@ export function callApi({ endpoint, method = 'post', params, requireAuth = true 
             const result = await request;
             return Promise.resolve(JSON.parse(result.text), endpoint, params);
         } catch (err) {
-            // При неавторизованных действиях - всегда разлогиниваемся
             if (err.status === 401) {
-                return dispatch(logout());
+                if (tryRefreshToken) {
+                    // Делаем попытку обновить токен
+                    try {
+                        let user = await dispatch(
+                            callApi({
+                                endpoint: 'auth/keep-token',
+                                token: localStorage.getItem('noteshub:refreshToken'),
+                                tryRefreshToken: false,
+                            })
+                        );
+                        user = Immutable.fromJS(user);
+
+                        localStorage.setItem('noteshub:refreshToken', user.get('refreshToken'));
+                        dispatch({
+                            type: SET_USER,
+                            user,
+                        });
+
+                        // Делаем изначальный запрос снова
+                        return await dispatch(
+                            callApi({
+                                ...arguments[0],
+                                tryRefreshToken: false,
+                            })
+                        );
+                    } catch (err) {
+                        // Если и после попытки восстановить токен 401 - тогда логаут
+                        if (err.status === 401) {
+                            return dispatch(logout());
+                        }
+                    }
+                } else {
+                    return dispatch(logout());
+                }
             }
 
             throw err;

@@ -235,8 +235,8 @@ export function getNoteDetails(noteId) {
  */
 export function getInitialData() {
     return async (dispatch, getState) => {
-        dispatch(getNotes());
-        dispatch(getGroups());
+        await dispatch(getNotes());
+        await dispatch(getGroups());
     };
 }
 
