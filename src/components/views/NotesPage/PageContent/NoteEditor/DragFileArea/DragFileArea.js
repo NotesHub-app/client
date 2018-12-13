@@ -22,6 +22,10 @@ export class DragFileArea extends React.Component {
     };
 
     handleDragenter = event => {
+        // Обращаем внимание только на файлы
+        if (event.dataTransfer.types[0] !== 'Files') {
+            return;
+        }
         if (this.enterCounter === 0) {
             this.setState({ active: true });
         }
@@ -48,7 +52,7 @@ export class DragFileArea extends React.Component {
             path = path || '';
             if (item.isFile) {
                 item.file(fileObj => {
-                    uploadNoteFile({noteId, fileObj, path});
+                    uploadNoteFile({ noteId, fileObj, path });
                 });
             } else if (item.isDirectory) {
                 // Get folder contents
@@ -108,5 +112,5 @@ export default connect(
     mapStateToProps,
     {
         uploadNoteFile,
-    },
+    }
 )(DragFileArea);

@@ -33,7 +33,10 @@ export class LoginPage extends Component {
 
             push('/');
         } catch (e) {
-            throw new SubmissionError({ _error: 'Неверный логин или пароль!' });
+            if (e.status === 401) {
+                throw new SubmissionError({ _error: 'Неверный логин или пароль!' });
+            }
+            throw e;
         }
     };
 

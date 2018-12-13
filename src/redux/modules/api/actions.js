@@ -53,12 +53,12 @@ export function callApi({
             }
 
             if (uploadFile) {
-                request = request.attach(uploadFile).on('progress', progressFileUpload);
+                request = request.attach('file', uploadFile).on('progress', progressFileUpload);
             } else {
                 request = request.set('Content-Type', 'application/json; charset=utf-8').send(params);
             }
 
-            const result = await request.send(params).retry(5, () => {
+            const result = await request.retry(5, () => {
                 // TODO Если нет связи - выдать заглушку?
             });
 
