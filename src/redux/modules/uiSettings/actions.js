@@ -3,9 +3,16 @@ import { SET_UI_SETTINGS_VALUES } from './actionTypes';
 import { navigationNodesSelector } from '../../selectors';
 
 export function setUiSettingsValues(values) {
+    values = Immutable.fromJS(values);
+
+    const expendedNavigationTreeNodes = values.get('expendedNavigationTreeNodes');
+    if (expendedNavigationTreeNodes) {
+        values = values.set('expendedNavigationTreeNodes', expendedNavigationTreeNodes.toSet());
+    }
+
     return {
         type: SET_UI_SETTINGS_VALUES,
-        values: Immutable.fromJS(values),
+        values,
     };
 }
 

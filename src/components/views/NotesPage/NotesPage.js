@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
 import NotesNavigation from './NotesNavigation';
 import NavigationSidebarResizer from './NavigationSidebarResizer';
@@ -74,7 +75,11 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    setRemoveNoteAlertStatus,
-    removeNote,
-})(NotesPage);
+export default connect(
+    mapStateToProps,
+    {
+        setRemoveNoteAlertStatus,
+        removeNote,
+        push,
+    }
+)(NotesPage);

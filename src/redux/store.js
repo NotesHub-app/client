@@ -5,13 +5,22 @@ import createHashHistory from 'history/createHashHistory';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import createRootReducer from './modules';
 import usersDataMiddleware from './middlewares/usersDataMiddleware';
+import saveUiSettingsMiddleware from './middlewares/saveUiSettingsMiddleware';
+import lastNoteMiddleware from './middlewares/lastNoteMiddleware';
 
 export const history = createHashHistory();
 
 const configureStore = () => {
     const initialState = {};
     const enhancers = [];
-    const middleware = [thunk, routerMiddleware(history), batchDispatchMiddleware, usersDataMiddleware];
+    const middleware = [
+        thunk,
+        routerMiddleware(history),
+        batchDispatchMiddleware,
+        usersDataMiddleware,
+        saveUiSettingsMiddleware,
+        lastNoteMiddleware,
+    ];
 
     if (process.env.NODE_ENV !== 'production') {
         const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__;
@@ -23,7 +32,7 @@ const configureStore = () => {
 
     const composedEnhancers = compose(
         applyMiddleware(...middleware),
-        ...enhancers,
+        ...enhancers
     );
 
     const store = createStore(createRootReducer(history), initialState, composedEnhancers);

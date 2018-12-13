@@ -10,17 +10,17 @@ const initialState = new Immutable.Map({
     navigationFilter: '',
     removeNoteAlert: new Immutable.Map({
         isOpen: false,
-        noteIs: null
+        noteIs: null,
     }),
-    activeNoteFooterTab: 'files',
+    activeNoteFooterTab: null,
     footerContentHeight: 200,
+    lastUsedNote: null,
 });
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
         case SET_UI_SETTINGS_VALUES: {
             const { values } = action;
-
             return state.merge(values);
         }
 

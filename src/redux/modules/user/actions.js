@@ -1,9 +1,20 @@
 import * as Immutable from 'immutable';
 import { SET_USER } from './actionTypes';
-import { callApi } from '../../../utils/api';
+import { callApi } from '../api/actions';
+import { setUiSettingsValues } from '../uiSettings/actions';
 
-// let refreshTokenTimoutId = null;
-// const refreshTokenTime = 8 * 60 * 1000; // 8min
+const processUserTokens = user => {
+    // Держим токены в локалСторадже для того чтоб использовать
+    // общие токены при использовании из нескольких вкладок
+    localStorage.setItem('noteshub:refreshToken', user.get('refreshToken'));
+    localStorage.setItem('noteshub:token', user.get('token'));
+
+    // Не будем их держать в общем объекте пользователя
+    user = user.delete('refreshToken');
+    user = user.delete('token');
+
+    return user;
+};
 
 /**
  * Авторизация пользователя
@@ -17,60 +28,67 @@ export function login({ email, password, remember }) {
             callApi({
                 endpoint: 'auth/login',
                 method: 'post',
-                params: { email, password, remember },
+                params: { email, password },
                 requireAuth: false,
             })
         );
         user = Immutable.fromJS(user);
+        user = processUserTokens(user);
 
-        if (remember) {
-            localStorage.setItem('noteshub:user', JSON.stringify(user));
+        // Переносим UI настройки в персональный редюсер
+        dispatch(setUiSettingsValues(user.get('uiSettings')));
+        user = user.delete('uiSettings');
+
+        if (!remember) {
+            // TODO при закрытии браузера удалить все записи в localStorage
         }
-
-        localStorage.setItem('noteshub:refreshToken', user.get('refreshToken'));
 
         dispatch({
             type: SET_USER,
             user,
         });
-
-        // refreshTokenTimoutId = setTimeout(() => {
-        //     dispatch(refreshToken(remember));
-        // }, refreshTokenTime);
     };
 }
 
-// function refreshToken(remember) {
-//     return async (dispatch, getState) => {
-//         let user = await dispatch(callApi({ endpoint: 'auth/keep-token', method: 'get', requireRefreshToken: true, }));
-//
-//         if (remember) {
-//             localStorage.setItem('noteshub:user', JSON.stringify(user));
-//         }
-//         user = Immutable.fromJS(user);
-//
-//         dispatch({
-//             type: SET_USER,
-//             user,
-//         });
-//
-//         refreshTokenTimoutId = setTimeout(() => {
-//             dispatch(refreshToken(remember));
-//         }, refreshTokenTime);
-//     };
-// }
+/**
+ * Обновить основной токен
+ * @returns {Function}
+ */
+export function refreshToken(withUserData) {
+    return async (dispatch, getState) => {
+        let user = await dispatch(
+            callApi({
+                endpoint: 'auth/refresh-token',
+                useRefreshToken: true,
+                tryToRefreshToken: false,
+                params: {
+                    withUserData,
+                },
+            })
+        );
+        user = Immutable.fromJS(user);
+        processUserTokens(user);
+
+        if (withUserData) {
+            // Переносим UI настройки в персональный редюсер
+            dispatch(setUiSettingsValues(user.get('uiSettings')));
+            user = user.delete('uiSettings');
+
+            dispatch({
+                type: SET_USER,
+                user,
+            });
+        }
+    };
+}
 
 /**
  * Выход пользователя
  */
 export function logout() {
     return (dispatch, getState) => {
-        // if (refreshTokenTimoutId) {
-        //     clearTimeout(refreshTokenTimoutId);
-        //     refreshTokenTimoutId = null;
-        // }
-
         localStorage.removeItem('noteshub:refreshToken');
+        localStorage.removeItem('noteshub:token');
         localStorage.removeItem('noteshub:user');
 
         dispatch({

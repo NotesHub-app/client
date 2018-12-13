@@ -30,6 +30,7 @@ export class LoginPage extends Component {
             localStorage.setItem('noteshub:lastEmail', params.email);
 
             await login(params);
+
             push('/');
         } catch (e) {
             throw new SubmissionError({ _error: 'Неверный логин или пароль!' });
@@ -124,6 +125,7 @@ function mapStateToProps(state, ownProps) {
         afterRegistration: loginFormUrlParams.afterRegistration,
         afterRestorePassword: loginFormUrlParams.afterRestorePassword,
         initialValues: {
+            remember: true,
             email: loginFormUrlParams.email || lastEmail,
         },
     };

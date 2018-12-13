@@ -2,7 +2,7 @@ import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
 import { batchActions } from 'redux-batched-actions';
 import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE, SET_FILE, REMOVE_FILE } from './actionTypes';
-import { callApi, uploadFile } from '../../../utils/api';
+import { callApi } from '../api/actions';
 import { listToMap } from '../../../utils/immutable';
 
 /**
@@ -161,10 +161,10 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
         );
 
         const { file: uploadedFile } = await dispatch(
-            uploadFile({
+            callApi({
                 endpoint: `files/${file.get('id')}/upload`,
-                file: fileObj,
-                progressHandler: ({ percent }) => {
+                uploadFile: fileObj,
+                progressFileUpload: ({ percent }) => {
                     file = file.set('_uploadProgress', percent);
                     dispatch({
                         type: SET_FILE,

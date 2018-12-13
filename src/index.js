@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Immutable from 'immutable';
 import configureStore, { history } from './redux/store';
 import Root from './components/main/Root';
 import './styles/index.scss';
 import { prepareBrowserEnv } from './utils/browser';
 import { isElectron } from './utils/electron-helpers';
 import * as serviceWorker from './serviceWorker';
-import { SET_USER } from './redux/modules/user/actionTypes';
+import { refreshToken } from './redux/modules/user/actions';
 
 prepareBrowserEnv();
 
@@ -15,14 +14,10 @@ prepareBrowserEnv();
     // Инициализирует redux-store
     const store = configureStore();
 
-    const savedUserData = localStorage.getItem('noteshub:user');
-    if (savedUserData) {
+    // Пробуем восстановить сессию по refreshToken-у сохраненного с прошлого раза (если он есть)
+    if (localStorage.getItem('noteshub:refreshToken')) {
         try {
-            const user = Immutable.fromJS(JSON.parse(savedUserData));
-            store.dispatch({
-                type: SET_USER,
-                user,
-            });
+            await store.dispatch(refreshToken(true));
         } catch (e) {
             // не получилось восстановить пользователя
         }
@@ -37,13 +32,6 @@ prepareBrowserEnv();
     // Монтируем React контейнер на страницу
     const target = document.querySelector('#root');
     ReactDOM.render(<Root history={history} store={store} />, target);
-
-    if (isElectron()) {
-        // Заворачиваем в таймаут чтоб не показывать процесс монтирования содержимого
-        setTimeout(() => {
-            window.ipcRenderer.send('open-main-window');
-        }, 500);
-    }
 
     if (module.hot) {
         module.hot.accept('./components/main/Root', () => {
