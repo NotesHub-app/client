@@ -1,0 +1,51 @@
+@import 'src/styles/variables.scss';
+
+.table{
+    :global{
+        .VTCell{
+            border-bottom: none;
+            border-right: none;
+        }
+    }
+}
+
+.roleCell {
+    :global {
+        .bp3-popover-wrapper {
+            margin-top: 0 !important;
+        }
+    }
+}
+
+.removedUser {
+    text-decoration: line-through;
+    color: $intent-danger;
+}
+
+.roleSelect {
+    width: 100%;
+
+    :global {
+        .bp3-popover-target {
+            width: 100% !important;
+        }
+
+        .bp3-menu {
+            min-width: 125px;
+        }
+
+        .selectButton {
+            width: 100%;
+            justify-content: left;
+
+            .bp3-button-text {
+                margin-right: 0;
+            }
+
+            .bp3-icon {
+                position: absolute;
+                right: 10px;
+            }
+        }
+    }
+}

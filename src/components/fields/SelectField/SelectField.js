@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import FieldErrorLabel from '../../common/FieldErrorLabel/FieldErrorLabel';
-import styles from './styles.module.scss';
 
 export default class SelectField extends React.Component {
     static propTypes = {
@@ -14,35 +13,43 @@ export default class SelectField extends React.Component {
                 PropTypes.shape({
                     label: PropTypes.any,
                     value: PropTypes.any.isRequired,
-                }),
+                })
             ),
             PropTypes.arrayOf(PropTypes.node),
         ]),
-        wide: PropTypes.bool,
         buttonClassName: PropTypes.string,
     };
 
     itemRenderer = (item, { handleClick }) => {
-        const { input: { value } } = this.props;
+        const {
+            input: { value },
+        } = this.props;
 
         return (
             <MenuItem
                 key={_.toString(item.value)}
                 text={item.label || item.value}
                 onClick={handleClick}
+                icon={item.icon}
                 className={classNames({ 'text-strong': item.value === value })}
             />
         );
     };
 
     handleSelect = item => {
-        const { input: { onChange } } = this.props;
+        const {
+            input: { onChange },
+        } = this.props;
         onChange(item.value);
     };
 
     render() {
         let { options } = this.props;
-        const { wide, buttonClassName, input: { value } } = this.props;
+        const { className } = this.props;
+        const {
+            buttonClassName,
+            input: { value },
+        } = this.props;
 
         if (options[0] !== undefined && !_.isObject(options[0])) {
             options = options.map(option => ({ value: option, label: option }));
@@ -59,9 +66,9 @@ export default class SelectField extends React.Component {
                     itemRenderer={this.itemRenderer}
                     onItemSelect={this.handleSelect}
                     filterable={false}
-                    className={wide && styles.wide}
+                    className={className}
                     noResults={<MenuItem disabled={true} text="Нет вариантов." />}
-                    popoverProps={{ minimal: true, usePortal: false }}
+                    popoverProps={{ minimal: true }}
                 >
                     <Button
                         className={classNames('selectButton', buttonClassName)}

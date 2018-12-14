@@ -36,7 +36,7 @@ export class Footer extends React.Component {
     };
 
     render() {
-        const { activeTab, footerContentHeight } = this.props;
+        const { activeTab, footerContentHeight, filesCount } = this.props;
 
         return (
             <div
@@ -48,18 +48,19 @@ export class Footer extends React.Component {
                 <div className={styles.tabs}>
                     <div>
                         {[
-                            { icon: 'import', type: 'files', label: 'Файлы' },
+                            { icon: 'import', type: 'files', label: 'Файлы', count: filesCount },
                             { icon: 'history', type: 'history', label: 'История' },
-                        ].map(({ icon, type, label }) => (
+                        ].map(({ icon, type, label, count }) => (
                             <Button
                                 key={type}
+                                className={styles.tabButton}
                                 minimal
                                 icon={icon}
                                 data-type={type}
                                 active={activeTab === type}
                                 onClick={this.handleClickTabButton}
                             >
-                                {label}
+                                {label} {count ? <b>({count})</b> : null}
                             </Button>
                         ))}
                     </div>
@@ -74,7 +75,9 @@ export class Footer extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
+    const { noteId } = ownProps;
     return {
+        filesCount: state.data.getIn(['notes', noteId, 'fileIds']).size,
         activeTab: state.uiSettings.get('activeNoteFooterTab'),
         footerContentHeight: state.uiSettings.get('footerContentHeight'),
     };

@@ -3,10 +3,7 @@
 .root {
     display: flex;
     flex-direction: column;
-    //min-height: 40px;
     position: relative;
-    // flex-grow
-
     flex-grow: 0;
     flex-shrink: 0;
 }
@@ -16,10 +13,10 @@
     padding: 5px;
     box-shadow: $light-gray1 0 1px 0 0px inset;
     display: flex;
+}
 
-    & > * {
-        margin-right: 5px;
-    }
+.tabButton {
+    margin-right: 5px;
 }
 
 .content {

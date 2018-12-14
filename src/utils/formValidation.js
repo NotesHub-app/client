@@ -1,3 +1,5 @@
+import { SubmissionError } from 'redux-form';
+
 export const required = value => (value ? undefined : 'Обазательно к заполнению');
 
 /**
@@ -27,3 +29,13 @@ export const minLength = min => value => {
  */
 export const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? 'Неверный адрес' : undefined;
+
+export function processServerValidationError(err) {
+    if (err.status === 422) {
+        const errObject = {};
+        err.response.body.errors.forEach(({ param, msg }) => {
+            errObject[param] = msg;
+        });
+        throw new SubmissionError(errObject);
+    }
+}

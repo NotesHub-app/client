@@ -3,6 +3,7 @@ import {
     SET_NOTES,
     SET_NOTE,
     SET_GROUPS,
+    SET_GROUP,
     SET_USERS,
     SET_FILES,
     SET_FILE,
@@ -47,6 +48,11 @@ export default function reducer(state = initialState, action = {}) {
             const { groups } = action;
 
             return state.set('groups', groups);
+        }
+        case SET_GROUP: {
+            const { group } = action;
+
+            return state.setIn(['groups', group.get('id')], group);
         }
 
         // Users

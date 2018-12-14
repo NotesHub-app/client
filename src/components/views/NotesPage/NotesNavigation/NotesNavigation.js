@@ -14,10 +14,16 @@ import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
 import NodeContent from './NodeContent';
 import { removeNote } from '../../../../redux/modules/data/actions';
+import GroupConfigurationDialog from '../../../dialogs/GroupConfigurationDialog';
 
 export class NotesNavigation extends React.Component {
     static propTypes = {
         activeNoteId: PropTypes.string,
+    };
+
+    state = {
+        isOpenGroupConfigurationDialog: false,
+        configuratingGroupId: null,
     };
 
     handleNodeExpand = (e, { node }) => {
@@ -61,8 +67,23 @@ export class NotesNavigation extends React.Component {
         }
     };
 
+    handleOpenGroupConfigurationDialog = groupId => {
+        this.setState({
+            isOpenGroupConfigurationDialog: true,
+            configuratingGroupId: groupId,
+        });
+    };
+
+    handleCloseGroupConfigurationDialog = () => {
+        this.setState({
+            isOpenGroupConfigurationDialog: false,
+            configuratingGroupId: null,
+        });
+    };
+
     render() {
         const { nodes, expendedNavigationTreeNodes, activeNoteId, navigationFilter } = this.props;
+        const { configuratingGroupId, isOpenGroupConfigurationDialog } = this.state;
 
         return (
             <React.Fragment>
@@ -82,11 +103,20 @@ export class NotesNavigation extends React.Component {
                             nodeContentComponent={NodeContent}
                             noExpanderSpaceWidth={23}
                             nodeClassName={this.getNodeClassName}
-                            additionalData={{ activeNoteId, navigationFilter }}
+                            additionalData={{
+                                activeNoteId,
+                                navigationFilter,
+                                openGroupConfigurationDialog: this.handleOpenGroupConfigurationDialog,
+                            }}
                             onNodeClick={this.handleNodeClick}
                         />
                     )}
                 </SizeMe>
+                <GroupConfigurationDialog
+                    groupId={configuratingGroupId}
+                    isOpen={isOpenGroupConfigurationDialog}
+                    onClose={this.handleCloseGroupConfigurationDialog}
+                />
             </React.Fragment>
         );
     }

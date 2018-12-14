@@ -5,9 +5,10 @@ import { Field, reduxForm } from 'redux-form';
 import { Dialog, Classes, Button, Intent, Label } from '@blueprintjs/core';
 import styles from './styles.module.scss';
 import InputTextField from '../../fields/InputTextField/InputTextField';
-import SelectButtonsField from '../../fields/SelectButtonsField/SelectButtonsField';
+import { createGroup } from '../../../redux/modules/data/actions';
+import { processServerValidationError } from '../../../utils/formValidation';
 
-export class UserSettingsDialog extends React.Component {
+export class AddGroupDialog extends React.Component {
     static defaultProps = {
         onClose: PropTypes.func.isRequired,
         isOpen: PropTypes.bool,
@@ -18,8 +19,22 @@ export class UserSettingsDialog extends React.Component {
         onClose();
     };
 
-    handleSubmit = params => {
-        alert(1);
+    handleSubmit = async params => {
+        const { createGroup } = this.props;
+        try {
+            await createGroup(params);
+            window.showToast({ message: 'Создание группы завершено!', intent: Intent.SUCCESS, icon: 'tick' });
+            this.handleClose();
+        } catch (e) {
+            processServerValidationError(e);
+
+            console.error(e);
+            window.showToast({
+                message: 'При создании группы возникли проблемы!',
+                intent: Intent.DANGER,
+                icon: 'error',
+            });
+        }
     };
 
     render() {
@@ -28,24 +43,15 @@ export class UserSettingsDialog extends React.Component {
         return (
             <Dialog
                 className={styles.root}
-                title="Настройки пользователя"
-                icon="cog"
+                title="Добавление группы заметок"
+                icon="plus"
                 isOpen={isOpen}
                 onClose={this.handleClose}
             >
                 <div className={Classes.DIALOG_BODY}>
-                    <Label>
-                        Описание
+                    <Label style={{marginBottom: 0}}>
+                        Название группы
                         <Field name="title" component={InputTextField} />
-                    </Label>
-
-                    <Label>
-                        Тема
-                        <Field
-                            name="theme"
-                            component={SelectButtonsField}
-                            options={[{ label: 'Темная', value: 'dark' }, { label: 'Светлая', value: 'light' }]}
-                        />
                     </Label>
                 </div>
 
@@ -54,7 +60,7 @@ export class UserSettingsDialog extends React.Component {
                         <Button onClick={this.handleClose}>Отмена</Button>
 
                         <Button intent={Intent.PRIMARY} onClick={handleSubmit(this.handleSubmit)}>
-                            Сохранить
+                            Создать группу
                         </Button>
                     </div>
                 </div>
@@ -72,10 +78,12 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
     mapStateToProps,
-    {}
+    {
+        createGroup,
+    }
 )(
     reduxForm({
-        form: 'UserSettings',
+        form: 'AddGroup',
         enableReinitialize: true,
-    })(UserSettingsDialog)
+    })(AddGroupDialog)
 );

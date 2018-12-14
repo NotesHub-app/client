@@ -1,7 +1,16 @@
 import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
 import { batchActions } from 'redux-batched-actions';
-import { SET_NOTES, SET_NOTE, SET_GROUPS, RESET_DATA, REMOVE_NOTE, SET_FILE, REMOVE_FILE } from './actionTypes';
+import {
+    SET_NOTES,
+    SET_NOTE,
+    SET_GROUPS,
+    SET_GROUP,
+    RESET_DATA,
+    REMOVE_NOTE,
+    SET_FILE,
+    REMOVE_FILE,
+} from './actionTypes';
 import { callApi } from '../api/actions';
 import { listToMap } from '../../../utils/immutable';
 
@@ -138,7 +147,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     description: '',
                     noteId,
                 },
-            }),
+            })
         );
 
         file = Immutable.fromJS(file).set('_uploadProgress', 0);
@@ -157,7 +166,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                     type: SET_NOTE,
                     note,
                 },
-            ]),
+            ])
         );
 
         const { file: uploadedFile } = await dispatch(
@@ -171,7 +180,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
                         file,
                     });
                 },
-            }),
+            })
         );
 
         dispatch({
@@ -192,6 +201,81 @@ export function getGroups() {
         dispatch({
             type: SET_GROUPS,
             groups,
+        });
+    };
+}
+
+/**
+ * Создать группу заметок
+ * @param params
+ */
+export function createGroup(params) {
+    return async (dispatch, getState) => {
+        let { group } = await dispatch(callApi({ endpoint: `groups`, method: 'post', params }));
+        group = Immutable.fromJS(group);
+
+        dispatch({
+            type: SET_GROUP,
+            group,
+        });
+
+        return group;
+    };
+}
+
+/**
+ * Обновить настройки группы
+ * @param groupId
+ * @param formValues
+ */
+export function updateGroup(groupId, formValues) {
+    return async (dispatch, getState) => {
+        let group = getState().data.getIn(['groups', groupId]);
+        if (!group) {
+            return;
+        }
+
+        const params = {};
+        if (group.get('title') !== formValues.title) {
+            params.title = formValues.title;
+            group = group.set('title', formValues.title);
+        }
+
+        params.users = [];
+        formValues.users.forEach(formUser => {
+            if (formUser.deleted) {
+                params.users.push(formUser);
+                return;
+            }
+            const groupUser = group.get('users').find(i => i.get('id') === formUser.id);
+            if (formUser.role !== groupUser.get('role')) {
+                params.users.push(formUser);
+            }
+        });
+
+        await dispatch(callApi({ endpoint: `groups/${groupId}`, method: 'patch', params }));
+
+        // Сбрасываем состояние группы, чтоб в следующий раз загрузить обновленный вариант
+        group = group.set('_loaded', false);
+        dispatch({
+            type: SET_GROUP,
+            group,
+        });
+    };
+}
+
+/**
+ * Получить настройки группы
+ * @param groupId
+ */
+export function getGroupDetails(groupId) {
+    return async (dispatch, getState) => {
+        let { group } = await dispatch(callApi({ endpoint: `groups/${groupId}`, method: 'get' }));
+        group = Immutable.fromJS(group).set('_loaded', true);
+
+        dispatch({
+            type: SET_GROUP,
+            group,
         });
     };
 }

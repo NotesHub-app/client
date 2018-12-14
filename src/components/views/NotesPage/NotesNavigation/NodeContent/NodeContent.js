@@ -77,7 +77,12 @@ export class NodeContent extends React.Component {
 
     handleOpenGroupConfiguration = (e, groupId) => {
         e.stopPropagation();
-        alert(groupId);
+
+        const {
+            additionalData: { openGroupConfigurationDialog },
+        } = this.props;
+
+        openGroupConfigurationDialog(groupId);
     };
 
     renderNoteNode() {
