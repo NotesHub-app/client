@@ -2,10 +2,11 @@ import React from 'react';
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import PropTypes from 'prop-types';
 import { getNoteNodeTreeId } from '../../../utils/navigation';
+import { copyTextToBuffer } from '../../../utils/browser';
 
 export default class NoteMenu extends React.Component {
     static propTypes = {
-        noteId: PropTypes.string.isRequired,
+        note: PropTypes.object.isRequired,
         setRemoveNoteAlertStatus: PropTypes.func.isRequired,
         expendNavigationTreeNode: PropTypes.func.isRequired,
         createNote: PropTypes.func.isRequired,
@@ -13,29 +14,39 @@ export default class NoteMenu extends React.Component {
     };
 
     handleAddSubNote = async () => {
-        const { push, createNote, expendNavigationTreeNode, noteId } = this.props;
+        const { push, createNote, expendNavigationTreeNode, note } = this.props;
 
-        const note = await createNote({ parentId: noteId });
+        const newNote = await createNote({ parentId: note.get('id') });
 
         // Раскрываем текущую заметку
-        expendNavigationTreeNode(getNoteNodeTreeId(noteId));
+        expendNavigationTreeNode(getNoteNodeTreeId(newNote));
 
         // Перейти в созданную заметку
-        push(`/notes/${note.get('id')}`);
+        push(`/notes/${newNote.get('id')}`);
     };
 
     handleRemoveNote = () => {
-        const { setRemoveNoteAlertStatus, noteId } = this.props;
+        const { setRemoveNoteAlertStatus, note } = this.props;
         setRemoveNoteAlertStatus({
             isOpen: true,
-            noteId,
+            noteId: note.get('id'),
         });
+    };
+
+    handleCopyNoteLink = () => {
+        const { note } = this.props;
+
+        // В названии экранируем квадратные скобки
+        const title = note.get('title').replace(/([\][])/g, '\\$1');
+
+        copyTextToBuffer(`[${title}](note://${note.get('id')})`);
     };
 
     render() {
         return (
             <Menu>
                 <MenuItem text="Добавить вложенную запись" icon="plus" onClick={this.handleAddSubNote} />
+                <MenuItem text="Копировать ссылку для заметки" icon="link" onClick={this.handleCopyNoteLink} />
                 <MenuDivider />
                 <MenuItem text="Удалить запись" icon="trash" intent={Intent.DANGER} onClick={this.handleRemoveNote} />
             </Menu>

@@ -8,6 +8,8 @@ const options = colors.map(color => ({
     value: color,
 }));
 
+console.log(options);
+
 export default class SelectColorField extends React.Component {
     itemRenderer = (item, { handleClick }) => (
         <div className={styles.colorBrick} onClick={handleClick} key={item.value}>

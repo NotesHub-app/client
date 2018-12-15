@@ -10,12 +10,19 @@ import NavigationFilter from './NavigationFilter';
 import { setRemoveNoteAlertStatus } from '../../../redux/modules/uiSettings/actions';
 import { removeNote } from '../../../redux/modules/data/actions';
 import RemoveItemAlert from '../../dialogs/RemoveItemAlert';
+import SelectNoteScreen from './SelectNoteScreen';
+import { Intent } from '@blueprintjs/core';
 
 export class NotesPage extends React.Component {
     handleConfirmRemoveAlert = () => {
         const { removeNote, removingNoteId } = this.props;
 
-        removeNote(removingNoteId);
+        try {
+            removeNote(removingNoteId);
+            window.showToast({ message: 'Удаление завершено!', intent: Intent.SUCCESS, icon: 'tick' });
+        } catch (e) {
+            console.error(e);
+        }
 
         this.handleCloseRemoveAlert();
     };
@@ -50,7 +57,7 @@ export class NotesPage extends React.Component {
                     <NavigationSidebarResizer />
                 </div>
                 <div className={styles.content} style={{ marginLeft: navigationSidebarWidth + 1 }}>
-                    {noteId ? <PageContent {...contentProps} /> : <div>Выбери заметку!</div>}
+                    {noteId ? <PageContent {...contentProps} /> : <SelectNoteScreen />}
                 </div>
 
                 <RemoveItemAlert
@@ -75,11 +82,8 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        setRemoveNoteAlertStatus,
-        removeNote,
-        push,
-    }
-)(NotesPage);
+export default connect(mapStateToProps, {
+    setRemoveNoteAlertStatus,
+    removeNote,
+    push,
+})(NotesPage);

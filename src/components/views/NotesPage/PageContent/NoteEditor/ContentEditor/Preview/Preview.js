@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import styles from './styles.module.scss';
 import config from '../../../../../../../config';
 import CodeRenderer from './CodeRenderer';
+import LinkRenderer from './LinkRenderer';
 
 export class NotePreview extends React.Component {
     transformUri = uri => {
@@ -34,6 +35,7 @@ export class NotePreview extends React.Component {
                 renderers={{
                     code: CodeRenderer,
                     codeBlock: CodeRenderer,
+                    link: LinkRenderer,
                 }}
             />
         );

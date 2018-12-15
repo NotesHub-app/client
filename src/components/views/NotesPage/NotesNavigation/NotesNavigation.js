@@ -13,7 +13,6 @@ import {
 import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
 import NodeContent from './NodeContent';
-import { removeNote } from '../../../../redux/modules/data/actions';
 import GroupConfigurationDialog from '../../../dialogs/GroupConfigurationDialog';
 
 export class NotesNavigation extends React.Component {
@@ -137,6 +136,5 @@ export default connect(
         collapseNavigationTreeNode,
         toggleNavigationTreeNode,
         push,
-        removeNote,
     }
 )(NotesNavigation);

@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 import DisconnectAlarm from './DisconnectAlarm';
 import { isElectron } from '../../../utils/electron-helpers';
 import { dataReadySelector, userSelector } from '../../../redux/selectors';
+import LoadingPage from '../../views/LoadingPage';
 
 export class MainLayout extends React.Component {
     render() {
@@ -17,7 +18,7 @@ export class MainLayout extends React.Component {
         }
 
         if (!dataReady) {
-            return <div>ЗАГРУЗКА ДАННЫХ...</div>;
+            return <LoadingPage/>;
         }
 
         return (
@@ -38,7 +39,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {}
-)(MainLayout);
+export default connect(mapStateToProps, {})(MainLayout);

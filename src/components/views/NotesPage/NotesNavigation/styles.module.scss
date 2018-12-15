@@ -16,4 +16,10 @@
 .activeNode {
     background-color: $blue3 !important;
     color: $white;
+
+    :global{
+        .VTTree__NodeExpander {
+            fill: $light-gray5;
+        }
+    }
 }

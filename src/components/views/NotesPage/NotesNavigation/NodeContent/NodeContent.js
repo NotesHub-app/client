@@ -40,7 +40,7 @@ export class NodeContent extends React.Component {
                             createNote,
                             push,
                         }}
-                        noteId={node.data.get('id')}
+                        note={node.data}
                     />
                 );
             }
@@ -140,7 +140,7 @@ export class NodeContent extends React.Component {
                                         createNote,
                                         push,
                                     }}
-                                    noteId={node.data.get('id')}
+                                    note={node.data}
                                 />
                             }
                         >

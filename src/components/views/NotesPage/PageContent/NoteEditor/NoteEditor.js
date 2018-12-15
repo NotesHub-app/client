@@ -73,7 +73,7 @@ export class NoteEditor extends React.Component {
                                         createNote,
                                         push,
                                     }}
-                                    noteId={note.get('id')}
+                                    note={note}
                                 />
                             }
                         >

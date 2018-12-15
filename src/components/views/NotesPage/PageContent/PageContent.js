@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'connected-react-router';
+import { Spinner } from '@blueprintjs/core';
 import NoteEditor from './NoteEditor';
 import { getNoteDetails } from '../../../../redux/modules/data/actions';
-import LoadingPage from '../../LoadingPage';
+import styles from './styles.module.scss';
 
 export class PageContent extends React.Component {
     static propTypes = {
@@ -50,7 +51,11 @@ export class PageContent extends React.Component {
         }
 
         if (!note.get('_loaded')) {
-            return <LoadingPage />;
+            return (
+                <div className={styles.loadingContainer}>
+                    <Spinner size={80}/>
+                </div>
+            );
         }
 
         return <NoteEditor {...this.props} />;
@@ -69,5 +74,5 @@ export default connect(
     {
         getNoteDetails,
         push,
-    }
+    },
 )(PageContent);
