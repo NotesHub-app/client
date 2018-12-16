@@ -53,14 +53,14 @@ export class Files extends React.Component {
 
     handleDoubleClickRow = (event, { rowData }) => {
         const { fileToken } = this.props;
-        const fileId = rowData.get('id');
-        downloadURI(`${config.apiUrl}/directDownload/${fileId}?token=${fileToken}`);
+        const fileDownloadCode = rowData.get('downloadCode');
+        downloadURI(`${config.apiUrl}/directDownload/${fileDownloadCode}?token=${fileToken}`);
     };
 
-    handleDownloadFiles = async fileIds => {
+    handleDownloadFiles = async fileDownloadCodes => {
         const { fileToken } = this.props;
-        for (const fileId of fileIds) {
-            downloadURI(`${config.apiUrl}/directDownload/${fileId}?token=${fileToken}`);
+        for (const downloadCode of fileDownloadCodes) {
+            downloadURI(`${config.apiUrl}/directDownload/${downloadCode}?token=${fileToken}`);
             await Promise.delay(200);
         }
     };
@@ -110,8 +110,18 @@ export class Files extends React.Component {
         return result;
     };
 
+    getSelectedFilesDownloadCodes = () => {
+        const { selection } = this.state;
+        const { files } = this.props;
+        const result = [];
+        selection.forEach(index => {
+            result.push(files.getIn([index, 'downloadCode']));
+        });
+        return result;
+    };
+
     handleDownloadSelectedFiles = async () => {
-        await this.handleDownloadFiles(this.getSelectedFilesIds());
+        await this.handleDownloadFiles(this.getSelectedFilesDownloadCodes());
     };
 
     handleRemoveSelectedFiles = () => {
@@ -254,7 +264,7 @@ export class Files extends React.Component {
                                                     hoverOpenDelay={700}
                                                 >
                                                     <CopyTextButton
-                                                        textToCopy={`file://${rowData.get('id')}`}
+                                                        textToCopy={`file://${rowData.get('downloadCode')}`}
                                                         minimal
                                                         small
                                                         icon="link"
