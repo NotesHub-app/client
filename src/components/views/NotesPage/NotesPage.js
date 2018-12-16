@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
+import { Intent } from '@blueprintjs/core';
 import styles from './styles.module.scss';
 import NotesNavigation from './NotesNavigation';
 import NavigationSidebarResizer from './NavigationSidebarResizer';
@@ -11,7 +12,6 @@ import { setRemoveNoteAlertStatus } from '../../../redux/modules/uiSettings/acti
 import { removeNote } from '../../../redux/modules/data/actions';
 import RemoveItemAlert from '../../dialogs/RemoveItemAlert';
 import SelectNoteScreen from './SelectNoteScreen';
-import { Intent } from '@blueprintjs/core';
 
 export class NotesPage extends React.Component {
     handleConfirmRemoveAlert = () => {
@@ -82,8 +82,11 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    setRemoveNoteAlertStatus,
-    removeNote,
-    push,
-})(NotesPage);
+export default connect(
+    mapStateToProps,
+    {
+        setRemoveNoteAlertStatus,
+        removeNote,
+        push,
+    },
+)(NotesPage);

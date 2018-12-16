@@ -89,7 +89,6 @@ export function logout() {
     return (dispatch, getState) => {
         localStorage.removeItem('noteshub:refreshToken');
         localStorage.removeItem('noteshub:token');
-        localStorage.removeItem('noteshub:user');
 
         dispatch({
             type: SET_USER,

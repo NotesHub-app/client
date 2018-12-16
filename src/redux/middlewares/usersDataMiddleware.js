@@ -1,4 +1,5 @@
 import { getInitialData, resetData } from '../modules/data/actions';
+import ws from '../../ws';
 
 export default store => next => action => {
     const beforeUser = store.getState().user;
@@ -11,13 +12,14 @@ export default store => next => action => {
     if (beforeUser && !afterUser) {
         // Подгружаем данны
         store.dispatch(resetData());
-
-        localStorage.setItem('noteshub:user', null);
     }
 
     // Если залогинились
     if (!beforeUser && afterUser) {
         store.dispatch(getInitialData());
+
+        // Авторизуемся по сокетам
+        ws.auth(localStorage.getItem('noteshub:token'));
     }
 
     return result;

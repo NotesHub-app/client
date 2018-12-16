@@ -7,12 +7,16 @@ import { prepareBrowserEnv } from './utils/browser';
 import { isElectron } from './utils/electron-helpers';
 import * as serviceWorker from './serviceWorker';
 import { refreshToken } from './redux/modules/user/actions';
+import ws from './ws';
 
 prepareBrowserEnv();
 
 (async () => {
     // Инициализирует redux-store
     const store = configureStore();
+
+    // Инициализируем клиент Socket.IO
+    ws.init(store);
 
     // Пробуем восстановить сессию по refreshToken-у сохраненного с прошлого раза (если он есть)
     if (localStorage.getItem('noteshub:refreshToken')) {

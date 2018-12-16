@@ -28,7 +28,10 @@ export class PageContent extends React.Component {
             push('/notes');
             return;
         }
+
         if (this.props.note.get('id') !== prevProps.note.get('id')) {
+            this.checkNoteLoaded();
+        } else if (!this.props.note.get('_loaded') && prevProps.note.get('_loaded')) {
             this.checkNoteLoaded();
         }
     }
@@ -53,7 +56,7 @@ export class PageContent extends React.Component {
         if (!note.get('_loaded')) {
             return (
                 <div className={styles.loadingContainer}>
-                    <Spinner size={80}/>
+                    <Spinner size={80} />
                 </div>
             );
         }
@@ -69,10 +72,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        getNoteDetails,
-        push,
-    },
-)(PageContent);
+export default connect(mapStateToProps, {
+    getNoteDetails,
+    push,
+})(PageContent);
