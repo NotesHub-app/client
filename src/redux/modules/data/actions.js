@@ -45,7 +45,8 @@ export function updateNote(noteId, noteContent) {
                 updatedNote = updatedNote.set(field, value);
             }
         });
-        await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
+        const { updatedAt } = await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
+        updatedNote = updatedNote.set('updatedAt', updatedAt);
 
         dispatch({
             type: SET_NOTE,
@@ -253,7 +254,8 @@ export function updateGroup(groupId, formValues) {
             }
         });
 
-        await dispatch(callApi({ endpoint: `groups/${groupId}`, method: 'patch', params }));
+        const { updatedAt } = await dispatch(callApi({ endpoint: `groups/${groupId}`, method: 'patch', params }));
+        group = group.set('updatedAt', updatedAt);
 
         // Сбрасываем состояние группы, чтоб в следующий раз загрузить обновленный вариант
         group = group.set('_loaded', false);

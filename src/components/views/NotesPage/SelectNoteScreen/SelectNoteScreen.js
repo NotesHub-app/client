@@ -7,8 +7,8 @@ export default class SelectNoteScreen extends React.Component {
         return (
             <div className={styles.root}>
                 <Callout title="Выберите заметку!" icon="hand-left">
-                    Для продолжения вам необходимо создать или выбрать существующую заметку в левом меню. Для создания
-                    используйте кнопку с изображением <Button icon="plus" minimal small />.
+                    Для продолжения вам необходимо создать или выбрать уже существующую заметку в левом меню. Для
+                    создания используйте кнопку с изображением <Button icon="plus" minimal small />.
                 </Callout>
             </div>
         );

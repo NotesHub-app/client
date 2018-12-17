@@ -12,14 +12,13 @@ export default store => next => action => {
     if (beforeUser && !afterUser) {
         // Подгружаем данны
         store.dispatch(resetData());
+        ws.disconnect();
     }
 
     // Если залогинились
     if (!beforeUser && afterUser) {
         store.dispatch(getInitialData());
-
-        // Авторизуемся по сокетам
-        ws.auth(localStorage.getItem('noteshub:token'));
+        ws.connect();
     }
 
     return result;

@@ -1,27 +1,148 @@
 import socketIoClient from 'socket.io-client';
 import * as Immutable from 'immutable';
+import { batchActions } from 'redux-batched-actions';
 import config from './config';
-import { SET_NOTE } from './redux/modules/data/actionTypes';
+import {
+    REMOVE_NOTE,
+    REMOVE_GROUP,
+    SET_GROUP,
+    SET_NOTE,
+    SET_FILE,
+    REMOVE_FILE,
+} from './redux/modules/data/actionTypes';
 
 class WS {
     init(store) {
         this.store = store;
-        this.io = socketIoClient(config.socketUrl);
+    }
+
+    connect() {
+        this.io = socketIoClient(config.socketUrl, {
+            query: {
+                token: localStorage.getItem('noteshub:token'),
+            },
+        });
 
         this.io.on('note:updated', this.handleNoteUpdated);
+        this.io.on('note:fileUpdated', this.handleNoteFileUpdated);
+        this.io.on('note:fileRemoved', this.handleNoteFileRemoved);
+        this.io.on('note:removed', this.handleNoteRemoved);
+        this.io.on('group:updated', this.handleGroupUpdated);
+        this.io.on('group:removed', this.handleGroupRemoved);
     }
 
-    auth(token) {
-        this.io.emit('auth', { token });
+    disconnect() {
+        this.io.close();
     }
 
+    /**
+     * При обновлении/создании заметки
+     * @param note
+     */
     handleNoteUpdated = ({ note }) => {
         note = Immutable.fromJS(note);
+        // Только если уже не обновлено
+        const currentNoteUpdatedAt = this.store.getState().data.getIn(['notes', note.get('id'), 'updatedAt']);
+        if (currentNoteUpdatedAt !== note.get('updatedAt')) {
+            this.store.dispatch({
+                type: SET_NOTE,
+                note,
+            });
+        }
+    };
+
+    /**
+     * При обновлении/создании файла у заметки
+     * @param note
+     */
+    handleNoteFileUpdated = ({ noteId, file }) => {
+        file = Immutable.fromJS(file);
+        // Только если уже не обновлено
+        const currentFileUpdatedAt = this.store.getState().data.getIn(['files', file.get('id'), 'updatedAt']);
+        if (currentFileUpdatedAt !== file.get('updatedAt')) {
+            // Добавляем файл к заметке
+            let note = this.store.getState().data.getIn(['notes', noteId]);
+            const noteFileIds = note.get('fileIds', new Immutable.List());
+            if (!noteFileIds.includes(file.get('id'))) {
+                note = note.set('fileIds', noteFileIds.push(file.get('id')));
+            }
+
+            this.store.dispatch(
+                batchActions([
+                    {
+                        type: SET_FILE,
+                        file,
+                    },
+                    {
+                        type: SET_NOTE,
+                        note,
+                    },
+                ])
+            );
+        }
+    };
+
+    /**
+     * При удалении файла заметки
+     * @param note
+     */
+    handleNoteFileRemoved = ({ fileId, noteId }) => {
+        // Удаляем файл у заметки
+        let note = this.store.getState().data.getIn(['notes', noteId]);
+        const noteFileIds = note.get('fileIds', new Immutable.List()).filter(i => i !== fileId);
+        note = note.set('fileIds', noteFileIds);
+
+        this.store.dispatch(
+            batchActions([
+                {
+                    type: REMOVE_FILE,
+                    fileId,
+                },
+                {
+                    type: SET_NOTE,
+                    note,
+                },
+            ])
+        );
+    };
+
+    /**
+     * При удалении заметки
+     * @param noteId
+     */
+    handleNoteRemoved = ({ noteId }) => {
         this.store.dispatch({
-            type: SET_NOTE,
-            note,
+            type: REMOVE_NOTE,
+            noteId,
         });
-    }
+    };
+
+    /**
+     * При обновлении/создании группы
+     * @param note
+     */
+    handleGroupUpdated = ({ group }) => {
+        group = Immutable.fromJS(group);
+        // Только если уже не обновлено
+        const currentNoteUpdatedAt = this.store.getState().data.getIn(['groups', group.get('id'), 'updatedAt']);
+        if (currentNoteUpdatedAt !== group.get('updatedAt')) {
+            this.store.dispatch({
+                type: SET_GROUP,
+                group,
+            });
+        }
+    };
+
+    /**
+     * При удалении группы
+     * @param noteId
+     */
+    handleGroupRemoved = ({ groupId }) => {
+        this.store.dispatch({
+            type: REMOVE_GROUP,
+            groupId,
+        });
+    };
 }
 
 export default new WS();

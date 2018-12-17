@@ -39,11 +39,18 @@ export class GroupConfigurationDialog extends React.Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        const { getGroupDetails } = this.props;
+
         if (!prevProps.isOpen && this.props.isOpen) {
+            // Когда открыли окно, но данные по группе не загружены
             const { groupLoaded, groupId } = this.props;
             if (!groupLoaded) {
-                const { getGroupDetails } = this.props;
                 getGroupDetails(groupId);
+            }
+        } else if (this.props.isOpen) {
+            // когда обнова группы прилетела по сокетам и открыто окно настроек группы
+            if (prevProps.groupLoaded && !this.props.groupLoaded) {
+                getGroupDetails(this.props.groupId);
             }
         }
     }

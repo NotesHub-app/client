@@ -8,3 +8,4 @@ export const SET_FILE = 'app/data/SET_FILE';
 export const RESET_DATA = 'app/data/RESET_DATA';
 export const REMOVE_NOTE = 'app/data/REMOVE_NOTE';
 export const REMOVE_FILE = 'app/data/REMOVE_FILE';
+export const REMOVE_GROUP = 'app/data/REMOVE_GROUP';
