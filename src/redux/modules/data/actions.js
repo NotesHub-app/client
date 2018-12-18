@@ -334,3 +334,33 @@ export function resetData() {
         type: RESET_DATA,
     };
 }
+
+/**
+ * Получение инвайт кода для группы
+ * @param groupId
+ * @param role
+ * @returns {function(*, *): *}
+ */
+export function getGroupInviteCode(groupId, role) {
+    return async (dispatch, getState) => {
+        const { code } = await dispatch(callApi({ endpoint: `groups/${groupId}/invite?role=${role}`, method: 'get' }));
+        return code;
+    };
+}
+
+/**
+ * Получение инвайт кода для группы
+ * @param groupId
+ * @param code
+ * @returns {function(*, *): *}
+ */
+export function joinGroup(groupId, code) {
+    return async (dispatch, getState) => {
+        await dispatch(callApi({ endpoint: `groups/${groupId}/join`, method: 'post', params: { code } }));
+
+        // После этого по новой получаем список заметок и групп
+        await dispatch(getInitialData());
+
+        return code;
+    };
+}

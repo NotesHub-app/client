@@ -2,17 +2,53 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
-import { Dialog, Classes, Button, Intent, Label } from '@blueprintjs/core';
+import { Dialog, Classes, Button, Intent, Label, Alert, Popover, Menu, MenuItem, Position } from '@blueprintjs/core';
 import styles from './styles.module.scss';
 import InputTextField from '../../fields/InputTextField/InputTextField';
-import { getGroupDetails, updateGroup } from '../../../redux/modules/data/actions';
+import { getGroupDetails, getGroupInviteCode, updateGroup } from '../../../redux/modules/data/actions';
 import { processServerValidationError } from '../../../utils/formValidation';
 import GroupUsersField from '../../fields/GroupUsersField';
+import config from '../../../config';
 
 export class GroupConfigurationDialog extends React.Component {
     static defaultProps = {
         onClose: PropTypes.func.isRequired,
         isOpen: PropTypes.bool,
+    };
+
+    state = {
+        isOpenCopyLinkAlert: false,
+        linkToCopy: null,
+    };
+
+    handleCloseCopyLinkAlert = () => {
+        this.setState({
+            isOpenCopyLinkAlert: false,
+            linkToCopy: false,
+        });
+    };
+
+    handleCopyLink = () => {
+        const input = this.copyTextInput;
+        input.select();
+        document.execCommand('copy');
+
+        window.showToast({ message: 'Ссылка скопирована!', intent: Intent.PRIMARY, icon: 'clipboard' });
+    };
+
+    handleOpenCopyLinkAlert = linkToCopy => {
+        this.setState(
+            {
+                isOpenCopyLinkAlert: true,
+                linkToCopy,
+            },
+            () => {
+                setTimeout(() => {
+                    const input = this.copyTextInput;
+                    input.select();
+                }, 100);
+            }
+        );
     };
 
     handleClose = () => {
@@ -38,6 +74,25 @@ export class GroupConfigurationDialog extends React.Component {
         }
     };
 
+    getInviteGroupUrl(code) {
+        const { groupId } = this.props;
+        return `${config.siteUrl}/#/joinGroup/${groupId}/${code}`;
+    }
+
+    handleInviteEditor = async () => {
+        const { getGroupInviteCode, groupId } = this.props;
+        const code = await getGroupInviteCode(groupId, 1);
+
+        this.handleOpenCopyLinkAlert(this.getInviteGroupUrl(code));
+    };
+
+    handleInviteViewer = async () => {
+        const { getGroupInviteCode, groupId } = this.props;
+        const code = await getGroupInviteCode(groupId, 2);
+
+        this.handleOpenCopyLinkAlert(this.getInviteGroupUrl(code));
+    };
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { getGroupDetails } = this.props;
 
@@ -57,43 +112,88 @@ export class GroupConfigurationDialog extends React.Component {
 
     render() {
         const { isOpen, handleSubmit, groupLoaded, dirty } = this.props;
+        const { isOpenCopyLinkAlert, linkToCopy } = this.state;
 
         return (
-            <Dialog
-                className={styles.root}
-                title="Настройки группы"
-                icon="cog"
-                isOpen={isOpen}
-                onClose={this.handleClose}
-            >
-                {groupLoaded && isOpen ? (
-                    <div className={Classes.DIALOG_BODY}>
-                        <Label>
-                            Название группы
-                            <Field name="title" component={InputTextField} />
-                        </Label>
+            <>
+                <Dialog
+                    className={styles.root}
+                    title="Настройки группы"
+                    icon="cog"
+                    isOpen={isOpen}
+                    onClose={this.handleClose}
+                >
+                    {groupLoaded && isOpen ? (
+                        <div className={Classes.DIALOG_BODY}>
+                            <Label>
+                                Название группы
+                                <Field name="title" component={InputTextField} />
+                            </Label>
 
-                        <Field name="users" component={GroupUsersField} />
+                            <Field name="users" component={GroupUsersField} />
+                        </div>
+                    ) : (
+                        <div className={Classes.DIALOG_BODY}>Загрузка группы...</div>
+                    )}
+
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS} style={{ float: 'left' }}>
+                            <Popover
+                                content={
+                                    <Menu>
+                                        <MenuItem
+                                            text="Для редактирования"
+                                            icon="annotation"
+                                            onClick={this.handleInviteEditor}
+                                        />
+                                        <MenuItem
+                                            text="Только для чтения"
+                                            icon="eye-open"
+                                            onClick={this.handleInviteViewer}
+                                        />
+                                    </Menu>
+                                }
+                                position={Position.BOTTOM}
+                            >
+                                <Button icon="new-person" intent={Intent.PRIMARY}>
+                                    Пригласить в группу
+                                </Button>
+                            </Popover>
+                        </div>
+
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleClose}>Отмена</Button>
+
+                            <Button
+                                intent={Intent.SUCCESS}
+                                onClick={handleSubmit(this.handleSubmit)}
+                                icon="floppy-disk"
+                                disabled={!groupLoaded || !dirty}
+                            >
+                                Сохранить
+                            </Button>
+                        </div>
                     </div>
-                ) : (
-                    <div className={Classes.DIALOG_BODY}>Загрузка группы...</div>
-                )}
+                </Dialog>
+                <Alert confirmButtonText="Закрыть" isOpen={isOpenCopyLinkAlert} onClose={this.handleCloseCopyLinkAlert}>
+                    <div>
+                        <div className={styles.copyTextMessage}>
+                            Скопируйте ссылку и отправте её друзьям для приглашения в группу
+                        </div>
 
-                <div className={Classes.DIALOG_FOOTER}>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Отмена</Button>
-
-                        <Button
-                            intent={Intent.SUCCESS}
-                            onClick={handleSubmit(this.handleSubmit)}
-                            icon="floppy-disk"
-                            disabled={!groupLoaded || !dirty}
-                        >
-                            Сохранить
-                        </Button>
+                        <div className="bp3-input-group">
+                            <input
+                                type="text"
+                                className="bp3-input"
+                                readOnly
+                                value={linkToCopy}
+                                ref={i => (this.copyTextInput = i)}
+                            />
+                            <button className="bp3-button bp3-icon-clipboard" onClick={this.handleCopyLink} />
+                        </div>
                     </div>
-                </div>
-            </Dialog>
+                </Alert>
+            </>
         );
     }
 }
@@ -117,10 +217,11 @@ export default connect(
     {
         updateGroup,
         getGroupDetails,
+        getGroupInviteCode,
     }
 )(
     reduxForm({
-        form: 'AddGroup',
+        form: 'GroupConfiguration',
         enableReinitialize: true,
     })(GroupConfigurationDialog)
 );

@@ -72,7 +72,9 @@ export class AddGroupDialog extends React.Component {
 function mapStateToProps(state, ownProps) {
     return {
         user: state.user,
-        initialValues: {},
+        initialValues: {
+            title: 'Новая группа'
+        },
     };
 }
 

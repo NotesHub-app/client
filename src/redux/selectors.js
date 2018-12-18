@@ -78,6 +78,17 @@ export const loginFormUrlParamsSelector = createSelector(
 );
 
 /**
+ * Селектор параметров УРЛ-а для страницы входа в группу по приглашению
+ */
+export const joinGroupUrlParamsSelector = createSelector(
+    url => url,
+    url => ({
+        code: getUrlQueryParameterByName('code', url),
+        groupId: getUrlQueryParameterByName('group', url),
+    })
+);
+
+/**
  * Список файлов заметки
  */
 export const noteFilesListSelector = createSelector(
