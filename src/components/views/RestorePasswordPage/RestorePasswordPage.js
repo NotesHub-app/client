@@ -111,7 +111,7 @@ export class RestorePasswordPage extends Component {
                                         name="password"
                                         component={InputTextField}
                                         type="password"
-                                        placeholder="Пароль..."
+                                        placeholder="Новый пароль..."
                                         leftIcon="lock"
                                         className="bp3-form-group"
                                     />
