@@ -126,3 +126,12 @@ export function restorePassword(params) {
         }
     };
 }
+
+
+export function updateUser(userId, params){
+    return async (dispatch, getState) => {
+        await dispatch(
+            callApi({ endpoint: `users/me`, method: 'patch', params })
+        );
+    };
+}

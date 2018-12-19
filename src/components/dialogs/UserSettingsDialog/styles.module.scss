@@ -1,3 +1,22 @@
+@import 'src/styles/variables.scss';
+
 .root {
-    //min-width: 800px;
+    :global {
+        .bp3-form-group {
+            margin-bottom: 10px;
+        }
+
+        .bp3-label {
+            margin-right: 5px !important;
+        }
+
+        header {
+            font-size: 16px;
+            font-weight: 500;
+            color: $dark-gray5;
+            border-bottom: 1px dashed $gray5;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+    }
 }

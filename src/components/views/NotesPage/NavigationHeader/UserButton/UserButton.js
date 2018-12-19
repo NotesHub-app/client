@@ -33,7 +33,6 @@ export class UserButton extends React.Component {
     };
 
     render() {
-        const { user } = this.props;
         const { isOpenUserSettingsDialog, isOpenAddGroupDialog } = this.state;
 
         return (
@@ -42,14 +41,18 @@ export class UserButton extends React.Component {
                     content={
                         <Menu>
                             <MenuItem icon="cog" text="Персональные настройки" onClick={this.handleOpenSettings} />
-                            <MenuItem icon="plus" text="Создать группу заметок" onClick={this.handleOpenAddGroupDialog} />
+                            <MenuItem
+                                icon="plus"
+                                text="Создать группу заметок"
+                                onClick={this.handleOpenAddGroupDialog}
+                            />
                             <MenuDivider />
                             <MenuItem icon="log-out" text="Выйти" onClick={this.handleLogout} />
                         </Menu>
                     }
                     position={Position.BOTTOM}
                 >
-                    <button className="bp3-button bp3-minimal bp3-icon-user">{user.get('email')}</button>
+                    <button className="bp3-button bp3-minimal bp3-icon-user" />
                 </Popover>
                 <UserSettingsDialog isOpen={isOpenUserSettingsDialog} onClose={this.handleCloseSettings} />
                 <AddGroupDialog isOpen={isOpenAddGroupDialog} onClose={this.handleCloseAddGroupDialog} />

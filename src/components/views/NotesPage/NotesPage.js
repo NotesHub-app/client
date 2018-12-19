@@ -12,6 +12,7 @@ import { setRemoveNoteAlertStatus } from '../../../redux/modules/uiSettings/acti
 import { removeNote } from '../../../redux/modules/data/actions';
 import RemoveItemAlert from '../../dialogs/RemoveItemAlert';
 import SelectNoteScreen from './SelectNoteScreen';
+import NavigationHeader from './NavigationHeader';
 
 export class NotesPage extends React.Component {
     handleConfirmRemoveAlert = () => {
@@ -48,6 +49,7 @@ export class NotesPage extends React.Component {
                     }}
                 >
                     <div className={styles.sidebarInner}>
+                        <NavigationHeader />
                         <NavigationFilter />
                         <div style={{ flexGrow: 1 }}>
                             <NotesNavigation activeNoteId={noteId} />

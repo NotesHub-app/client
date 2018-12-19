@@ -23,9 +23,9 @@ export class MainLayout extends React.Component {
 
         return (
             <div className={classNames(styles.root, { [styles.electron]: isElectron() })}>
-                {isElectron() ? <div className={styles.borderLayer} /> : ''}
+                {isElectron() ? <div className={styles.borderLayer} /> : null}
                 <DisconnectAlarm />
-                <LayoutNavbar />
+                {isElectron() ? <LayoutNavbar /> : null}
                 {children}
             </div>
         );

@@ -8,7 +8,6 @@ import { isElectron } from '../../../../utils/electron-helpers';
 import ElectronAppControls from './ElectronAppControls';
 import { tc } from '../../../../utils/helpers';
 import ElectronNavigation from './ElectronNavigation';
-import UserButton from './UserButton';
 
 export class LayoutNavbar extends React.Component {
     render() {
@@ -25,8 +24,6 @@ export class LayoutNavbar extends React.Component {
                     {isElectron() && <ElectronNavigation />}
                 </NavbarGroup>
                 <NavbarGroup align={Alignment.RIGHT}>
-                    <UserButton />
-
                     {isElectron() && <ElectronAppControls />}
                 </NavbarGroup>
             </Navbar>

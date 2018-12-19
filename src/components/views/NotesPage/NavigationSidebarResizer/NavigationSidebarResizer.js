@@ -34,7 +34,7 @@ export class NavigationSidebarResizer extends React.Component {
         const diffX = this.initX - e.clientX;
 
         let newWidth = this.originalWidth - diffX;
-        newWidth = Math.max(150, newWidth);
+        newWidth = Math.max(180, newWidth);
         newWidth = Math.min(600, newWidth);
 
         setUiSettingsValues({ navigationSidebarWidth: newWidth });
