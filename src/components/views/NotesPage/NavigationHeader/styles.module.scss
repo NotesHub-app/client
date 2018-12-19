@@ -24,4 +24,12 @@
 
 .logo {
     font-size: 16px;
+    font-weight: 500;
+    color: lighten($blue5, 20%);
+
+    :global {
+        .hub {
+            color: $gray5;
+        }
+    }
 }

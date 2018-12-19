@@ -137,14 +137,14 @@ export function removeManyFiles(fileIds) {
  * @param fileObj
  * @param path
  */
-export function uploadNoteFile({ noteId, fileObj, path }) {
+export function uploadNoteFile({ noteId, fileObj, path, fileName }) {
     return async (dispatch, getState) => {
         let { file } = await dispatch(
             callApi({
                 endpoint: `files`,
                 method: 'post',
                 params: {
-                    fileName: fileObj.name,
+                    fileName: fileName || fileObj.name,
                     description: '',
                     noteId,
                 },
@@ -170,7 +170,7 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
             ])
         );
 
-        const { file: uploadedFile } = await dispatch(
+        let { file: uploadedFile } = await dispatch(
             callApi({
                 endpoint: `files/${file.get('id')}/upload`,
                 uploadFile: fileObj,
@@ -184,10 +184,14 @@ export function uploadNoteFile({ noteId, fileObj, path }) {
             })
         );
 
+        uploadedFile = Immutable.fromJS(uploadedFile);
+
         dispatch({
             type: SET_FILE,
-            file: Immutable.fromJS(uploadedFile),
+            file: uploadedFile,
         });
+
+        return uploadedFile;
     };
 }
 

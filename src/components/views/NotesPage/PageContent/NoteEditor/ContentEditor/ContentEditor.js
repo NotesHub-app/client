@@ -4,6 +4,7 @@ import Editor from './Editor';
 import Delimiter from './Delimiter';
 import Preview from './Preview';
 import styles from './styles.module.scss';
+import { uploadNoteFile } from '../../../../../../redux/modules/data/actions';
 
 export class ContentEditor extends React.Component {
     renderContent() {
@@ -56,5 +57,7 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
     mapStateToProps,
-    {}
+    {
+        uploadNoteFile
+    }
 )(ContentEditor);

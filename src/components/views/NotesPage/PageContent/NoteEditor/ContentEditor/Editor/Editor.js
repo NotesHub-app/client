@@ -82,8 +82,35 @@ export default class Editor extends React.Component {
     handleEditorMount = () => {
         const { editor } = this.reactAceComponent;
         editor.renderer.setScrollMargin(5, 5);
-        // editor.getSession().setUseWrapMode(true);
-        // editor.setAutoScrollEditorIntoView(true);
+
+        document.querySelector('.ace_editor').addEventListener('paste', this.handleContentPasteClick);
+    };
+
+    componentWillUnmount() {
+        document.querySelector('.ace_editor').removeEventListener('paste', this.handleContentPasteClick);
+    }
+
+    handleContentPasteClick = async event => {
+        const { noteId, uploadNoteFile } = this.props;
+        const { editor } = this.reactAceComponent;
+
+        const { items } = event.clipboardData || event.originalEvent.clipboardData;
+        for (const item of items) {
+            if (item.kind === 'file') {
+                const fileObj = item.getAsFile();
+
+                // Добавляем в имя файла цифровой идентификатор для уникальности имени
+                const fileName = fileObj.name.replace(/(\.[\w\d_-]+)$/i, `_${new Date().getTime()}$1`);
+
+                const uploadedFile = await uploadNoteFile({ noteId, fileObj, fileName });
+                const isImage = uploadedFile.get('mimeType').startsWith('image/');
+                // Вставляем в редактор ссылку на файл
+                editor.session.insert(
+                    editor.getCursorPosition(),
+                    `${isImage ? '!' : ''}[${uploadedFile.get('fileName')}](file://${uploadedFile.get('downloadCode')})`
+                );
+            }
+        }
     };
 
     handleFocusEditor = () => {
