@@ -19,3 +19,9 @@ export function removeNoteWithChildren(notes, noteId) {
     });
     return notes;
 }
+
+
+export function getNoteFileLink(file){
+    const isImage = file.get('mimeType', '').startsWith('image/');
+    return `${isImage ? '!' : ''}[${file.get('fileName')}](file://${file.get('downloadCode')})`
+}

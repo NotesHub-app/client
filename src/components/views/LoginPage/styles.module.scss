@@ -15,3 +15,27 @@
     font-weight: bold;
     margin-bottom: 17px;
 }
+
+.separator{
+    margin: 0 10px;
+    border-left: 1px solid black;
+}
+
+.icon{
+    width: 32px;
+    height: 32px;
+}
+
+.externalAuthServices{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+
+    :global{
+        .item:not(:last-child){
+            padding-right: 20px;
+            //border-right: 1px solid black;
+
+        }
+    }
+}

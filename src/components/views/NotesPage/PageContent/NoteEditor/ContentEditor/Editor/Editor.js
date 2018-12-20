@@ -6,6 +6,7 @@ import 'brace/theme/github';
 import { Button } from '@blueprintjs/core';
 import SizeMe from '@avinlab/react-size-me';
 import styles from './styles.module.scss';
+import { getNoteFileLink } from '../../../../../../../utils/data';
 
 class CodeEditor extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -103,11 +104,11 @@ export default class Editor extends React.Component {
                 const fileName = fileObj.name.replace(/(\.[\w\d_-]+)$/i, `_${new Date().getTime()}$1`);
 
                 const uploadedFile = await uploadNoteFile({ noteId, fileObj, fileName });
-                const isImage = uploadedFile.get('mimeType').startsWith('image/');
+
                 // Вставляем в редактор ссылку на файл
                 editor.session.insert(
                     editor.getCursorPosition(),
-                    `${isImage ? '!' : ''}[${uploadedFile.get('fileName')}](file://${uploadedFile.get('downloadCode')})`
+                    getNoteFileLink(uploadedFile)
                 );
             }
         }

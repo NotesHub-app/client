@@ -8,6 +8,8 @@ import InputTextField from '../../fields/InputTextField';
 import { registration, logout } from '../../../redux/modules/user/actions';
 import * as formValidation from '../../../utils/formValidation';
 import AlreadyHaveAccountBlock from '../../common/AlreadyHaveAccountBlock';
+import { processServerValidationError } from '../../../utils/formValidation';
+import { Intent } from '@blueprintjs/core';
 
 export class RegistrationPage extends Component {
     state = {
@@ -43,17 +45,23 @@ export class RegistrationPage extends Component {
                 });
             }
             try {
+                params.recaptchaToken = await window.grecaptcha.execute('6LcVsoMUAAAAAMRPEvxDtWqRX87yYUuTRBvQEOB9', {
+                    action: 'registration',
+                });
+
                 await registration(params);
                 this.setState({ showCodeBlock: true });
             } catch (e) {
-                // Если не прошла валидация
-                if (e.status === 422) {
-                    const errorObj = {};
-                    e.response.body.errors.forEach(({ param, msg }) => {
-                        errorObj[param] = 'Недопустимое значение';
+                // Если проверка капчи не удалась
+                if (e.status === 403) {
+                    const errMessage = 'Зафиксированная подозрительная активность. Регистрация невозможна!';
+                    window.showToast({ message: errMessage, intent: Intent.DANGER, icon: 'lock' });
+                    throw new SubmissionError({
+                        _error: errMessage,
                     });
-                    throw new SubmissionError(errorObj);
                 }
+                processServerValidationError(e);
+
                 console.error(e);
             }
         }
@@ -87,6 +95,17 @@ export class RegistrationPage extends Component {
                                 component={InputTextField}
                                 type="text"
                                 placeholder="Email..."
+                                disabled={showCodeBlock}
+                                leftIcon="envelope"
+                                className="bp3-form-group"
+                                validate={[formValidation.required]}
+                            />
+
+                            <Field
+                                name="userName"
+                                component={InputTextField}
+                                type="text"
+                                placeholder="Имя пользователя..."
                                 disabled={showCodeBlock}
                                 leftIcon="user"
                                 className="bp3-form-group"

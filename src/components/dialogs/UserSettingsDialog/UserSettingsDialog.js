@@ -65,6 +65,15 @@ export class UserSettingsDialog extends React.Component {
                 onClose={this.handleClose}
             >
                 <div className={Classes.DIALOG_BODY}>
+                    <div className="bp3-form-group bp3-inline row">
+                        <div className="col-xs-5 end-xs no-padding">
+                            <Label>Имя пользователя:</Label>
+                        </div>
+                        <div className="col-xs-7">
+                            <Field name="userName" component={InputTextField} />
+                        </div>
+                    </div>
+
                     <header>Смена пароля</header>
 
                     <div className="bp3-form-group bp3-inline row">
@@ -110,9 +119,12 @@ export class UserSettingsDialog extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
+    const { user } = state;
     return {
-        user: state.user,
-        initialValues: {},
+        user,
+        initialValues: {
+            userName: user.get('userName'),
+        },
     };
 }
 

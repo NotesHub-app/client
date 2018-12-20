@@ -41,6 +41,31 @@ export default class GroupUsersField extends React.Component {
         onChange(resultValues);
     };
 
+    renderUserDescription(rowData) {
+        let description;
+
+        if (rowData.email) {
+            description = rowData.email;
+        } else if (rowData.githubUrl) {
+            description = (
+                <a href={rowData.githubUrl} target="_blank" rel="noopener noreferrer">
+                    {rowData.githubUrl}
+                </a>
+            );
+        } else if (rowData.googleUrl) {
+            description = (
+                <a href={rowData.googleUrl} target="_blank" rel="noopener noreferrer">
+                    {rowData.googleUrl}
+                </a>
+            );
+        }
+
+        if (description) {
+            return <span className={styles.userDescription}>({description})</span>;
+        }
+        return null;
+    }
+
     render() {
         const {
             input: { value: values },
@@ -74,7 +99,8 @@ export default class GroupUsersField extends React.Component {
                                 cellRenderer={({ dataKey, rowData }) => (
                                     <div className={classNames('VTCellContent')}>
                                         <div className={classNames({ [styles.removedUser]: rowData.deleted })}>
-                                            {rowData.email}
+                                            {rowData.userName}
+                                            {this.renderUserDescription(rowData)}
                                         </div>
                                     </div>
                                 )}

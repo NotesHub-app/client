@@ -76,7 +76,7 @@ export class GroupConfigurationDialog extends React.Component {
 
     getInviteGroupUrl(code) {
         const { groupId } = this.props;
-        return `${config.siteUrl}/#/joinGroup/${groupId}/${code}`;
+        return `${config.siteUrl}/joinGroup/${groupId}/${code}`;
     }
 
     handleInviteEditor = async () => {

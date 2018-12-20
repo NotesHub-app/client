@@ -13,6 +13,7 @@ import { maxArr, minArr, rangeArr } from '../../../../../../../utils/helpers';
 import config from '../../../../../../../config';
 import { downloadURI } from '../../../../../../../utils/browser';
 import CopyTextButton from '../../../../../../common/CopyTextButton';
+import { getNoteFileLink } from '../../../../../../../utils/data';
 
 export class Files extends React.Component {
     state = {
@@ -264,7 +265,7 @@ export class Files extends React.Component {
                                                     hoverOpenDelay={700}
                                                 >
                                                     <CopyTextButton
-                                                        textToCopy={`file://${rowData.get('downloadCode')}`}
+                                                        textToCopy={getNoteFileLink(rowData)}
                                                         minimal
                                                         small
                                                         icon="link"

@@ -21,17 +21,40 @@ const processUserTokens = user => {
  * @param email
  * @param password
  * @param remember
+ * @param githubCallbackQuery
  */
-export function login({ email, password, remember }) {
+export function login({ email, password, remember, githubCallbackQuery, googleCallbackQuery }) {
     return async (dispatch, getState) => {
-        let user = await dispatch(
-            callApi({
-                endpoint: 'auth/login',
-                method: 'post',
-                params: { email, password },
-                requireAuth: false,
-            })
-        );
+        let user;
+        if (email && password) {
+            user = await dispatch(
+                callApi({
+                    endpoint: 'auth/login',
+                    method: 'post',
+                    params: { email, password },
+                    requireAuth: false,
+                })
+            );
+        } else if (githubCallbackQuery) {
+            user = await dispatch(
+                callApi({
+                    endpoint: `auth/github${githubCallbackQuery}`,
+                    method: 'get',
+                    requireAuth: false,
+                })
+            );
+        } else if (googleCallbackQuery) {
+            user = await dispatch(
+                callApi({
+                    endpoint: `auth/google${googleCallbackQuery}`,
+                    method: 'get',
+                    requireAuth: false,
+                })
+            );
+        } else {
+            throw new Error('Неверные параметры метода аутентификации!');
+        }
+
         user = Immutable.fromJS(user);
         user = processUserTokens(user);
 
@@ -127,11 +150,19 @@ export function restorePassword(params) {
     };
 }
 
-
-export function updateUser(userId, params){
+export function updateUser(userId, params) {
     return async (dispatch, getState) => {
-        await dispatch(
-            callApi({ endpoint: `users/me`, method: 'patch', params })
-        );
+        await dispatch(callApi({ endpoint: `users/me`, method: 'patch', params }));
+
+        let { user } = getState();
+
+        if (params.userName) {
+            user = user.set('userName', params.userName);
+        }
+
+        dispatch({
+            type: SET_USER,
+            user,
+        });
     };
 }

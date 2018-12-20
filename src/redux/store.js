@@ -1,14 +1,14 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
-import createHashHistory from 'history/createHashHistory';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import createRootReducer from './modules';
 import usersDataMiddleware from './middlewares/usersDataMiddleware';
 import saveUiSettingsMiddleware from './middlewares/saveUiSettingsMiddleware';
 import lastNoteMiddleware from './middlewares/lastNoteMiddleware';
 
-export const history = createHashHistory();
+export const history = createBrowserHistory();
 
 const configureStore = () => {
     const initialState = {};

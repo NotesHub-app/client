@@ -9,6 +9,7 @@ import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selecto
 import { login } from '../../../redux/modules/user/actions';
 import InputTextField from '../../fields/InputTextField';
 import CheckboxField from '../../fields/CheckboxField/CheckboxField';
+import config from '../../../config';
 
 export class LoginPage extends Component {
     state = {
@@ -69,7 +70,7 @@ export class LoginPage extends Component {
                                 component={InputTextField}
                                 type="text"
                                 placeholder="Email..."
-                                leftIcon="user"
+                                leftIcon="envelope"
                                 className="bp3-form-group"
                             />
 
@@ -113,6 +114,30 @@ export class LoginPage extends Component {
 
                     <div className={classNames(styles.noAccountBlock)}>
                         Нет аккаунта? <Link to="/registration">Зарегистрироваться!</Link>
+                        <div className="text-muted" style={{ marginTop: 20 }}>
+                            &mdash; или войти через &mdash;
+                        </div>
+                        <div className={styles.externalAuthServices}>
+                            <a href={`${config.apiUrl}/auth/google`} className="item">
+                                <img
+                                    src="/static/icons/google.svg"
+                                    alt="_"
+                                    className={classNames(styles.icon, styles.googleIcon)}
+                                />
+                                <br />
+                                Google
+                            </a>
+
+                            <a href={`${config.apiUrl}/auth/github`} className="item">
+                                <img
+                                    src="/static/icons/github.svg"
+                                    alt="_"
+                                    className={classNames(styles.icon, styles.githubIcon)}
+                                />
+                                <br />
+                                Github
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
