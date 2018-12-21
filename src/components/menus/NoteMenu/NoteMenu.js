@@ -19,7 +19,7 @@ export default class NoteMenu extends React.Component {
         const newNote = await createNote({ parentId: note.get('id') });
 
         // Раскрываем текущую заметку
-        expendNavigationTreeNode(getNoteNodeTreeId(newNote));
+        expendNavigationTreeNode(getNoteNodeTreeId(newNote.get('parentId')));
 
         // Перейти в созданную заметку
         push(`/notes/${newNote.get('id')}`);

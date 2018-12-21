@@ -106,10 +106,12 @@ export function setNavigationFilter(filterStr) {
             const expandParents = node => {
                 const parent = nodes.find(i => i.treeId === node.parentTreeId);
 
-                expendedNodes = expendedNodes.add(parent.treeId);
+                if (parent) {
+                    expendedNodes = expendedNodes.add(parent.treeId);
 
-                if (parent.parentTreeId) {
-                    expandParents(parent);
+                    if (parent.parentTreeId) {
+                        expandParents(parent);
+                    }
                 }
             };
 

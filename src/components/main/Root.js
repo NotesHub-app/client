@@ -11,7 +11,6 @@ import RestorePasswordPage from '../views/RestorePasswordPage';
 import RootPage from '../views/RootPage/RootPage';
 import JoinGroupPage from '../views/JoinGroupPage/JoinGroupPage';
 import CallbackPage from '../views/CallbackPage';
-import CallbackGooglePage from '../views/CallbackGooglePage';
 
 const LayoutRoute = ({ component: Component, layout: Layout, ...rest }) => (
     <Route
@@ -47,8 +46,16 @@ export default class Root extends React.Component {
                             <Route exact path="/login" component={LoginPage} />
                             <Route exact path="/registration" component={RegistrationPage} />
                             <Route exact path="/restore-password" component={RestorePasswordPage} />
-                            <Route exact path="/callback/github" component={CallbackPage} />
-                            <Route exact path="/callback/google" component={CallbackGooglePage} />
+                            <Route
+                                exact
+                                path="/callback/github"
+                                render={props => <CallbackPage {...props} provider="github" />}
+                            />
+                            <Route
+                                exact
+                                path="/callback/google"
+                                render={props => <CallbackPage {...props} provider="google" />}
+                            />
                         </Switch>
                     </ConnectedRouter>
                 </React.Fragment>

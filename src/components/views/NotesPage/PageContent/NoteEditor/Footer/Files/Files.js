@@ -89,10 +89,10 @@ export class Files extends React.Component {
     };
 
     handleConfirmRemoveAlert = async () => {
-        const { removeManyFiles } = this.props;
+        const { removeManyFiles, noteId } = this.props;
         const { removingFileIds } = this.state;
 
-        await removeManyFiles(removingFileIds);
+        await removeManyFiles(removingFileIds, noteId);
 
         window.showToast({ message: 'Удаление завершено!', intent: Intent.SUCCESS, icon: 'tick' });
 

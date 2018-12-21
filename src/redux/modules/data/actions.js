@@ -13,6 +13,7 @@ import {
 } from './actionTypes';
 import { callApi } from '../api/actions';
 import { listToMap } from '../../../utils/immutable';
+import { removeNoteFileIds } from '../../../utils/data';
 
 /**
  * Получение заметок
@@ -94,6 +95,7 @@ export function createNote(params) {
 export function removeNote(noteId) {
     return async (dispatch, getState) => {
         await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'delete' }));
+
         dispatch({
             type: REMOVE_NOTE,
             noteId,
@@ -102,27 +104,23 @@ export function removeNote(noteId) {
 }
 
 /**
- * Удалить файл
- * @param fileId
- */
-export function removeFile(fileId) {
-    return async (dispatch, getState) => {
-        await dispatch(callApi({ endpoint: `files/${fileId}`, method: 'delete' }));
-        dispatch({
-            type: REMOVE_FILE,
-            fileId,
-        });
-    };
-}
-/**
  * Удалить много файлов за раз
  * @param fileIds
+ * @param noteId
  */
-export function removeManyFiles(fileIds) {
+export function removeManyFiles(fileIds, noteId) {
     return async (dispatch, getState) => {
-        await dispatch(callApi({ endpoint: `files`, method: 'delete', params: { ids: fileIds } }));
+        // Операция удаления на сервере идет медленно - поэтому прогоняем запрос без await
+        dispatch(callApi({ endpoint: `files`, method: 'delete', params: { ids: fileIds } }));
 
-        const actions = [];
+        const note = removeNoteFileIds(getState().data.getIn(['notes', noteId]), fileIds);
+
+        const actions = [
+            {
+                type: SET_NOTE,
+                note,
+            },
+        ];
         fileIds.forEach(fileId => {
             actions.push({
                 type: REMOVE_FILE,
@@ -138,6 +136,7 @@ export function removeManyFiles(fileIds) {
  * @param noteId
  * @param fileObj
  * @param path
+ * @param fileName
  */
 export function uploadNoteFile({ noteId, fileObj, path, fileName }) {
     return async (dispatch, getState) => {
@@ -150,7 +149,7 @@ export function uploadNoteFile({ noteId, fileObj, path, fileName }) {
                     description: '',
                     noteId,
                 },
-            })
+            }),
         );
 
         file = Immutable.fromJS(file).set('_uploadProgress', 0);
@@ -169,7 +168,7 @@ export function uploadNoteFile({ noteId, fileObj, path, fileName }) {
                     type: SET_NOTE,
                     note,
                 },
-            ])
+            ]),
         );
 
         let { file: uploadedFile } = await dispatch(
@@ -183,7 +182,7 @@ export function uploadNoteFile({ noteId, fileObj, path, fileName }) {
                         file,
                     });
                 },
-            })
+            }),
         );
 
         uploadedFile = Immutable.fromJS(uploadedFile);

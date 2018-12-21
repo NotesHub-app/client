@@ -10,6 +10,7 @@ import {
     SET_FILE,
     REMOVE_FILE,
 } from './redux/modules/data/actionTypes';
+import { removeNoteFileIds } from './utils/data';
 
 class WS {
     init(store) {
@@ -84,9 +85,7 @@ class WS {
      */
     handleNoteFileRemoved = ({ fileId, noteId }) => {
         // Удаляем файл у заметки
-        let note = this.store.getState().data.getIn(['notes', noteId]);
-        const noteFileIds = note.get('fileIds', new Immutable.List()).filter(i => i !== fileId);
-        note = note.set('fileIds', noteFileIds);
+        const note = removeNoteFileIds(this.store.getState().data.getIn(['notes', noteId]), [fileId]);
 
         this.store.dispatch(
             batchActions([
