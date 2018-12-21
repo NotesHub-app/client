@@ -45,13 +45,15 @@ export function updateNote(noteId, noteContent) {
                 updatedNote = updatedNote.set(field, value);
             }
         });
-        const { updatedAt } = await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
-        updatedNote = updatedNote.set('updatedAt', updatedAt);
+        // Только если что-то поменялось
+        if (Object.keys(data).length) {
+            await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
 
-        dispatch({
-            type: SET_NOTE,
-            note: updatedNote,
-        });
+            dispatch({
+                type: SET_NOTE,
+                note: updatedNote,
+            });
+        }
     };
 }
 

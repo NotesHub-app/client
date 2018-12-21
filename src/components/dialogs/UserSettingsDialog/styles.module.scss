@@ -2,6 +2,9 @@
 
 .root {
     :global {
+        .label{
+            line-height: 30px;
+        }
         .bp3-form-group {
             margin-bottom: 10px;
         }

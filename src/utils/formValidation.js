@@ -1,5 +1,3 @@
-import { SubmissionError } from 'redux-form';
-
 export const required = value => (value ? undefined : 'Обазательно к заполнению');
 
 /**
@@ -36,6 +34,6 @@ export function processServerValidationError(err) {
         err.response.body.errors.forEach(({ param, msg }) => {
             errObject[param] = msg;
         });
-        throw new SubmissionError(errObject);
+        return errObject;
     }
 }

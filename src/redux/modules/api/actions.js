@@ -39,7 +39,9 @@ export function callApi({
             }
 
             // Формируем объект запроса с общими параметрами
-            let request = superagent[method](url).set('Accept', 'application/json');
+            let request = superagent[method](url)
+                .set('Accept', 'application/json')
+                .set('WsClientID', config.wsClientId);
 
             // Крепим авторизационный токен
             if (requireAuth) {

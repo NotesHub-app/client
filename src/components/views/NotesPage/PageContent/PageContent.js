@@ -13,6 +13,10 @@ export class PageContent extends React.Component {
         note: PropTypes.object,
     };
 
+    state = {
+        reloading: false,
+    };
+
     checkNoteLoaded() {
         const { note, getNoteDetails } = this.props;
 
@@ -23,6 +27,15 @@ export class PageContent extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { note, push } = this.props;
+
+        if (prevProps.noteId !== this.props.noteId) {
+            this.setState(
+                {
+                    reloading: true,
+                },
+                () => this.setState({ reloading: false })
+            );
+        }
 
         if (!note) {
             push('/notes');
@@ -48,6 +61,11 @@ export class PageContent extends React.Component {
 
     render() {
         const { note } = this.props;
+        const { reloading } = this.state;
+
+        if (reloading) {
+            return <span />;
+        }
 
         if (!note) {
             return <span />;
@@ -72,7 +90,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    getNoteDetails,
-    push,
-})(PageContent);
+export default connect(
+    mapStateToProps,
+    {
+        getNoteDetails,
+        push,
+    }
+)(PageContent);

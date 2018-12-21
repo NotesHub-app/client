@@ -35,7 +35,6 @@ export default class SelectColorField extends React.Component {
                 onItemSelect={this.handleSelect}
                 filterable={false}
                 noResults={<MenuItem disabled={true} text="Нет вариантов." />}
-                popoverProps={{ /*minimal: true*/ }}
             >
                 <Button className={styles.selectButton}>
                     <div className={styles.buttonBrick} style={{ backgroundColor: value }} />

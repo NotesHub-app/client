@@ -1,12 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { Form, Field } from 'react-final-form';
 import { Dialog, Classes, Button, Intent, Label } from '@blueprintjs/core';
 import styles from './styles.module.scss';
-import InputTextField from '../../fields/InputTextField/InputTextField';
+import InputGroupField from '../../fields/InputGroupField';
 import { processServerValidationError } from '../../../utils/formValidation';
 import { updateUser } from '../../../redux/modules/user/actions';
+
+const UserSettingsInlineTextField = ({ label, name }) => (
+    <label className="bp3-form-group bp3-inline row">
+        <div className="col-xs-5 end-xs no-padding label">
+            <Label>{label}:</Label>
+        </div>
+        <div className="col-xs-7">
+            <Field name={name} component={InputGroupField} />
+        </div>
+    </label>
+);
 
 export class UserSettingsDialog extends React.Component {
     static defaultProps = {
@@ -20,18 +31,18 @@ export class UserSettingsDialog extends React.Component {
     };
 
     handleSubmit = async params => {
-        const { updateUser, user, reset } = this.props;
+        const { updateUser, user } = this.props;
 
         if (params.newPassword) {
             if (!params.oldPassword) {
-                throw new SubmissionError({ code: 'Требуется указать старый пароль' });
+                return { oldPassword: 'Требуется указать старый пароль' };
             }
             if (!params.confirmPassword) {
-                throw new SubmissionError({ code: 'Требуется подтвердить введенный пароль' });
+                return { confirmPassword: 'Требуется подтвердить введенный пароль' };
             }
 
             if (params.confirmPassword !== params.newPassword) {
-                throw new SubmissionError({ code: 'Подтверждение пароля не совпадает' });
+                return { confirmPassword: 'Подтверждение пароля не совпадает' };
             }
         }
 
@@ -39,10 +50,12 @@ export class UserSettingsDialog extends React.Component {
             await updateUser(user.get('id'), params);
             window.showToast({ message: 'Пользовательские данные обновлены!', intent: Intent.SUCCESS, icon: 'tick' });
 
-            reset();
             this.handleClose();
         } catch (e) {
-            processServerValidationError(e);
+            const serverValidationResult = processServerValidationError(e);
+            if (serverValidationResult) {
+                return serverValidationResult;
+            }
 
             console.error(e);
             window.showToast({
@@ -54,7 +67,7 @@ export class UserSettingsDialog extends React.Component {
     };
 
     render() {
-        const { isOpen, handleSubmit, dirty } = this.props;
+        const { isOpen, initialValues } = this.props;
 
         return (
             <Dialog
@@ -64,55 +77,33 @@ export class UserSettingsDialog extends React.Component {
                 isOpen={isOpen}
                 onClose={this.handleClose}
             >
-                <div className={Classes.DIALOG_BODY}>
-                    <div className="bp3-form-group bp3-inline row">
-                        <div className="col-xs-5 end-xs no-padding">
-                            <Label>Имя пользователя:</Label>
-                        </div>
-                        <div className="col-xs-7">
-                            <Field name="userName" component={InputTextField} />
-                        </div>
-                    </div>
+                <Form
+                    onSubmit={this.handleSubmit}
+                    initialValues={initialValues}
+                    render={({ handleSubmit, dirty }) => (
+                        <form onSubmit={handleSubmit}>
+                            <div className={Classes.DIALOG_BODY}>
+                                <UserSettingsInlineTextField label="Имя пользователя" name="userName" />
 
-                    <header>Смена пароля</header>
+                                <header>Смена пароля</header>
 
-                    <div className="bp3-form-group bp3-inline row">
-                        <div className="col-xs-5 end-xs no-padding">
-                            <Label>Старый пароль:</Label>
-                        </div>
-                        <div className="col-xs-7">
-                            <Field name="oldPassword" component={InputTextField} type="password" />
-                        </div>
-                    </div>
+                                <UserSettingsInlineTextField label="Старый пароль" name="oldPassword" />
+                                <UserSettingsInlineTextField label="Новый пароль" name="newPassword" />
+                                <UserSettingsInlineTextField label="Подтверждение пароля" name="confirmPassword" />
+                            </div>
 
-                    <div className="bp3-form-group bp3-inline row">
-                        <div className="col-xs-5 end-xs no-padding">
-                            <Label>Новый пароль:</Label>
-                        </div>
-                        <div className="col-xs-7">
-                            <Field name="newPassword" component={InputTextField} type="password" />
-                        </div>
-                    </div>
+                            <div className={Classes.DIALOG_FOOTER}>
+                                <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                                    <Button onClick={this.handleClose}>Отмена</Button>
 
-                    <div className="bp3-form-group bp3-inline row">
-                        <div className="col-xs-5 end-xs no-padding">
-                            <Label>Подтверждение пароля:</Label>
-                        </div>
-                        <div className="col-xs-7">
-                            <Field name="confirmPassword" component={InputTextField} type="password" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className={Classes.DIALOG_FOOTER}>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Отмена</Button>
-
-                        <Button intent={Intent.SUCCESS} onClick={handleSubmit(this.handleSubmit)} disabled={!dirty}>
-                            Сохранить настройки
-                        </Button>
-                    </div>
-                </div>
+                                    <Button intent={Intent.SUCCESS} type="submit" disabled={!dirty}>
+                                        Сохранить настройки
+                                    </Button>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                />
             </Dialog>
         );
     }
@@ -133,9 +124,4 @@ export default connect(
     {
         updateUser,
     }
-)(
-    reduxForm({
-        form: 'UserSettings',
-        enableReinitialize: true,
-    })(UserSettingsDialog)
-);
+)(UserSettingsDialog);

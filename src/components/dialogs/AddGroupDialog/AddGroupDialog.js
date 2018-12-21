@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Field, reduxForm } from 'redux-form';
 import { Dialog, Classes, Button, Intent, Label } from '@blueprintjs/core';
+import { Form, Field } from 'react-final-form';
 import styles from './styles.module.scss';
-import InputTextField from '../../fields/InputTextField/InputTextField';
 import { createGroup } from '../../../redux/modules/data/actions';
 import { processServerValidationError } from '../../../utils/formValidation';
+import InputGroupField from '../../fields/InputGroupField';
 
 export class AddGroupDialog extends React.Component {
     static defaultProps = {
@@ -26,7 +26,10 @@ export class AddGroupDialog extends React.Component {
             window.showToast({ message: 'Создание группы завершено!', intent: Intent.SUCCESS, icon: 'tick' });
             this.handleClose();
         } catch (e) {
-            processServerValidationError(e);
+            const serverValidationResult = processServerValidationError(e);
+            if (serverValidationResult) {
+                return serverValidationResult;
+            }
 
             console.error(e);
             window.showToast({
@@ -38,7 +41,7 @@ export class AddGroupDialog extends React.Component {
     };
 
     render() {
-        const { isOpen, handleSubmit } = this.props;
+        const { isOpen, initialValues } = this.props;
 
         return (
             <Dialog
@@ -48,22 +51,30 @@ export class AddGroupDialog extends React.Component {
                 isOpen={isOpen}
                 onClose={this.handleClose}
             >
-                <div className={Classes.DIALOG_BODY}>
-                    <Label style={{marginBottom: 0}}>
-                        Название группы
-                        <Field name="title" component={InputTextField} />
-                    </Label>
-                </div>
+                <Form
+                    onSubmit={this.handleSubmit}
+                    initialValues={initialValues}
+                    render={({ handleSubmit }) => (
+                        <form onSubmit={handleSubmit}>
+                            <div className={Classes.DIALOG_BODY}>
+                                <Label style={{ marginBottom: 0 }}>
+                                    Название группы
+                                    <Field name="title" component={InputGroupField} />
+                                </Label>
+                            </div>
 
-                <div className={Classes.DIALOG_FOOTER}>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Отмена</Button>
+                            <div className={Classes.DIALOG_FOOTER}>
+                                <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                                    <Button onClick={this.handleClose}>Отмена</Button>
 
-                        <Button intent={Intent.PRIMARY} onClick={handleSubmit(this.handleSubmit)}>
-                            Создать группу
-                        </Button>
-                    </div>
-                </div>
+                                    <Button intent={Intent.PRIMARY} type="submit">
+                                        Создать группу
+                                    </Button>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                />
             </Dialog>
         );
     }
@@ -73,7 +84,7 @@ function mapStateToProps(state, ownProps) {
     return {
         user: state.user,
         initialValues: {
-            title: 'Новая группа'
+            title: 'Новая группа',
         },
     };
 }
@@ -82,10 +93,5 @@ export default connect(
     mapStateToProps,
     {
         createGroup,
-    }
-)(
-    reduxForm({
-        form: 'AddGroup',
-        enableReinitialize: true,
-    })(AddGroupDialog)
-);
+    },
+)(AddGroupDialog);

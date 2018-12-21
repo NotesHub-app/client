@@ -2,14 +2,17 @@ import React from 'react';
 import SubLabel from '../SubLabel';
 
 export default class FieldErrorLabel extends React.Component {
+    static defaultProps = {
+        meta: {},
+    };
+
     render() {
-        const { meta: { touched, error, warning } = {} } = this.props;
+        const { meta } = this.props;
 
         return (
             <div>
-                {touched &&
-                    ((error && <SubLabel error>{error}</SubLabel>) ||
-                        (warning && <SubLabel warning>{error}</SubLabel>))}
+                {(meta.error || meta.submitError) &&
+                    meta.touched && <SubLabel error>{meta.error || meta.submitError}</SubLabel>}
             </div>
         );
     }

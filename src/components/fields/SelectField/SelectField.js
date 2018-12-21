@@ -45,7 +45,7 @@ export default class SelectField extends React.Component {
 
     render() {
         let { options } = this.props;
-        const { className } = this.props;
+        const { className, meta } = this.props;
         const {
             buttonClassName,
             input: { value },
@@ -77,7 +77,7 @@ export default class SelectField extends React.Component {
                     />
                 </Select>
 
-                <FieldErrorLabel {...this.props} />
+                <FieldErrorLabel meta={meta} />
             </React.Fragment>
         );
     }

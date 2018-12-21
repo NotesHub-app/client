@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { Form, Field } from 'react-final-form';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { push } from 'connected-react-router';
+import { FORM_ERROR } from 'final-form';
 import styles from './styles.module.scss';
 import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selectors';
 import { login } from '../../../redux/modules/user/actions';
-import InputTextField from '../../fields/InputTextField';
 import CheckboxField from '../../fields/CheckboxField/CheckboxField';
 import config from '../../../config';
+import { processServerValidationError } from '../../../utils/formValidation';
+import InputGroupField from '../../fields/InputGroupField';
 
 export class LoginPage extends Component {
-    state = {
-        wrong: false,
-    };
-
     componentDidMount() {
         const { user, push } = this.props;
 
@@ -24,7 +22,7 @@ export class LoginPage extends Component {
         }
     }
 
-    onSubmit = async params => {
+    handleSubmit = async params => {
         const { login, push } = this.props;
 
         try {
@@ -35,82 +33,97 @@ export class LoginPage extends Component {
             push('/');
         } catch (e) {
             if (e.status === 401) {
-                throw new SubmissionError({ _error: 'Неверный логин или пароль!' });
+                return { [FORM_ERROR]: 'Неверный логин или пароль!' };
             }
+            const serverValidationResult = processServerValidationError(e);
+            if (serverValidationResult) {
+                return serverValidationResult;
+            }
+
+            console.error(e);
             throw e;
         }
     };
 
     render() {
-        const { handleSubmit, submitting, error, afterRegistration, afterRestorePassword } = this.props;
+        const { afterRegistration, afterRestorePassword, initialValues } = this.props;
 
         return (
             <div className="row full-height no-margin middle-xs">
-                <form
-                    onSubmit={handleSubmit(this.onSubmit)}
-                    className="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 col-xs"
-                >
-                    <div className={classNames('bp3-card bp3-elevation-2 no-padding app-loginForm')}>
-                        <div className="app-formTitle">NotesHub</div>
+                <div className="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 col-xs">
+                    <Form
+                        onSubmit={this.handleSubmit}
+                        initialValues={initialValues}
+                        render={({ handleSubmit, pristine, invalid, submitting, submitError }) => (
+                            <form onSubmit={handleSubmit}>
+                                <div className={classNames('bp3-card bp3-elevation-2 no-padding app-loginForm')}>
+                                    <div className="app-formTitle">NotesHub</div>
 
-                        <div className="app-content">
-                            {afterRegistration && (
-                                <div className={styles.afterMessage}>
-                                    Спасибо за регистрацию!<br /> Теперь вы можете авторизоваться.
+                                    <div className="app-content">
+                                        {afterRegistration && (
+                                            <div className={styles.afterMessage}>
+                                                Спасибо за регистрацию!
+                                                <br /> Теперь вы можете авторизоваться.
+                                            </div>
+                                        )}
+                                        {afterRestorePassword && (
+                                            <div className={styles.afterMessage}>
+                                                Пароль успешно восстановлен. <br /> Используйте его для входа в систему.
+                                            </div>
+                                        )}
+
+                                        <Field
+                                            name="email"
+                                            component={InputGroupField}
+                                            type="text"
+                                            placeholder="Email..."
+                                            leftIcon="envelope"
+                                        />
+
+                                        <Field
+                                            name="password"
+                                            component={InputGroupField}
+                                            type="password"
+                                            placeholder="Пароль..."
+                                            leftIcon="lock"
+                                            autoFocus={afterRegistration || afterRestorePassword}
+                                        />
+
+                                        <div className="row">
+                                            <div className="col-xs-6">
+                                                <Field
+                                                    name="remember"
+                                                    component={CheckboxField}
+                                                    type="checkbox"
+                                                    label="Запомнить меня"
+                                                />
+                                            </div>
+                                            <div className="col-xs-6 end-xs">
+                                                <Link to="/restore-password">Восстановить пароль</Link>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-center">
+                                            <button
+                                                type="submit"
+                                                disabled={submitting}
+                                                style={{ marginTop: 5 }}
+                                                className="bp3-button bp3-intent-primary bp3-fill bp3-icon-log-in"
+                                            >
+                                                {submitting ? 'Вход...' : 'Войти'}
+                                            </button>
+                                        </div>
+
+                                        {submitError ? (
+                                            <div className={classNames('text-danger text-center', styles.errorText)}>
+                                                <strong>{submitError}</strong>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                 </div>
-                            )}
-                            {afterRestorePassword && (
-                                <div className={styles.afterMessage}>
-                                    Пароль успешно восстановлен. <br /> Используйте его для входа в систему.
-                                </div>
-                            )}
-
-                            <Field
-                                name="email"
-                                component={InputTextField}
-                                type="text"
-                                placeholder="Email..."
-                                leftIcon="envelope"
-                                className="bp3-form-group"
-                            />
-
-                            <Field
-                                name="password"
-                                component={InputTextField}
-                                type="password"
-                                placeholder="Пароль..."
-                                leftIcon="lock"
-                                className="bp3-form-group"
-                                autoFocus={afterRegistration || afterRestorePassword}
-                            />
-
-                            <div className="row">
-                                <div className="col-xs-6">
-                                    <Field name="remember" component={CheckboxField} label="Запомнить меня" />
-                                </div>
-                                <div className="col-xs-6 end-xs">
-                                    <Link to="/restore-password">Восстановить пароль</Link>
-                                </div>
-                            </div>
-
-                            <div className="text-center">
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    style={{ marginTop: 5 }}
-                                    className="bp3-button bp3-intent-primary bp3-fill bp3-icon-log-in"
-                                >
-                                    {submitting ? 'Вход...' : 'Войти'}
-                                </button>
-                            </div>
-
-                            {error ? (
-                                <div className={classNames('text-danger text-center', styles.errorText)}>
-                                    <strong>{error}</strong>
-                                </div>
-                            ) : null}
-                        </div>
-                    </div>
+                            </form>
+                        )}
+                    />
 
                     <div className={classNames(styles.noAccountBlock)}>
                         Нет аккаунта? <Link to="/registration">Зарегистрироваться!</Link>
@@ -139,7 +152,7 @@ export class LoginPage extends Component {
                             </a>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         );
     }
@@ -165,8 +178,4 @@ export default connect(
         login,
         push,
     }
-)(
-    reduxForm({
-        form: 'LoginForm',
-    })(LoginPage)
-);
+)(LoginPage);

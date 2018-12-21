@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { Form, Field } from 'react-final-form';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
 import { userSelector } from '../../../redux/selectors';
-import InputTextField from '../../fields/InputTextField';
+import InputGroupField from '../../fields/InputGroupField';
 import { restorePassword } from '../../../redux/modules/user/actions';
-import * as formValidation from '../../../utils/formValidation';
 import AlreadyHaveAccountBlock from '../../common/AlreadyHaveAccountBlock';
+import { processServerValidationError, minLength, required } from '../../../utils/formValidation';
 
 export class RestorePasswordPage extends Component {
     state = {
@@ -22,48 +22,61 @@ export class RestorePasswordPage extends Component {
         }
     }
 
-    onSubmit = async params => {
+    withCodeBlockSubmit = async params => {
         const { restorePassword, push } = this.props;
-        const { showCodeBlock } = this.state;
+        if (!params.code) {
+            return { code: 'Требуется ввести код для продолжения' };
+        }
+        if (minLength(8)(params.password)) {
+            return {
+                password: 'Длина пароля должна быть не менее 8 символов',
+            };
+        }
+        try {
+            await restorePassword(params);
+            push(`/login?afterRestorePassword=1&email=${params.email}`);
+        } catch (e) {
+            const serverValidationResult = processServerValidationError(e);
+            if (serverValidationResult) {
+                return serverValidationResult;
+            }
 
-        if (showCodeBlock) {
-            if (!params.code) {
-                throw new SubmissionError({ code: 'Требуется ввести код для продолжения' });
-            }
-            if (formValidation.minLength(8)(params.password)) {
-                throw new SubmissionError({
-                    password: 'Длина пароля должна быть не менее 8 символов',
-                });
-            }
-            try {
-                await restorePassword(params);
-                push(`/login?afterRestorePassword=1&email=${params.email}`);
-            } catch (e) {
-                throw new SubmissionError({ code: 'Указанный код неверный' });
-            }
-        } else {
-            try {
-                await restorePassword(params);
-                this.setState({ showCodeBlock: true });
-            } catch (e) {
-                // Если не прошла валидация
-                if (e.status === 422) {
-                    const errorObj = {};
-                    e.response.body.errors.forEach(({ param, msg }) => {
-                        errorObj[param] = 'Недопустимое значение';
-                    });
-                    throw new SubmissionError(errorObj);
-                }
-                console.error(e);
-            }
+            console.error(e);
+            throw e;
         }
     };
 
-    render() {
-        const { handleSubmit, submitting } = this.props;
+    withoutCodeBlockSubmit = async params => {
+        const { restorePassword } = this.props;
+        try {
+            await restorePassword(params);
+            this.setState({ showCodeBlock: true });
+        } catch (e) {
+            // Если не прошла валидация
+            const serverValidationResult = processServerValidationError(e);
+            if (serverValidationResult) {
+                return serverValidationResult;
+            }
+
+            console.error(e);
+            throw e;
+        }
+    };
+
+    handleSubmit = async params => {
         const { showCodeBlock } = this.state;
 
+        if (showCodeBlock) {
+            return this.withCodeBlockSubmit(params);
+        }
+
+        return this.withoutCodeBlockSubmit(params);
+    };
+
+    getSubmitBtnLabel(submitting) {
+        const { showCodeBlock } = this.state;
         let submitBtnLabel = '';
+
         if (submitting) {
             submitBtnLabel = 'Восстановление...';
         } else if (showCodeBlock) {
@@ -72,67 +85,77 @@ export class RestorePasswordPage extends Component {
             submitBtnLabel = 'Восстановить пароль';
         }
 
+        return submitBtnLabel;
+    }
+
+    render() {
+        const { initialValues } = this.props;
+        const { showCodeBlock } = this.state;
+
         return (
             <div className="row full-height no-margin middle-xs">
-                <form
-                    onSubmit={handleSubmit(this.onSubmit)}
-                    className="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 col-xs"
-                >
-                    <div className={classNames('bp3-card bp3-elevation-2 no-padding app-loginForm')}>
-                        <div className="app-formTitle">Восстановление пароля</div>
+                <div className="col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 col-xs">
+                    <Form
+                        onSubmit={this.handleSubmit}
+                        initialValues={initialValues}
+                        render={({ handleSubmit, pristine, invalid, submitting }) => (
+                            <form onSubmit={handleSubmit}>
+                                <div className={classNames('bp3-card bp3-elevation-2 no-padding app-loginForm')}>
+                                    <div className="app-formTitle">Восстановление пароля</div>
 
-                        <div className="app-content">
-                            <Field
-                                name="email"
-                                component={InputTextField}
-                                type="text"
-                                placeholder="Email..."
-                                disabled={showCodeBlock}
-                                leftIcon="user"
-                                className="bp3-form-group"
-                                validate={[formValidation.required]}
-                            />
+                                    <div className="app-content">
+                                        <Field
+                                            name="email"
+                                            component={InputGroupField}
+                                            type="text"
+                                            placeholder="Email..."
+                                            disabled={showCodeBlock}
+                                            leftIcon="envelope"
+                                            validate={required}
+                                        />
 
-                            {showCodeBlock && (
-                                <div>
-                                    <div className="app-confirmCodeDescription">
-                                        Мы отправили Вам письмо с кодом. Введите его вместе с <i>новым</i> паролем!
+                                        {showCodeBlock && (
+                                            <div>
+                                                <div className="app-confirmCodeDescription">
+                                                    Мы отправили Вам письмо с кодом. <br />
+                                                    Введите его вместе с <i>новым</i> паролем!
+                                                </div>
+
+                                                <Field
+                                                    name="code"
+                                                    component={InputGroupField}
+                                                    placeholder="Код подтверждения из письма..."
+                                                    leftIcon="confirm"
+                                                />
+
+                                                <Field
+                                                    name="password"
+                                                    component={InputGroupField}
+                                                    type="password"
+                                                    placeholder="Новый пароль..."
+                                                    leftIcon="lock"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="text-center">
+                                            <button
+                                                type="submit"
+                                                disabled={submitting}
+                                                style={{ marginTop: 5 }}
+                                                className="bp3-button bp3-intent-warning bp3-fill bp3-icon-predictive-analysis"
+                                            >
+                                                {this.getSubmitBtnLabel(submitting)}
+                                            </button>
+                                        </div>
                                     </div>
-
-                                    <Field
-                                        name="code"
-                                        component={InputTextField}
-                                        placeholder="Код подтверждения из письма..."
-                                        leftIcon="confirm"
-                                        className="bp3-form-group"
-                                    />
-
-                                    <Field
-                                        name="password"
-                                        component={InputTextField}
-                                        type="password"
-                                        placeholder="Новый пароль..."
-                                        leftIcon="lock"
-                                        className="bp3-form-group"
-                                    />
                                 </div>
-                            )}
-
-                            <div className="text-center">
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    style={{ marginTop: 5 }}
-                                    className="bp3-button bp3-intent-warning bp3-fill bp3-icon-predictive-analysis"
-                                >
-                                    {submitBtnLabel}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                            </form>
+                        )}
+                    />
 
                     <AlreadyHaveAccountBlock />
-                </form>
+                </div>
             </div>
         );
     }
@@ -150,9 +173,5 @@ export default connect(
     {
         restorePassword,
         push,
-    },
-)(
-    reduxForm({
-        form: 'RestorePasswordForm',
-    })(RestorePasswordPage),
-);
+    }
+)(RestorePasswordPage);

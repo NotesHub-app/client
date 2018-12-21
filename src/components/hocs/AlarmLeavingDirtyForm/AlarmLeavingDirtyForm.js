@@ -63,8 +63,8 @@ export default function AlarmLeavingDirtyForm(WrappedComponent) {
                         icon="warning-sign"
                         intent={Intent.WARNING}
                         isOpen={isOpenLeaveConfirmDialog}
-                        confirmButtonText="Продолжить"
-                        cancelButtonText="Отмена"
+                        confirmButtonText="Продолжить без сохранения"
+                        cancelButtonText="Остаться"
                         onConfirm={this.applyLeaveConfirmDialog}
                         onCancel={this.closeLeaveConfirmDialog}
                     >

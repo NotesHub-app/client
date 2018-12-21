@@ -20,6 +20,7 @@ class WS {
         this.io = socketIoClient(config.socketUrl, {
             query: {
                 token: localStorage.getItem('noteshub:token'),
+                clientId: config.wsClientId,
             },
         });
 
@@ -42,13 +43,11 @@ class WS {
     handleNoteUpdated = ({ note }) => {
         note = Immutable.fromJS(note);
         // Только если уже не обновлено
-        const currentNoteUpdatedAt = this.store.getState().data.getIn(['notes', note.get('id'), 'updatedAt']);
-        if (currentNoteUpdatedAt !== note.get('updatedAt')) {
-            this.store.dispatch({
-                type: SET_NOTE,
-                note,
-            });
-        }
+
+        this.store.dispatch({
+            type: SET_NOTE,
+            note,
+        });
     };
 
     /**
@@ -57,29 +56,26 @@ class WS {
      */
     handleNoteFileUpdated = ({ noteId, file }) => {
         file = Immutable.fromJS(file);
-        // Только если уже не обновлено
-        const currentFileUpdatedAt = this.store.getState().data.getIn(['files', file.get('id'), 'updatedAt']);
-        if (currentFileUpdatedAt !== file.get('updatedAt')) {
-            // Добавляем файл к заметке
-            let note = this.store.getState().data.getIn(['notes', noteId]);
-            const noteFileIds = note.get('fileIds', new Immutable.List());
-            if (!noteFileIds.includes(file.get('id'))) {
-                note = note.set('fileIds', noteFileIds.push(file.get('id')));
-            }
 
-            this.store.dispatch(
-                batchActions([
-                    {
-                        type: SET_FILE,
-                        file,
-                    },
-                    {
-                        type: SET_NOTE,
-                        note,
-                    },
-                ])
-            );
+        // Добавляем файл к заметке
+        let note = this.store.getState().data.getIn(['notes', noteId]);
+        const noteFileIds = note.get('fileIds', new Immutable.List());
+        if (!noteFileIds.includes(file.get('id'))) {
+            note = note.set('fileIds', noteFileIds.push(file.get('id')));
         }
+
+        this.store.dispatch(
+            batchActions([
+                {
+                    type: SET_FILE,
+                    file,
+                },
+                {
+                    type: SET_NOTE,
+                    note,
+                },
+            ])
+        );
     };
 
     /**
@@ -123,14 +119,10 @@ class WS {
      */
     handleGroupUpdated = ({ group }) => {
         group = Immutable.fromJS(group);
-        // Только если уже не обновлено
-        const currentNoteUpdatedAt = this.store.getState().data.getIn(['groups', group.get('id'), 'updatedAt']);
-        if (currentNoteUpdatedAt !== group.get('updatedAt')) {
-            this.store.dispatch({
-                type: SET_GROUP,
-                group,
-            });
-        }
+        this.store.dispatch({
+            type: SET_GROUP,
+            group,
+        });
     };
 
     /**

@@ -46,6 +46,7 @@ module.exports = {
         'no-param-reassign': 'off',
         'class-methods-use-this': 'off',
         'no-shadow': 'off',
+        'consistent-return': 'off',
         'spaced-comment': ['error', 'always'],
     },
 };

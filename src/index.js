@@ -8,10 +8,19 @@ import { isElectron } from './utils/electron-helpers';
 import * as serviceWorker from './serviceWorker';
 import { refreshToken } from './redux/modules/user/actions';
 import ws from './ws';
+import { getServerConfiguration } from './config';
 
 prepareBrowserEnv();
 
 (async () => {
+    try {
+        await getServerConfiguration();
+    } catch (e) {
+        document.getElementById('root').innerHTML =
+            '<h1 class="server-not-available">НЕ УДАЛОСЬ УСТАНОВИТЬ СОЕДИНЕНИЕ С СЕРВЕРОМ!</h1>';
+        return;
+    }
+
     // Инициализирует redux-store
     const store = configureStore();
 

@@ -22,20 +22,13 @@ const processUserTokens = user => {
  * @param password
  * @param remember
  * @param githubCallbackQuery
+ * @param googleCallbackQuery
  */
 export function login({ email, password, remember, githubCallbackQuery, googleCallbackQuery }) {
     return async (dispatch, getState) => {
         let user;
-        if (email && password) {
-            user = await dispatch(
-                callApi({
-                    endpoint: 'auth/login',
-                    method: 'post',
-                    params: { email, password },
-                    requireAuth: false,
-                })
-            );
-        } else if (githubCallbackQuery) {
+
+        if (githubCallbackQuery) {
             user = await dispatch(
                 callApi({
                     endpoint: `auth/github${githubCallbackQuery}`,
@@ -52,7 +45,14 @@ export function login({ email, password, remember, githubCallbackQuery, googleCa
                 })
             );
         } else {
-            throw new Error('Неверные параметры метода аутентификации!');
+            user = await dispatch(
+                callApi({
+                    endpoint: 'auth/login',
+                    method: 'post',
+                    params: { email, password },
+                    requireAuth: false,
+                })
+            );
         }
 
         user = Immutable.fromJS(user);
