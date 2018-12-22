@@ -53,7 +53,7 @@ export class NoteEditor extends React.Component {
                     this.submit = handleSubmit;
                     return (
                         <div className={styles.root} onSubmit={handleSubmit}>
-                            <AutoSave debounce={1000} save={this.handleSubmit} />
+                            <AutoSave debounce={500} save={this.handleSubmit} />
 
                             <DragFileArea noteId={noteId} />
                             <div className={styles.header}>

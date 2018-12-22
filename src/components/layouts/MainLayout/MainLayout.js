@@ -11,14 +11,14 @@ import LoadingPage from '../../views/LoadingPage';
 
 export class MainLayout extends React.Component {
     render() {
-        const { children, user, dataReady } = this.props;
+        const { children, user, dataReady, location: { pathname } } = this.props;
 
         if (!user) {
-            return <Redirect to="/login" />;
+            return <Redirect to={`/login?back=${encodeURIComponent(pathname)}`} />;
         }
 
         if (!dataReady) {
-            return <LoadingPage/>;
+            return <LoadingPage />;
         }
 
         return (

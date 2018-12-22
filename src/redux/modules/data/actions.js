@@ -14,6 +14,7 @@ import {
 import { callApi } from '../api/actions';
 import { listToMap } from '../../../utils/immutable';
 import { removeNoteFileIds } from '../../../utils/data';
+import DiffMatchPatch from 'diff-match-patch';
 
 /**
  * Получение заметок
@@ -42,18 +43,33 @@ export function updateNote(noteId, noteContent) {
         let updatedNote = currentNote;
         forEach(noteContent, (value, field) => {
             if (currentNote.get(field) !== value) {
-                data[field] = value;
+                // Контент отправляем в diff варианте для экономии трафика
+                if (field === 'content') {
+                    const dmp = new DiffMatchPatch();
+                    data[field] = dmp.patch_make(currentNote.get(field), value);
+                } else {
+                    data[field] = value;
+                }
+
                 updatedNote = updatedNote.set(field, value);
             }
         });
         // Только если что-то поменялось
         if (Object.keys(data).length) {
-            await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
+            try {
+                await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
 
-            dispatch({
-                type: SET_NOTE,
-                note: updatedNote,
-            });
+                dispatch({
+                    type: SET_NOTE,
+                    note: updatedNote,
+                });
+            } catch (e) {
+                // Если при сохранении произошел конфликт патчинга контента - значит наше
+                // содержимое не актуально - перезагружаем заметку
+                if (e.status === 409) {
+                    dispatch(getNoteDetails(noteId));
+                }
+            }
         }
     };
 }

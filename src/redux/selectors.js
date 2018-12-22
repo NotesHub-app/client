@@ -73,6 +73,7 @@ export const loginFormUrlParamsSelector = createSelector(
     url => ({
         afterRegistration: !!getUrlQueryParameterByName('afterRegistration', url),
         afterRestorePassword: !!getUrlQueryParameterByName('afterRestorePassword', url),
+        back: getUrlQueryParameterByName('back', url),
         email: getUrlQueryParameterByName('email', url),
     })
 );

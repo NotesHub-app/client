@@ -23,14 +23,18 @@ export class LoginPage extends Component {
     }
 
     handleSubmit = async params => {
-        const { login, push } = this.props;
+        const { login, push, back } = this.props;
 
         try {
             localStorage.setItem('noteshub:lastEmail', params.email);
 
             await login(params);
 
-            push('/');
+            if (back) {
+                push(back);
+            } else {
+                push('/');
+            }
         } catch (e) {
             if (e.status === 401) {
                 return { [FORM_ERROR]: 'Неверный логин или пароль!' };
@@ -162,9 +166,8 @@ function mapStateToProps(state, ownProps) {
     const loginFormUrlParams = loginFormUrlParamsSelector(window.location.href);
     const lastEmail = localStorage.getItem('noteshub:lastEmail') || '';
     return {
+        ...loginFormUrlParams,
         user: userSelector(state),
-        afterRegistration: loginFormUrlParams.afterRegistration,
-        afterRestorePassword: loginFormUrlParams.afterRestorePassword,
         initialValues: {
             remember: true,
             email: loginFormUrlParams.email || lastEmail,
@@ -172,10 +175,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        login,
-        push,
-    }
-)(LoginPage);
+export default connect(mapStateToProps, {
+    login,
+    push,
+})(LoginPage);
