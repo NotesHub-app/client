@@ -10,6 +10,7 @@ import { registration, logout } from '../../../redux/modules/user/actions';
 import AlreadyHaveAccountBlock from '../../common/AlreadyHaveAccountBlock';
 import { processServerValidationError, minLength, required } from '../../../utils/formValidation';
 import InputGroupField from '../../fields/InputGroupField';
+import config from '../../../config';
 
 export class RegistrationPage extends Component {
     state = {
@@ -21,6 +22,13 @@ export class RegistrationPage extends Component {
 
         if (user !== null) {
             logout('/');
+        }
+
+        // Если сервер требует рекапчу - подгружаем скрипт рекапчи с сайта гугла
+        if (config.serverConfiguration.useRecaptcha) {
+            const tag = document.createElement('script');
+            tag.src = `https://www.google.com/recaptcha/api.js?render=${config.serverConfiguration.recaptchaClientKey}`;
+            document.getElementsByTagName('head')[0].appendChild(tag);
         }
     }
 
@@ -38,19 +46,26 @@ export class RegistrationPage extends Component {
     };
 
     withoutCodeBlockSubmit = async params => {
-        const { registration } = this.props;
+        const { registration, push } = this.props;
         if (minLength(8)(params.password)) {
             return {
                 password: 'Длина пароля должна быть не менее 8 символов',
             };
         }
         try {
-            params.recaptchaToken = await window.grecaptcha.execute('6LcVsoMUAAAAAMRPEvxDtWqRX87yYUuTRBvQEOB9', {
-                action: 'registration',
-            });
+            if (config.serverConfiguration.useRecaptcha) {
+                params.recaptchaToken = await window.grecaptcha.execute(config.serverConfiguration.recaptchaClientKey, {
+                    action: 'registration',
+                });
+            }
 
             await registration(params);
-            this.setState({ showCodeBlock: true });
+
+            if (config.serverConfiguration.emailRegistrationConfirmation) {
+                this.setState({ showCodeBlock: true });
+            } else {
+                push(`/login?afterRegistration=1&email=${params.email}`);
+            }
         } catch (e) {
             // Если проверка капчи не удалась
             if (e.status === 403) {
@@ -185,11 +200,8 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        registration,
-        push,
-        logout,
-    }
-)(RegistrationPage);
+export default connect(mapStateToProps, {
+    registration,
+    push,
+    logout,
+})(RegistrationPage);

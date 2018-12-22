@@ -9,9 +9,9 @@ import styles from './styles.module.scss';
 import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selectors';
 import { login } from '../../../redux/modules/user/actions';
 import CheckboxField from '../../fields/CheckboxField/CheckboxField';
-import config from '../../../config';
 import { processServerValidationError } from '../../../utils/formValidation';
 import InputGroupField from '../../fields/InputGroupField';
+import AlternativeLogin from './AlternativeLogin';
 
 export class LoginPage extends Component {
     componentDidMount() {
@@ -67,7 +67,7 @@ export class LoginPage extends Component {
                                         {afterRegistration && (
                                             <div className={styles.afterMessage}>
                                                 Спасибо за регистрацию!
-                                                <br /> Теперь вы можете авторизоваться.
+                                                <br /> Используйте указанные данные для входа.
                                             </div>
                                         )}
                                         {afterRestorePassword && (
@@ -131,30 +131,7 @@ export class LoginPage extends Component {
 
                     <div className={classNames(styles.noAccountBlock)}>
                         Нет аккаунта? <Link to="/registration">Зарегистрироваться!</Link>
-                        <div className="text-muted" style={{ marginTop: 20 }}>
-                            &mdash; или войти через &mdash;
-                        </div>
-                        <div className={styles.externalAuthServices}>
-                            <a href={`${config.apiUrl}/auth/google`} className="item">
-                                <img
-                                    src="/static/icons/google.svg"
-                                    alt="_"
-                                    className={classNames(styles.icon, styles.googleIcon)}
-                                />
-                                <br />
-                                Google
-                            </a>
-
-                            <a href={`${config.apiUrl}/auth/github`} className="item">
-                                <img
-                                    src="/static/icons/github.svg"
-                                    alt="_"
-                                    className={classNames(styles.icon, styles.githubIcon)}
-                                />
-                                <br />
-                                Github
-                            </a>
-                        </div>
+                        <AlternativeLogin />
                     </div>
                 </div>
             </div>

@@ -13,7 +13,7 @@ export default class SelectField extends React.Component {
                 PropTypes.shape({
                     label: PropTypes.any,
                     value: PropTypes.any.isRequired,
-                })
+                }),
             ),
             PropTypes.arrayOf(PropTypes.node),
         ]),
@@ -21,9 +21,7 @@ export default class SelectField extends React.Component {
     };
 
     itemRenderer = (item, { handleClick }) => {
-        const {
-            input: { value },
-        } = this.props;
+        const { input: { value } } = this.props;
 
         return (
             <MenuItem
@@ -37,19 +35,14 @@ export default class SelectField extends React.Component {
     };
 
     handleSelect = item => {
-        const {
-            input: { onChange },
-        } = this.props;
+        const { input: { onChange } } = this.props;
         onChange(item.value);
     };
 
     render() {
         let { options } = this.props;
-        const { className, meta } = this.props;
-        const {
-            buttonClassName,
-            input: { value },
-        } = this.props;
+        const { className, meta, disabled } = this.props;
+        const { buttonClassName, input: { value } } = this.props;
 
         if (options[0] !== undefined && !_.isObject(options[0])) {
             options = options.map(option => ({ value: option, label: option }));
@@ -69,11 +62,13 @@ export default class SelectField extends React.Component {
                     className={className}
                     noResults={<MenuItem disabled={true} text="Нет вариантов." />}
                     popoverProps={{ minimal: true }}
+                    disabled={disabled}
                 >
                     <Button
                         className={classNames('selectButton', buttonClassName)}
                         text={valueItem !== undefined ? _.toString(valueLabel) : 'Выбрать...'}
                         rightIcon="double-caret-vertical"
+                        disabled={disabled}
                     />
                 </Select>
 

@@ -114,7 +114,7 @@ export class GroupConfigurationDialog extends React.Component {
     }
 
     render() {
-        const { isOpen, groupLoaded, initialValues } = this.props;
+        const { isOpen, groupLoaded, initialValues, user } = this.props;
         const { isOpenCopyLinkAlert, linkToCopy } = this.state;
 
         return (
@@ -138,7 +138,7 @@ export class GroupConfigurationDialog extends React.Component {
                                             <Field name="title" component={InputGroupField} />
                                         </Label>
 
-                                        <Field name="users" component={GroupUsersField} />
+                                        <Field name="users" component={GroupUsersField} userId={user.get('id')}/>
                                     </div>
                                 ) : (
                                     <div className={Classes.DIALOG_BODY}>Загрузка группы...</div>

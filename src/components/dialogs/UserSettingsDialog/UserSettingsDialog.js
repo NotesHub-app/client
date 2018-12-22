@@ -8,13 +8,13 @@ import InputGroupField from '../../fields/InputGroupField';
 import { processServerValidationError } from '../../../utils/formValidation';
 import { updateUser } from '../../../redux/modules/user/actions';
 
-const UserSettingsInlineTextField = ({ label, name }) => (
+const UserSettingsInlineTextField = ({ label, name, type }) => (
     <label className="bp3-form-group bp3-inline row">
         <div className="col-xs-5 end-xs no-padding label">
             <Label>{label}:</Label>
         </div>
         <div className="col-xs-7">
-            <Field name={name} component={InputGroupField} />
+            <Field name={name} component={InputGroupField} type={type} />
         </div>
     </label>
 );
@@ -87,9 +87,13 @@ export class UserSettingsDialog extends React.Component {
 
                                 <header>Смена пароля</header>
 
-                                <UserSettingsInlineTextField label="Старый пароль" name="oldPassword" />
-                                <UserSettingsInlineTextField label="Новый пароль" name="newPassword" />
-                                <UserSettingsInlineTextField label="Подтверждение пароля" name="confirmPassword" />
+                                <UserSettingsInlineTextField label="Старый пароль" name="oldPassword" type="password" />
+                                <UserSettingsInlineTextField label="Новый пароль" name="newPassword" type="password" />
+                                <UserSettingsInlineTextField
+                                    label="Подтверждение пароля"
+                                    name="confirmPassword"
+                                    type="password"
+                                />
                             </div>
 
                             <div className={Classes.DIALOG_FOOTER}>
@@ -119,9 +123,6 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    {
-        updateUser,
-    }
-)(UserSettingsDialog);
+export default connect(mapStateToProps, {
+    updateUser,
+})(UserSettingsDialog);

@@ -5,10 +5,11 @@ import classNames from 'classnames';
 import { Button, Intent } from '@blueprintjs/core';
 import SelectField from '../SelectField';
 import styles from './styles.module.scss';
+import PropTypes from 'prop-types';
 
 class RoleSelector extends React.Component {
     render() {
-        const { value, onChange } = this.props;
+        const { value, onChange, disabled } = this.props;
         return (
             <SelectField
                 input={{ value, onChange }}
@@ -17,6 +18,7 @@ class RoleSelector extends React.Component {
                     { value: 1, label: 'Редактор' },
                     { value: 2, label: 'Только чтение' },
                 ]}
+                disabled={disabled}
                 className={styles.roleSelect}
                 portalClassName={styles.roleSelectPortal}
                 buttonClassName="bp3-small"
@@ -26,10 +28,13 @@ class RoleSelector extends React.Component {
 }
 
 export default class GroupUsersField extends React.Component {
+    static propTypes = {
+        // ID текущего пользователя системы (он всегда задизаблен на форме)
+        userId: PropTypes.string,
+    };
+
     handleChangeValue = (field, id, value) => {
-        const {
-            input: { value: values, onChange },
-        } = this.props;
+        const { input: { value: values, onChange } } = this.props;
 
         const resultValues = [...values];
         const itemIndex = resultValues.findIndex(i => i.id === id);
@@ -67,9 +72,7 @@ export default class GroupUsersField extends React.Component {
     }
 
     render() {
-        const {
-            input: { value: values },
-        } = this.props;
+        const { input: { value: values }, userId } = this.props;
 
         if (!values) {
             return null;
@@ -91,7 +94,6 @@ export default class GroupUsersField extends React.Component {
                             noItemsLabel="Нет других пользователей"
                             dynamicColumnWidth={true}
                             overflowWidth={8}
-                            // disableHeader={true}
                         >
                             <Column
                                 label="Адрес"
@@ -99,7 +101,9 @@ export default class GroupUsersField extends React.Component {
                                 cellRenderer={({ dataKey, rowData }) => (
                                     <div className={classNames('VTCellContent')}>
                                         <div className={classNames({ [styles.removedUser]: rowData.deleted })}>
-                                            {rowData.userName}
+                                            <span style={{ fontWeight: userId === rowData.id ? 'bold' : undefined }}>
+                                                {rowData.userName}
+                                            </span>
                                             {this.renderUserDescription(rowData)}
                                         </div>
                                     </div>
@@ -114,6 +118,7 @@ export default class GroupUsersField extends React.Component {
                                         <RoleSelector
                                             value={rowData.role}
                                             onChange={val => this.handleChangeValue('role', rowData.id, val)}
+                                            disabled={userId === rowData.id}
                                         />
                                     </div>
                                 )}
@@ -140,6 +145,7 @@ export default class GroupUsersField extends React.Component {
                                                 icon="trash"
                                                 title="Удалить пользователя из группы"
                                                 intent={Intent.DANGER}
+                                                disabled={userId === rowData.id}
                                                 onClick={() => this.handleChangeValue('deleted', rowData.id, true)}
                                             />
                                         )}
