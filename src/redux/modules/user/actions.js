@@ -51,6 +51,7 @@ export function login({ email, password, remember, githubCallbackQuery, googleCa
                     method: 'post',
                     params: { email, password },
                     requireAuth: false,
+                    tryToRefreshToken: false,
                 }),
             );
         }

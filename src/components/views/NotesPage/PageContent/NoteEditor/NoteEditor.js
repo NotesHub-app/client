@@ -22,12 +22,6 @@ export class NoteEditor extends React.Component {
         note: PropTypes.object.isRequired,
     };
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (this.props.noteId !== nextProps.noteId) {
-            this.submit();
-        }
-    }
-
     handleSubmit = async values => {
         const { updateNote, noteId } = this.props;
         try {
@@ -49,58 +43,51 @@ export class NoteEditor extends React.Component {
                     content: note.get('content'),
                 }}
                 subscription={{}}
-                render={({ handleSubmit, dirty }) => {
-                    this.submit = handleSubmit;
-                    return (
-                        <div className={styles.root} onSubmit={handleSubmit}>
-                            <AutoSave debounce={500} save={this.handleSubmit} />
+                render={({ handleSubmit }) => (
+                    <div className={styles.root} onSubmit={handleSubmit}>
+                        <AutoSave debounce={500} save={this.handleSubmit} />
 
-                            <DragFileArea noteId={noteId} />
-                            <div className={styles.header}>
-                                <div>
-                                    <Field name="icon" component={SelectIconField} />
-                                </div>
-
-                                <div>
-                                    <Field name="iconColor" component={SelectColorField} />
-                                </div>
-
-                                <div style={{ flexGrow: 1 }}>
-                                    <Field
-                                        name="title"
-                                        component={InputGroupField}
-                                        placeholder="Заголовок заметки..."
-                                    />
-                                </div>
-
-                                <div>
-                                    <Popover
-                                        position={Position.BOTTOM}
-                                        content={
-                                            <NoteMenu
-                                                {...{
-                                                    setRemoveNoteAlertStatus,
-                                                    expendNavigationTreeNode,
-                                                    createNote,
-                                                    push,
-                                                }}
-                                                note={note}
-                                            />
-                                        }
-                                    >
-                                        <Button icon="chevron-down" minimal />
-                                    </Popover>
-                                </div>
-
-                                <div>
-                                    <ViewModeSelect />
-                                </div>
+                        <DragFileArea noteId={noteId} />
+                        <div className={styles.header}>
+                            <div>
+                                <Field name="icon" component={SelectIconField} />
                             </div>
-                            <Field name="content" component={ContentEditor} noteId={noteId} />
-                            <Footer noteId={noteId} />
+
+                            <div>
+                                <Field name="iconColor" component={SelectColorField} />
+                            </div>
+
+                            <div style={{ flexGrow: 1 }}>
+                                <Field name="title" component={InputGroupField} placeholder="Заголовок заметки..." />
+                            </div>
+
+                            <div>
+                                <Popover
+                                    position={Position.BOTTOM}
+                                    content={
+                                        <NoteMenu
+                                            {...{
+                                                setRemoveNoteAlertStatus,
+                                                expendNavigationTreeNode,
+                                                createNote,
+                                                push,
+                                            }}
+                                            note={note}
+                                        />
+                                    }
+                                >
+                                    <Button icon="chevron-down" minimal />
+                                </Popover>
+                            </div>
+
+                            <div>
+                                <ViewModeSelect />
+                            </div>
                         </div>
-                    );
-                }}
+                        <Field name="content" component={ContentEditor} noteId={noteId} />
+                        <Footer noteId={noteId} />
+                    </div>
+                )}
             />
         );
     }

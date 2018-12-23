@@ -26,12 +26,27 @@ export default class SelectIconField extends React.Component {
         this.handleClose();
     };
 
-    handleClickOpenBtn = () => {
-        this.setState(prevState => ({ isOpen: !prevState.isOpen }));
+    handleClickOpenBtn = e => {
+        const {
+            input: { onFocus },
+        } = this.props;
+
+        this.setState(
+            prevState => ({ isOpen: !prevState.isOpen }),
+            () => {
+                onFocus(e);
+            },
+        );
     };
 
-    handleClose = () => {
-        this.setState({ isOpen: false });
+    handleClose = e => {
+        const {
+            input: { onBlur },
+        } = this.props;
+
+        this.setState({ isOpen: false }, () => {
+            onBlur(e);
+        });
     };
 
     render() {

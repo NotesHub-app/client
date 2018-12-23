@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
@@ -13,7 +12,7 @@ export class Delimiter extends React.Component {
     initX = null;
 
     handleActivate = e => {
-        const el = ReactDOM.findDOMNode(this).parentElement;
+        const el = this.node.parentElement;
 
         const rect = el.getBoundingClientRect();
         this.parentLeft = rect.left;
@@ -52,17 +51,21 @@ export class Delimiter extends React.Component {
         return (
             <React.Fragment>
                 <div
+                    ref={i => {
+                        this.node = i;
+                    }}
                     className={classNames(styles.root, { [styles.active]: active })}
                     onMouseDown={this.handleActivate}
-                />
-                {active && (
-                    <div
-                        className={styles.movingLayer}
-                        onMouseLeave={this.handleDeactivate}
-                        onMouseUp={this.handleDeactivate}
-                        onMouseMove={this.handleMove}
-                    />
-                )}
+                >
+                    {active && (
+                        <div
+                            className={styles.movingLayer}
+                            onMouseLeave={this.handleDeactivate}
+                            onMouseUp={this.handleDeactivate}
+                            onMouseMove={this.handleMove}
+                        />
+                    )}
+                </div>
             </React.Fragment>
         );
     }

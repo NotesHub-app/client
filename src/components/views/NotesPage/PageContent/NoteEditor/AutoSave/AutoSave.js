@@ -5,42 +5,54 @@ import diff from 'object-diff';
 class AutoSave extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { values: props.values, submitting: false };
+        this.state = {
+            values: props.values,
+            submitting: false,
+            timeout: null,
+            save: async () => {
+                if (this.promise) {
+                    await this.promise;
+                }
+                const { values, save } = this.props;
+
+                const difference = diff(this.state.values, values);
+
+                if (Object.keys(difference).length) {
+                    // Если что-то поменялось
+                    this.setState({ submitting: true, values });
+                    this.promise = save(difference);
+                    await this.promise;
+                    delete this.promise;
+                    this.setState({ submitting: false });
+                }
+            },
+        };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.timeout) {
-            clearTimeout(this.timeout);
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.timeout) {
+            clearTimeout(prevState.timeout);
         }
-        this.timeout = setTimeout(this.save, this.props.debounce);
+
+        if (prevState.active && prevState.active !== nextProps.active) {
+            // Какое-то поле потеряло фокус
+            prevState.save();
+            return {};
+        }
+
+        return { timeout: setTimeout(prevState.save, nextProps.debounce), active: nextProps.active };
     }
 
     componentWillUnmount() {
-        if (this.timeout) {
-            clearTimeout(this.timeout);
+        if (this.state.timeout) {
+            clearTimeout(this.state.timeout);
         }
     }
-
-    save = async () => {
-        if (this.promise) {
-            await this.promise;
-        }
-        const { values, save } = this.props;
-
-        const difference = diff(this.state.values, values);
-        if (Object.keys(difference).length) {
-            // values have changed
-            this.setState({ submitting: true, values });
-            this.promise = save(difference);
-            await this.promise;
-            delete this.promise;
-            this.setState({ submitting: false });
-        }
-    };
 
     render() {
         return null;
     }
 }
 
-export default props => <FormSpy {...props} subscription={{ values: true }} component={AutoSave} />;
+const AutoSaveSpy = props => <FormSpy {...props} subscription={{ active: true, values: true }} component={AutoSave} />;
+export default AutoSaveSpy;

@@ -1,10 +1,17 @@
 module.exports = {
     parser: 'babel-eslint',
-    extends: ['airbnb-base', 'react-app', 'plugin:sonarjs/recommended', 'plugin:import/errors', 'prettier'],
+    extends: [
+        'airbnb-base',
+        'react-app',
+        'plugin:sonarjs/recommended',
+        'plugin:import/errors',
+        'prettier',
+        'plugin:react/recommended',
+    ],
     env: {
         jest: true,
     },
-    plugins: ['import', 'sonarjs'],
+    plugins: ['import', 'sonarjs', 'react'],
     rules: {
         indent: ['error', 4, { SwitchCase: 1 }],
         'max-len': ['error', 120],
@@ -48,5 +55,11 @@ module.exports = {
         'no-shadow': 'off',
         'consistent-return': 'off',
         'spaced-comment': ['error', 'always'],
+        'react/prop-types': 'off',
+    },
+    settings: {
+        react: {
+            version: require('react/package.json').version,
+        },
     },
 };

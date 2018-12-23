@@ -57,12 +57,12 @@ export function updateNote(noteId, noteContent) {
         // Только если что-то поменялось
         if (Object.keys(data).length) {
             try {
-                await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
-
                 dispatch({
                     type: SET_NOTE,
                     note: updatedNote,
                 });
+
+                await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
             } catch (e) {
                 // Если при сохранении произошел конфликт патчинга контента - значит наше
                 // содержимое не актуально - перезагружаем заметку
