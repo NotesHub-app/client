@@ -1,3 +1,3 @@
-import FooterResizer from './FooterResizer'
+import FooterResizer from './FooterResizer';
 
 export default FooterResizer;

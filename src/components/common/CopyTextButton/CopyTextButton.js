@@ -11,7 +11,7 @@ export default class CopyTextButton extends React.Component {
     handleClick = e => {
         const { textToCopy } = this.props;
 
-        copyTextToBuffer(textToCopy)
+        copyTextToBuffer(textToCopy);
     };
 
     render() {

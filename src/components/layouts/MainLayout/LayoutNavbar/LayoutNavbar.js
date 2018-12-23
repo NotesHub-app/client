@@ -17,15 +17,12 @@ export class LayoutNavbar extends React.Component {
                     [styles.electron]: isElectron(),
                 })}
             >
-
                 <NavbarGroup align={Alignment.LEFT}>
                     <NavbarHeading className={tc('logo')}>NotesHub</NavbarHeading>
                     <NavbarDivider />
                     {isElectron() && <ElectronNavigation />}
                 </NavbarGroup>
-                <NavbarGroup align={Alignment.RIGHT}>
-                    {isElectron() && <ElectronAppControls />}
-                </NavbarGroup>
+                <NavbarGroup align={Alignment.RIGHT}>{isElectron() && <ElectronAppControls />}</NavbarGroup>
             </Navbar>
         );
     }
@@ -41,5 +38,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
     mapStateToProps,
-    {}
+    {},
 )(LayoutNavbar);

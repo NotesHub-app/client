@@ -1,25 +1,17 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 export class History extends React.Component {
     render() {
-        return (
-            <div>
-                History
-            </div>
-        )
+        return <div>History</div>;
     }
 }
 
 function mapStateToProps(state, ownProps) {
-    return {
-
-    }
+    return {};
 }
 
 export default connect(
     mapStateToProps,
-    {
-
-    }
-)(History)
+    {},
+)(History);

@@ -1,5 +1,5 @@
-import { removeNoteWithChildren } from '../data';
 import * as Immutable from 'immutable';
+import { removeNoteWithChildren } from '../data';
 
 describe('removeNoteWithChildren', () => {
     test('isOk!', () => {
@@ -13,7 +13,7 @@ describe('removeNoteWithChildren', () => {
         expect(removeNoteWithChildren(srcData, 'a1')).toEqual(
             Immutable.fromJS({
                 o1: { id: 'o1', parentId: null },
-            })
+            }),
         );
     });
 });

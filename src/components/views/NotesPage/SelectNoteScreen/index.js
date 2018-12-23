@@ -1,3 +1,3 @@
-import SelectNoteScreen from './SelectNoteScreen'
+import SelectNoteScreen from './SelectNoteScreen';
 
 export default SelectNoteScreen;

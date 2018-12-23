@@ -136,5 +136,5 @@ export default connect(
         collapseNavigationTreeNode,
         toggleNavigationTreeNode,
         push,
-    }
+    },
 )(NotesNavigation);

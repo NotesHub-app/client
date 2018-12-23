@@ -37,5 +37,5 @@ export default connect(
     {
         joinGroup,
         push,
-    }
+    },
 )(JoinGroupPage);

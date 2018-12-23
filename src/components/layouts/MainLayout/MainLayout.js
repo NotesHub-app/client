@@ -11,7 +11,12 @@ import LoadingPage from '../../views/LoadingPage';
 
 export class MainLayout extends React.Component {
     render() {
-        const { children, user, dataReady, location: { pathname } } = this.props;
+        const {
+            children,
+            user,
+            dataReady,
+            location: { pathname },
+        } = this.props;
 
         if (!user) {
             return <Redirect to={`/login?back=${encodeURIComponent(pathname)}`} />;
@@ -39,4 +44,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {})(MainLayout);
+export default connect(
+    mapStateToProps,
+    {},
+)(MainLayout);

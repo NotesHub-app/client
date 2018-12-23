@@ -1,3 +1,3 @@
-import CodeRenderer from './CodeRenderer'
+import CodeRenderer from './CodeRenderer';
 
 export default CodeRenderer;

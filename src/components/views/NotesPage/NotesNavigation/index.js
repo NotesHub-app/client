@@ -1,3 +1,3 @@
-import NotesNavigation from './NotesNavigation'
+import NotesNavigation from './NotesNavigation';
 
 export default NotesNavigation;

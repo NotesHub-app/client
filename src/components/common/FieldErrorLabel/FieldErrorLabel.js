@@ -11,8 +11,9 @@ export default class FieldErrorLabel extends React.Component {
 
         return (
             <div>
-                {(meta.error || meta.submitError) &&
-                    meta.touched && <SubLabel error>{meta.error || meta.submitError}</SubLabel>}
+                {(meta.error || meta.submitError) && meta.touched && (
+                    <SubLabel error>{meta.error || meta.submitError}</SubLabel>
+                )}
             </div>
         );
     }

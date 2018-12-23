@@ -1,6 +1,7 @@
 import * as Immutable from 'immutable';
 import forEach from 'lodash/forEach';
 import { batchActions } from 'redux-batched-actions';
+import DiffMatchPatch from 'diff-match-patch';
 import {
     SET_NOTES,
     SET_NOTE,
@@ -14,7 +15,6 @@ import {
 import { callApi } from '../api/actions';
 import { listToMap } from '../../../utils/immutable';
 import { removeNoteFileIds } from '../../../utils/data';
-import DiffMatchPatch from 'diff-match-patch';
 
 /**
  * Получение заметок

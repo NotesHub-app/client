@@ -16,7 +16,7 @@ export class Delimiter extends React.Component {
         const el = ReactDOM.findDOMNode(this).parentElement;
 
         const rect = el.getBoundingClientRect();
-        this.parentLeft = rect.left ;
+        this.parentLeft = rect.left;
         this.parentWidth = el.offsetWidth;
 
         this.initX = e.clientX;

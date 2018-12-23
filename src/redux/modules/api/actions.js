@@ -77,9 +77,10 @@ export function callApi({
                 // Делаем изначальный запрос снова
                 return dispatch(
                     callApi({
+                        // eslint-disable-next-line
                         ...arguments[0],
                         tryToRefreshToken: false,
-                    })
+                    }),
                 );
             }
 

@@ -1,3 +1,3 @@
-import GroupConfigurationDialog from './GroupConfigurationDialog'
+import GroupConfigurationDialog from './GroupConfigurationDialog';
 
 export default GroupConfigurationDialog;

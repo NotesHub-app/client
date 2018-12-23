@@ -1,3 +1,3 @@
-import AutoSave from './AutoSave'
+import AutoSave from './AutoSave';
 
 export default AutoSave;

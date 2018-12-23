@@ -3,9 +3,9 @@ import { Table, Column } from 'react-vt-table';
 import SizeMe from '@avinlab/react-size-me';
 import classNames from 'classnames';
 import { Button, Intent } from '@blueprintjs/core';
+import PropTypes from 'prop-types';
 import SelectField from '../SelectField';
 import styles from './styles.module.scss';
-import PropTypes from 'prop-types';
 
 class RoleSelector extends React.Component {
     render() {
@@ -34,7 +34,9 @@ export default class GroupUsersField extends React.Component {
     };
 
     handleChangeValue = (field, id, value) => {
-        const { input: { value: values, onChange } } = this.props;
+        const {
+            input: { value: values, onChange },
+        } = this.props;
 
         const resultValues = [...values];
         const itemIndex = resultValues.findIndex(i => i.id === id);
@@ -72,7 +74,10 @@ export default class GroupUsersField extends React.Component {
     }
 
     render() {
-        const { input: { value: values }, userId } = this.props;
+        const {
+            input: { value: values },
+            userId,
+        } = this.props;
 
         if (!values) {
             return null;

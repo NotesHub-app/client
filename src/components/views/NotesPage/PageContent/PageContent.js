@@ -33,7 +33,7 @@ export class PageContent extends React.Component {
                 {
                     reloading: true,
                 },
-                () => this.setState({ reloading: false })
+                () => this.setState({ reloading: false }),
             );
         }
 
@@ -95,5 +95,5 @@ export default connect(
     {
         getNoteDetails,
         push,
-    }
+    },
 )(PageContent);

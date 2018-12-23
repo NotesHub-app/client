@@ -32,7 +32,7 @@ const configureStore = () => {
 
     const composedEnhancers = compose(
         applyMiddleware(...middleware),
-        ...enhancers
+        ...enhancers,
     );
 
     const store = createStore(createRootReducer(history), initialState, composedEnhancers);

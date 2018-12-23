@@ -200,8 +200,11 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    registration,
-    push,
-    logout,
-})(RegistrationPage);
+export default connect(
+    mapStateToProps,
+    {
+        registration,
+        push,
+        logout,
+    },
+)(RegistrationPage);

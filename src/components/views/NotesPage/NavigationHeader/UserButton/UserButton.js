@@ -71,5 +71,5 @@ export default connect(
     mapStateToProps,
     {
         logout,
-    }
+    },
 )(UserButton);

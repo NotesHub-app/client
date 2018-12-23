@@ -28,5 +28,5 @@ export default connect(
     mapStateToProps,
     {
         push,
-    }
+    },
 )(RootPage);

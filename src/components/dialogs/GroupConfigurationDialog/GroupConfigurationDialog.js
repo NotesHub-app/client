@@ -138,7 +138,7 @@ export class GroupConfigurationDialog extends React.Component {
                                             <Field name="title" component={InputGroupField} />
                                         </Label>
 
-                                        <Field name="users" component={GroupUsersField} userId={user.get('id')}/>
+                                        <Field name="users" component={GroupUsersField} userId={user.get('id')} />
                                     </div>
                                 ) : (
                                     <div className={Classes.DIALOG_BODY}>Загрузка группы...</div>

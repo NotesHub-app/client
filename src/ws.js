@@ -75,7 +75,7 @@ class WS {
                     type: SET_NOTE,
                     note,
                 },
-            ])
+            ]),
         );
     };
 
@@ -97,7 +97,7 @@ class WS {
                     type: SET_NOTE,
                     note,
                 },
-            ])
+            ]),
         );
     };
 

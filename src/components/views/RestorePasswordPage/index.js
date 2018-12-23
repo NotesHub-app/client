@@ -1,3 +1,3 @@
 import RestorePasswordPage from './RestorePasswordPage';
 
-export default RestorePasswordPage
+export default RestorePasswordPage;

@@ -106,10 +106,7 @@ export default class Editor extends React.Component {
                 const uploadedFile = await uploadNoteFile({ noteId, fileObj, fileName });
 
                 // Вставляем в редактор ссылку на файл
-                editor.session.insert(
-                    editor.getCursorPosition(),
-                    getNoteFileLink(uploadedFile)
-                );
+                editor.session.insert(editor.getCursorPosition(), getNoteFileLink(uploadedFile));
             }
         }
     };

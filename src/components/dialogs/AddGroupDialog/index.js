@@ -1,3 +1,3 @@
-import AddGroupDialog from './AddGroupDialog'
+import AddGroupDialog from './AddGroupDialog';
 
 export default AddGroupDialog;

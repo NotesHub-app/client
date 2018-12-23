@@ -82,5 +82,5 @@ export default connect(
     mapStateToProps,
     {
         setNavigationFilter,
-    }
+    },
 )(NavigationFilter);

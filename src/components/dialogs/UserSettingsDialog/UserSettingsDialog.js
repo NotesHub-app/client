@@ -123,6 +123,9 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    updateUser,
-})(UserSettingsDialog);
+export default connect(
+    mapStateToProps,
+    {
+        updateUser,
+    },
+)(UserSettingsDialog);

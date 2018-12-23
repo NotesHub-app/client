@@ -122,5 +122,5 @@ export default connect(
         expendNavigationTreeNode,
         createNote,
         push,
-    }
+    },
 )(NoteEditor);

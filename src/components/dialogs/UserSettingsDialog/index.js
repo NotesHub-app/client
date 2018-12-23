@@ -1,3 +1,3 @@
-import UserSettingsDialog from './UserSettingsDialog'
+import UserSettingsDialog from './UserSettingsDialog';
 
 export default UserSettingsDialog;

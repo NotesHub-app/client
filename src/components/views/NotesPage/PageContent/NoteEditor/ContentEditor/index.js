@@ -1,3 +1,3 @@
-import ContentEditor from './ContentEditor'
+import ContentEditor from './ContentEditor';
 
 export default ContentEditor;

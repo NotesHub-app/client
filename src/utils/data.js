@@ -27,9 +27,9 @@ export function removeNoteWithChildren(notes, noteId) {
  * @param file
  * @returns {string}
  */
-export function getNoteFileLink(file){
+export function getNoteFileLink(file) {
     const isImage = file.get('mimeType', '').startsWith('image/');
-    return `${isImage ? '!' : ''}[${file.get('fileName')}](file://${file.get('downloadCode')})`
+    return `${isImage ? '!' : ''}[${file.get('fileName')}](file://${file.get('downloadCode')})`;
 }
 
 /**
@@ -38,7 +38,7 @@ export function getNoteFileLink(file){
  * @param fileIds
  * @returns {*}
  */
-export function removeNoteFileIds(note, fileIds){
-    const noteFileIds = note.get('fileIds', new Immutable.List()).filter(i =>  !fileIds.includes(i));
+export function removeNoteFileIds(note, fileIds) {
+    const noteFileIds = note.get('fileIds', new Immutable.List()).filter(i => !fileIds.includes(i));
     return note.set('fileIds', noteFileIds);
 }

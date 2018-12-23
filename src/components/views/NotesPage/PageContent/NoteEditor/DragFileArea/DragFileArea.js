@@ -112,5 +112,5 @@ export default connect(
     mapStateToProps,
     {
         uploadNoteFile,
-    }
+    },
 )(DragFileArea);

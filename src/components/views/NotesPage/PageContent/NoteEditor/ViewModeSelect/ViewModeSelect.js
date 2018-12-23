@@ -43,5 +43,5 @@ export default connect(
     mapStateToProps,
     {
         setUiSettingsValues,
-    }
+    },
 )(ViewModeSelect);

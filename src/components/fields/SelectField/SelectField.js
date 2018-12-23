@@ -21,7 +21,9 @@ export default class SelectField extends React.Component {
     };
 
     itemRenderer = (item, { handleClick }) => {
-        const { input: { value } } = this.props;
+        const {
+            input: { value },
+        } = this.props;
 
         return (
             <MenuItem
@@ -35,14 +37,19 @@ export default class SelectField extends React.Component {
     };
 
     handleSelect = item => {
-        const { input: { onChange } } = this.props;
+        const {
+            input: { onChange },
+        } = this.props;
         onChange(item.value);
     };
 
     render() {
         let { options } = this.props;
         const { className, meta, disabled } = this.props;
-        const { buttonClassName, input: { value } } = this.props;
+        const {
+            buttonClassName,
+            input: { value },
+        } = this.props;
 
         if (options[0] !== undefined && !_.isObject(options[0])) {
             options = options.map(option => ({ value: option, label: option }));

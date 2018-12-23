@@ -87,5 +87,5 @@ export default connect(
     mapStateToProps,
     {
         setActiveNoteFooterTab,
-    }
+    },
 )(Footer);

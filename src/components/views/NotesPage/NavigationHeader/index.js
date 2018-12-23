@@ -1,3 +1,3 @@
-import NavigationHeader from './NavigationHeader'
+import NavigationHeader from './NavigationHeader';
 
 export default NavigationHeader;

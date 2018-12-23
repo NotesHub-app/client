@@ -45,8 +45,7 @@ export default class NavigationHeader extends React.Component {
                     canEscapeKeyCancel
                 >
                     <div>
-                        NotesHub <br />
-                        © Avin Grape, 2018. Все права защищены.
+                        NotesHub <br />© Avin Grape, 2018. Все права защищены.
                     </div>
                     <div style={{ marginTop: 20 }}>
                         <a href="https://github.com/NotesHub-app" target="_blank" rel="noopener noreferrer">

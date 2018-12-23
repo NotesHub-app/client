@@ -224,7 +224,7 @@ export class Files extends React.Component {
                                                     className={classNames(
                                                         'fiv-sqo',
                                                         `fiv-icon-${rowData.get(dataKey)}`,
-                                                        styles.fileIcon
+                                                        styles.fileIcon,
                                                     )}
                                                 />
                                             </div>
@@ -260,10 +260,7 @@ export class Files extends React.Component {
                                         width={40}
                                         cellRenderer={({ dataKey, rowData }) => (
                                             <div className="VTCellContent">
-                                                <Tooltip
-                                                    content="Копировать ссылку для заметки"
-                                                    hoverOpenDelay={700}
-                                                >
+                                                <Tooltip content="Копировать ссылку для заметки" hoverOpenDelay={700}>
                                                     <CopyTextButton
                                                         textToCopy={getNoteFileLink(rowData)}
                                                         minimal
@@ -328,5 +325,5 @@ export default connect(
     {
         removeManyFiles,
         uploadNoteFile,
-    }
+    },
 )(Files);

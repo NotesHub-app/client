@@ -78,4 +78,7 @@ function mapStateToProps(state, ownProps) {
     return {};
 }
 
-export default connect(mapStateToProps, {})(ElectronAppControls);
+export default connect(
+    mapStateToProps,
+    {},
+)(ElectronAppControls);

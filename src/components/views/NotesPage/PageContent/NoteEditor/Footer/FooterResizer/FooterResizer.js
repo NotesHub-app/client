@@ -31,7 +31,7 @@ export class FooterResizer extends React.Component {
     handleMove = e => {
         const { setUiSettingsValues } = this.props;
 
-        const diffY = this.initY - e.clientY ;
+        const diffY = this.initY - e.clientY;
 
         let newHeight = this.originalHeight + diffY;
         newHeight = Math.max(200, newHeight);
@@ -42,14 +42,14 @@ export class FooterResizer extends React.Component {
 
     render() {
         const { active } = this.state;
-        const {footerContentHeight} = this.props;
+        const { footerContentHeight } = this.props;
 
         return (
             <React.Fragment>
                 <div
                     className={classNames(styles.root, { [styles.active]: active })}
                     onMouseDown={this.handleActivate}
-                    style={{bottom: footerContentHeight - 3}}
+                    style={{ bottom: footerContentHeight - 3 }}
                 />
                 {active && (
                     <div

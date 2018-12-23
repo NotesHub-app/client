@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
+import { Button, Intent } from '@blueprintjs/core';
 import { userSelector } from '../../../redux/selectors';
 import InputGroupField from '../../fields/InputGroupField';
 import { restorePassword } from '../../../redux/modules/user/actions';
@@ -139,14 +140,16 @@ export class RestorePasswordPage extends Component {
                                         )}
 
                                         <div className="text-center">
-                                            <button
+                                            <Button
+                                                intent={Intent.WARNING}
+                                                fill
+                                                icon="predictive-analysis"
                                                 type="submit"
                                                 disabled={submitting}
                                                 style={{ marginTop: 5 }}
-                                                className="bp3-button bp3-intent-warning bp3-fill bp3-icon-predictive-analysis"
                                             >
                                                 {this.getSubmitBtnLabel(submitting)}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -173,5 +176,5 @@ export default connect(
     {
         restorePassword,
         push,
-    }
+    },
 )(RestorePasswordPage);

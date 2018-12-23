@@ -1,3 +1,3 @@
-import NodeContent from './NodeContent'
+import NodeContent from './NodeContent';
 
 export default NodeContent;

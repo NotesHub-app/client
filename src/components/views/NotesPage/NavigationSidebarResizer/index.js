@@ -1,3 +1,3 @@
-import NavigationSidebarResizer from './NavigationSidebarResizer'
+import NavigationSidebarResizer from './NavigationSidebarResizer';
 
 export default NavigationSidebarResizer;

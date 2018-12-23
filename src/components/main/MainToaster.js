@@ -3,7 +3,9 @@ import { Position, Toaster } from '@blueprintjs/core';
 
 export default class MainToaster extends React.Component {
     refHandlers = {
-        toaster: ref => {this.toaster = ref},
+        toaster: ref => {
+            this.toaster = ref;
+        },
     };
 
     addToast = toast => {

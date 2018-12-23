@@ -62,7 +62,7 @@ export const navigationNodesSelector = createSelector(
         });
 
         return results;
-    }
+    },
 );
 
 /**
@@ -75,7 +75,7 @@ export const loginFormUrlParamsSelector = createSelector(
         afterRestorePassword: !!getUrlQueryParameterByName('afterRestorePassword', url),
         back: getUrlQueryParameterByName('back', url),
         email: getUrlQueryParameterByName('email', url),
-    })
+    }),
 );
 
 /**
@@ -86,7 +86,7 @@ export const joinGroupUrlParamsSelector = createSelector(
     url => ({
         code: getUrlQueryParameterByName('code', url),
         groupId: getUrlQueryParameterByName('group', url),
-    })
+    }),
 );
 
 /**
@@ -107,12 +107,12 @@ export const noteFilesListSelector = createSelector(
                     file
                         .get('fileName', '')
                         .split('.')
-                        .pop()
+                        .pop(),
                 );
                 result = result.push(file);
             }
         });
 
         return result;
-    }
+    },
 );

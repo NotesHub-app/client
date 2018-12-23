@@ -1,3 +1,3 @@
-import LinkRenderer from './LinkRenderer'
+import LinkRenderer from './LinkRenderer';
 
 export default LinkRenderer;

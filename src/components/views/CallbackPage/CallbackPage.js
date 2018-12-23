@@ -45,7 +45,10 @@ function mapStateToProps(state, ownProps) {
     return {};
 }
 
-export default connect(mapStateToProps, {
-    login,
-    push,
-})(CallbackPage);
+export default connect(
+    mapStateToProps,
+    {
+        login,
+        push,
+    },
+)(CallbackPage);

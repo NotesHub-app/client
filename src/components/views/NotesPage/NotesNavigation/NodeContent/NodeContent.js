@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Icon, ContextMenuTarget, Position, Popover } from '@blueprintjs/core';
 import classNames from 'classnames';
 import { push } from 'connected-react-router';
+import Substring from 'react-substring';
 import styles from './styles.module.scss';
 import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
 import { createNote } from '../../../../../redux/modules/data/actions';
 import { getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../../../../../utils/navigation';
 import NoteMenu from '../../../../menus/NoteMenu';
-import Substring from 'react-substring';
 
 export class NodeContent extends React.Component {
     state = {
@@ -235,5 +235,5 @@ export default connect(
         expendNavigationTreeNode,
         push,
         setRemoveNoteAlertStatus,
-    }
+    },
 )(ContextMenuTarget(NodeContent));

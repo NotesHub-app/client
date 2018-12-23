@@ -1,3 +1,3 @@
-import NoteMenu from './NoteMenu'
+import NoteMenu from './NoteMenu';
 
 export default NoteMenu;

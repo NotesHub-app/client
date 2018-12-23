@@ -15,7 +15,7 @@ const saveUiSettings = debounce((store, beforeUiSettings, afterUiSettings) => {
             endpoint: 'users/me',
             method: 'patch',
             params: { uiSettings: Immutable.fromJS(diffSettings) },
-        })
+        }),
     );
 }, 3000);
 

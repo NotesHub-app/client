@@ -152,7 +152,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps, {
-    login,
-    push,
-})(LoginPage);
+export default connect(
+    mapStateToProps,
+    {
+        login,
+        push,
+    },
+)(LoginPage);

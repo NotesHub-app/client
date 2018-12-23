@@ -56,7 +56,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "test:e2e": "jest --config=\"./e2e/config.json\"",
-        "prettier": "prettier-eslint --write \"**/*.{js,json,css}\"",
+        "prettier": "prettier-eslint --write \"src/**/*.{js,json,css}\"",
         "lint": "eslint.cmd src/**/*.js"
     },
     "husky": {
@@ -65,19 +65,14 @@
         }
     },
     "lint-staged": {
-        "{src}/**/*.{js,json,css}": [
-            "prettier-eslint --write",
-            "git add"
-        ],
-        "{src}/**/*.js": "eslint --max-warnings 0"
+        "linters": {
+            "src/**/*.{js,json,css,md}": ["prettier-eslint --write", "git add"],
+            "src/**/*.js": "eslint --max-warnings 0"
+        },
+        "concurrent": false
     },
     "proxy": "http://localhost:4000",
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ],
+    "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
     "devDependencies": {
         "eslint-config-airbnb-base": "^13.1.0",
         "eslint-config-prettier": "^3.3.0",

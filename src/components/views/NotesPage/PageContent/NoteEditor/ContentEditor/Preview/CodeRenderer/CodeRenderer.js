@@ -8,8 +8,8 @@ export default class CodeRenderer extends React.PureComponent {
 
         language = prism.languages[language || 'markup'] || prism.languages.markup;
 
-        if(value === undefined){
-            return <span />
+        if (value === undefined) {
+            return <span />;
         }
         return (
             <pre>

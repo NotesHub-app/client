@@ -34,7 +34,7 @@ export function login({ email, password, remember, githubCallbackQuery, googleCa
                     endpoint: `auth/github${githubCallbackQuery}`,
                     method: 'get',
                     requireAuth: false,
-                })
+                }),
             );
         } else if (googleCallbackQuery) {
             user = await dispatch(
@@ -42,7 +42,7 @@ export function login({ email, password, remember, githubCallbackQuery, googleCa
                     endpoint: `auth/google${googleCallbackQuery}`,
                     method: 'get',
                     requireAuth: false,
-                })
+                }),
             );
         } else {
             user = await dispatch(
@@ -51,7 +51,7 @@ export function login({ email, password, remember, githubCallbackQuery, googleCa
                     method: 'post',
                     params: { email, password },
                     requireAuth: false,
-                })
+                }),
             );
         }
 
@@ -87,7 +87,7 @@ export function refreshToken(withUserData) {
                 params: {
                     withUserData,
                 },
-            })
+            }),
         );
         user = Immutable.fromJS(user);
         processUserTokens(user);
@@ -142,7 +142,7 @@ export function restorePassword(params) {
     return async (dispatch, getState) => {
         if (params.code) {
             await dispatch(
-                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false })
+                callApi({ endpoint: `restorePassword/confirm`, method: 'post', params, requireAuth: false }),
             );
         } else {
             await dispatch(callApi({ endpoint: `restorePassword`, method: 'post', params, requireAuth: false }));
