@@ -41,9 +41,10 @@ export class NoteEditor extends React.Component {
                     icon: note.get('icon'),
                     iconColor: note.get('iconColor'),
                     content: note.get('content'),
+                    externalChangesIndex: note.get('externalChangesIndex'),
                 }}
-                subscription={{}}
-                render={({ handleSubmit }) => (
+                // subscription={{}}
+                render={({ handleSubmit, values }) => (
                     <div className={styles.root} onSubmit={handleSubmit}>
                         <AutoSave debounce={500} save={this.handleSubmit} />
 
@@ -84,7 +85,12 @@ export class NoteEditor extends React.Component {
                                 <ViewModeSelect />
                             </div>
                         </div>
-                        <Field name="content" component={ContentEditor} noteId={noteId} />
+                        <Field
+                            name="content"
+                            component={ContentEditor}
+                            noteId={noteId}
+                            externalChangesIndex={values.externalChangesIndex}
+                        />
                         <Footer noteId={noteId} />
                     </div>
                 )}

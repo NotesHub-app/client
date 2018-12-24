@@ -11,6 +11,7 @@ import {
     REMOVE_FILE,
 } from './redux/modules/data/actionTypes';
 import { removeNoteFileIds } from './utils/data';
+import { patchNote } from './redux/modules/data/actions';
 
 class WS {
     init(store) {
@@ -37,18 +38,29 @@ class WS {
         this.io.close();
     }
 
+    noteSubscribe(noteId) {
+        this.io.emit('note:subscribe', { noteId });
+    }
+
     /**
      * При обновлении/создании заметки
+     * @param noteId
      * @param note
+     * @param notePatch
+     * @param isPatch
      */
-    handleNoteUpdated = ({ note }) => {
-        note = Immutable.fromJS(note);
-        // Только если уже не обновлено
+    handleNoteUpdated = ({ noteId, note, notePatch, isPatch }) => {
+        if (isPatch) {
+            this.store.dispatch(patchNote(noteId, notePatch));
+        } else {
+            note = Immutable.fromJS(note);
+            // Только если уже не обновлено
 
-        this.store.dispatch({
-            type: SET_NOTE,
-            note,
-        });
+            this.store.dispatch({
+                type: SET_NOTE,
+                note,
+            });
+        }
     };
 
     /**

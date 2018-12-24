@@ -66,18 +66,11 @@ export default class Editor extends React.Component {
     };
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.noteId !== this.props.noteId;
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            input: { value },
-        } = this.props;
-        if (prevProps.noteId !== this.props.noteId) {
-            this.fromSetValue = true;
-            this.reactAceComponent.editor.setValue(value, 1);
-            this.fromSetValue = false;
+        if (nextProps.noteId === this.props.noteId) {
+            // Ререндим только если обновился внешний индекс изменений
+            return nextProps.externalChangesIndex !== this.props.externalChangesIndex;
         }
+        return true;
     }
 
     handleEditorMount = () => {

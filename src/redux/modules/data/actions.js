@@ -62,7 +62,7 @@ export function updateNote(noteId, noteContent) {
                     note: updatedNote,
                 });
 
-                await dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
+                dispatch(callApi({ endpoint: `notes/${noteId}`, method: 'patch', params: data }));
             } catch (e) {
                 // Если при сохранении произошел конфликт патчинга контента - значит наше
                 // содержимое не актуально - перезагружаем заметку
@@ -71,6 +71,36 @@ export function updateNote(noteId, noteContent) {
                 }
             }
         }
+    };
+}
+
+/**
+ *
+ * @param noteId
+ * @param notePatch
+ */
+export function patchNote(noteId, notePatch) {
+    return (dispatch, getState) => {
+        let note = getState().data.getIn(['notes', noteId]);
+        for (const field of Object.keys(notePatch)) {
+            const dmp = new DiffMatchPatch();
+            const [newValue, result] = dmp.patch_apply(notePatch[field], note.get(field));
+
+            if (!result) {
+                // Если пропатчить не удалось - перезапрашиваем заметку по новой
+                console.warn('Не удалось пропатчить заметку!');
+                return dispatch(getNoteDetails(noteId));
+            }
+            note = note.set(field, newValue);
+        }
+
+        // Инкрементируем индекс внешних изменений для проверки неоьбходимости ререндера формы редактирования заметки
+        note = note.set('externalChangesIndex', note.get('externalChangesIndex', 0) + 1);
+
+        dispatch({
+            type: SET_NOTE,
+            note,
+        });
     };
 }
 

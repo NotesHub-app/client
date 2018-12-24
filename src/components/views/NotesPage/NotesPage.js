@@ -13,6 +13,7 @@ import { removeNote } from '../../../redux/modules/data/actions';
 import RemoveItemAlert from '../../dialogs/RemoveItemAlert';
 import SelectNoteScreen from './SelectNoteScreen';
 import NavigationHeader from './NavigationHeader';
+import ws from '../../../ws';
 
 export class NotesPage extends React.Component {
     handleConfirmRemoveAlert = () => {
@@ -35,6 +36,23 @@ export class NotesPage extends React.Component {
             noteId: null,
         });
     };
+
+    noteSubscribe() {
+        const { noteId } = this.props;
+        if (noteId) {
+            ws.noteSubscribe(noteId);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.noteId !== this.props.noteId) {
+            this.noteSubscribe();
+        }
+    }
+
+    componentDidMount() {
+        this.noteSubscribe();
+    }
 
     render() {
         const { navigationSidebarWidth, removingAlertIsOpen, ...contentProps } = this.props;
