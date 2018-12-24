@@ -45,3 +45,15 @@ export function minArr(arr) {
 export function maxArr(arr) {
     return arr.reduce((result, i) => (i > result ? i : result), arr[0]);
 }
+
+export function formValuesDiff(from, to) {
+    const keys = new Set([...Object.keys(from), ...Object.keys(to)]);
+    const result = {};
+    keys.forEach(key => {
+        if (from[key] !== to[key]) {
+            result[key] = to[key] || '';
+        }
+    });
+
+    return result;
+}

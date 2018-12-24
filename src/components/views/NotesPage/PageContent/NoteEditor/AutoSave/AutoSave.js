@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormSpy } from 'react-final-form';
-import diff from 'object-diff';
+import { formValuesDiff } from '../../../../../../utils/helpers';
 
 class AutoSave extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class AutoSave extends React.Component {
                 }
                 const { values, save } = this.props;
 
-                const difference = diff(this.state.values, values);
+                const difference = formValuesDiff(this.state.values, values);
 
                 if (Object.keys(difference).length) {
                     // Если что-то поменялось
