@@ -1,40 +1,4 @@
-@import 'src/styles/variables.scss';
-
-.root{
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    width: 100%;
-    border-top: 1px solid $light-gray1;
-}
-
-.controls{
-    flex-shrink: 0;
-    flex-grow: 0;
-    background-color: $light-gray5;
-    border-right: 1px solid $light-gray1;
-    padding: 5px;
-    width: 35px;
-}
-
-.controlItem{
-    margin-bottom: 5px;
-}
-
-.main{
-    flex-grow: 1;
-}
-
-.filesTable {
-    user-select: none;
-}
-
 .fileIcon {
     line-height: 1.5em;
     width: 1.5em;
-}
-
-.rowSelected {
-    background-color: rgba($blue5, 0.25) !important;
-    //color: #fff;
 }

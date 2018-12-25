@@ -5,7 +5,6 @@ import { push } from 'connected-react-router';
 import { Spinner } from '@blueprintjs/core';
 import NoteEditor from './NoteEditor';
 import { getNoteDetails } from '../../../../redux/modules/data/actions';
-import styles from './styles.module.scss';
 
 export class PageContent extends React.Component {
     static propTypes = {
@@ -73,7 +72,7 @@ export class PageContent extends React.Component {
 
         if (!note.get('_loaded')) {
             return (
-                <div className={styles.loadingContainer}>
+                <div className="loadingContainer">
                     <Spinner size={80} />
                 </div>
             );

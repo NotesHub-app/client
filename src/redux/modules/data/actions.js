@@ -368,6 +368,46 @@ export function getNoteDetails(noteId) {
 }
 
 /**
+ * Получение истории изменений заметки
+ * @param noteId
+ */
+export function getNoteHistory(noteId) {
+    return async (dispatch, getState) => {
+        let { history } = await dispatch(callApi({ endpoint: `notes/${noteId}/history`, method: 'get' }));
+        history = Immutable.fromJS(history);
+
+        let note = getState().data.getIn(['notes', noteId]);
+        note = note.set('history', history);
+
+        dispatch({
+            type: SET_NOTE,
+            note,
+        });
+    };
+}
+
+/**
+ * Получение детальной информации по записи истории заметки
+ * @param noteId
+ */
+export function getNoteHistoryItemDetails(noteId, itemIdx) {
+    return async (dispatch, getState) => {
+        let historyItemDetails = await dispatch(
+            callApi({ endpoint: `notes/${noteId}/history/${itemIdx}`, method: 'get' }),
+        );
+        historyItemDetails = Immutable.fromJS(historyItemDetails);
+
+        let note = getState().data.getIn(['notes', noteId]);
+        note = note.setIn(['history', itemIdx], historyItemDetails);
+
+        dispatch({
+            type: SET_NOTE,
+            note,
+        });
+    };
+}
+
+/**
  * Получение минимальных пользовательских данных для работы программы
  */
 export function getInitialData() {

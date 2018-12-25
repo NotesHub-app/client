@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import * as Immutable from 'immutable';
+import DiffMatchPatch from 'diff-match-patch';
 import { getUrlQueryParameterByName } from '../utils/url';
 import { getNoteNodeTreeId, getRootGroupNodeTreeId, getRootPersonalNodeTreeId } from '../utils/navigation';
 
@@ -114,5 +115,32 @@ export const noteFilesListSelector = createSelector(
         });
 
         return result;
+    },
+);
+
+export const noteHistoryListSelector = createSelector(
+    (state, noteId) => state.data.getIn(['notes', noteId, 'history']),
+    history => history,
+);
+
+export const noteHistoryItemSelector = createSelector(
+    (state, noteId, historyItemIdx) => state.data.getIn(['notes', noteId, 'history', historyItemIdx]),
+    noteHistoryItem => {
+        if (!noteHistoryItem || !noteHistoryItem.get('before')) {
+            return;
+        }
+
+        let diffs = new Immutable.Map();
+        let diffHtmls = new Immutable.Map();
+        noteHistoryItem.get('before').forEach((beforeValue, key) => {
+            const afterValue = noteHistoryItem.getIn(['after', key]);
+
+            const dmp = new DiffMatchPatch();
+            const diff = dmp.diff_main(beforeValue, afterValue);
+            diffs = diffs.set(key, diff);
+            diffHtmls = diffHtmls.set(key, dmp.diff_prettyHtml(diff));
+        });
+
+        return noteHistoryItem.set('diffs', diffs).set('diffHtmls', diffHtmls);
     },
 );

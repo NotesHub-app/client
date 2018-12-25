@@ -6,6 +6,7 @@ import SizeMe from '@avinlab/react-size-me';
 import { Table, Column } from 'react-vt-table';
 import { noteFilesListSelector } from '../../../../../../../redux/selectors';
 import styles from './styles.module.scss';
+import footerStyles from '../styles.module.scss';
 import { humanFileSize } from '../../../../../../../utils/human';
 import RemoveItemAlert from '../../../../../../dialogs/RemoveItemAlert';
 import { removeManyFiles, uploadNoteFile } from '../../../../../../../redux/modules/data/actions';
@@ -69,7 +70,7 @@ export class Files extends React.Component {
     getRowClassName = rowIndex => {
         const { selection } = this.state;
         if (selection.includes(rowIndex)) {
-            return styles.rowSelected;
+            return footerStyles.rowSelected;
         }
         return '';
     };
@@ -148,14 +149,12 @@ export class Files extends React.Component {
         const { files } = this.props;
         const { isOpenRemoveAlert, selection } = this.state;
 
-        // TODO {file.get('_uploadProgress')}
-
         return (
-            <div className={styles.root}>
-                <div className={styles.controls}>
+            <div className={footerStyles.footerInner}>
+                <div className={footerStyles.controls}>
                     <Tooltip content="Загрузить файлы" position={Position.RIGHT} hoverOpenDelay={500}>
                         <Button
-                            className={styles.controlItem}
+                            className={footerStyles.controlItem}
                             icon="cloud-upload"
                             minimal
                             small
@@ -170,7 +169,7 @@ export class Files extends React.Component {
                         disabled={!selection.length}
                     >
                         <Button
-                            className={styles.controlItem}
+                            className={footerStyles.controlItem}
                             icon="cloud-download"
                             minimal
                             small
@@ -186,7 +185,7 @@ export class Files extends React.Component {
                         disabled={!selection.length}
                     >
                         <Button
-                            className={styles.controlItem}
+                            className={footerStyles.controlItem}
                             icon="cross"
                             minimal
                             intent={Intent.DANGER}
@@ -196,12 +195,12 @@ export class Files extends React.Component {
                         />
                     </Tooltip>
                 </div>
-                <div className={styles.main}>
+                <div className={footerStyles.main}>
                     <React.Fragment>
                         <SizeMe>
                             {({ width, height }) => (
                                 <Table
-                                    className={styles.filesTable}
+                                    className={footerStyles.table}
                                     width={width}
                                     height={height}
                                     data={files}

@@ -49,7 +49,7 @@ export class Footer extends React.Component {
                     <div>
                         {[
                             { icon: 'import', type: 'files', label: 'Файлы', count: filesCount },
-                            // { icon: 'history', type: 'history', label: 'История' },
+                            { icon: 'history', type: 'history', label: 'История' },
                         ].map(({ icon, type, label, count }) => (
                             <Button
                                 key={type}
