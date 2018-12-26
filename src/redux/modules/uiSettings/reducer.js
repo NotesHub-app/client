@@ -15,6 +15,9 @@ const initialState = new Immutable.Map({
     activeNoteFooterTab: null,
     footerContentHeight: 200,
     lastUsedNote: null,
+    autoScroll: false,
+    editorPosition: 0,
+    previewPosition: 0,
 });
 
 export default function reducer(state = initialState, action = {}) {

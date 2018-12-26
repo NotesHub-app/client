@@ -36,7 +36,7 @@ export function getNotes() {
  * @param noteId
  * @param noteContent
  */
-export function updateNote(noteId, noteContent) {
+export function updateNote(noteId, noteContent, isExternalChange = false) {
     return async (dispatch, getState) => {
         const data = {};
         const currentNote = getState().data.getIn(['notes', noteId]);
@@ -54,6 +54,11 @@ export function updateNote(noteId, noteContent) {
                 updatedNote = updatedNote.set(field, value);
             }
         });
+
+        if (isExternalChange) {
+            updatedNote = updatedNote.set('externalChangesIndex', updatedNote.get('externalChangesIndex', 0) + 1);
+        }
+
         // Только если что-то поменялось
         if (Object.keys(data).length) {
             try {
@@ -389,6 +394,7 @@ export function getNoteHistory(noteId) {
 /**
  * Получение детальной информации по записи истории заметки
  * @param noteId
+ * @param itemIdx
  */
 export function getNoteHistoryItemDetails(noteId, itemIdx) {
     return async (dispatch, getState) => {

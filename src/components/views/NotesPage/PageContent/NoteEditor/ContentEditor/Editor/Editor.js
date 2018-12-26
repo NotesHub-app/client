@@ -1,12 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import AceEditor from 'react-ace';
 import * as _ from 'lodash';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
+import 'brace/ext/searchbox';
 import { Button } from '@blueprintjs/core';
 import SizeMe from '@avinlab/react-size-me';
-import styles from './styles.module.scss';
+import styles from '../styles.module.scss';
 import { getNoteFileLink } from '../../../../../../../utils/data';
+import AutoScrollButton from '../AutoScrollButton';
 
 class CodeEditor extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -49,7 +52,7 @@ class CodeEditor extends React.Component {
     }
 }
 
-export default class Editor extends React.Component {
+export class Editor extends React.Component {
     setContent = _.debounce(content => {
         const {
             input: { onChange },
@@ -78,9 +81,29 @@ export default class Editor extends React.Component {
         editor.renderer.setScrollMargin(5, 5);
 
         document.querySelector('.ace_editor').addEventListener('paste', this.handleContentPasteClick);
+
+        editor.session.on('changeScrollTop', position => {
+            const event = new CustomEvent('app:scrollEditor', {
+                detail: {
+                    position,
+                },
+            });
+            window.dispatchEvent(event);
+        });
+    };
+
+    componentDidMount() {
+        window.addEventListener('app:scrollPreview', this.handleScrollPreview);
+    }
+
+    handleScrollPreview = e => {
+        const { position } = e.detail;
+        const { editor } = this.reactAceComponent;
+        editor.renderer.scrollToLine(position, false, true);
     };
 
     componentWillUnmount() {
+        window.removeEventListener('app:scrollPreview', this.handleScrollPreview);
         document.querySelector('.ace_editor').removeEventListener('paste', this.handleContentPasteClick);
     }
 
@@ -181,7 +204,7 @@ export default class Editor extends React.Component {
         } = this.props;
 
         return (
-            <div className={styles.root}>
+            <div className={styles.areaInner}>
                 <div className={styles.toolbar}>
                     <div>
                         <Button
@@ -271,8 +294,12 @@ export default class Editor extends React.Component {
                             onClick={() => this.handleToolbarContentAction('link')}
                         />
                     </div>
+                    <div className="toolbarFiller" />
+                    <div>
+                        <AutoScrollButton />
+                    </div>
                 </div>
-                <div className={styles.editorContainer} onClick={this.handleFocusEditor}>
+                <div className={styles.areaMainContainer} onClick={this.handleFocusEditor}>
                     <SizeMe>
                         {({ width, height }) => (
                             <CodeEditor
@@ -304,3 +331,14 @@ export default class Editor extends React.Component {
         );
     }
 }
+
+function mapStateToProps(state, ownProps) {
+    return {
+        autoScroll: state.uiSettings.get('autoScroll'),
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    {},
+)(Editor);

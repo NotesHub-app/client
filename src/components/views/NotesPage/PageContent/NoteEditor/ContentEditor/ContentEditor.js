@@ -10,11 +10,15 @@ export class ContentEditor extends React.Component {
     renderContent() {
         const { viewMode, noteEditorWidth } = this.props;
 
+        const commonProps = {
+            ...this.props,
+        };
+
         switch (viewMode) {
             case 'editor': {
                 return (
                     <div className={styles.area} style={{ width: '100%' }}>
-                        <Editor {...this.props} />
+                        <Editor {...commonProps} />
                     </div>
                 );
             }
@@ -22,11 +26,11 @@ export class ContentEditor extends React.Component {
                 return (
                     <React.Fragment>
                         <div className={styles.area} style={{ width: `${noteEditorWidth}%` }}>
-                            <Editor {...this.props} />
+                            <Editor {...commonProps} />
                         </div>
                         <Delimiter />
                         <div className={styles.area} style={{ width: `${100 - noteEditorWidth}%` }}>
-                            <Preview {...this.props} />
+                            <Preview {...commonProps} />
                         </div>
                     </React.Fragment>
                 );
@@ -34,7 +38,7 @@ export class ContentEditor extends React.Component {
             case 'preview': {
                 return (
                     <div className={styles.area}>
-                        <Preview {...this.props} />
+                        <Preview {...commonProps} />
                     </div>
                 );
             }

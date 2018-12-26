@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dialog, Icon, Spinner } from '@blueprintjs/core';
+import { Dialog, Icon, Spinner, Button } from '@blueprintjs/core';
 import PropTypes from 'prop-types';
 import styles from './styles.module.scss';
 import { noteHistoryItemSelector } from '../../../redux/selectors';
-import { getNoteHistoryItemDetails } from '../../../redux/modules/data/actions';
+import { getNoteHistoryItemDetails, updateNote } from '../../../redux/modules/data/actions';
 import DateTimeLabel from '../../common/DateTimeLabel';
 import UserLabel from '../../common/UserLabel';
 
@@ -38,6 +38,13 @@ export class ShowHistoryItemDialog extends React.Component {
             this.loadHistoryItemDetails();
         }
     }
+
+    handleRevert = () => {
+        const { noteId, noteHistoryItem, updateNote } = this.props;
+
+        updateNote(noteId, noteHistoryItem.get('after').toJS(), true);
+        this.handleClose();
+    };
 
     renderLoading() {
         return (
@@ -119,7 +126,17 @@ export class ShowHistoryItemDialog extends React.Component {
         return (
             <Dialog
                 className={styles.root}
-                title="Изменения"
+                title={
+                    <div className={styles.dialogTitle}>
+                        <div className={styles.dialogTitleString}>Изменения</div>
+                        <div className={styles.dialogTitleControls}>
+                            <Button minimal icon="undo" onClick={this.handleRevert}>
+                                Приминить текущую версию
+                            </Button>
+                            <div className="separator" />
+                        </div>
+                    </div>
+                }
                 icon="new-link"
                 isOpen={isOpen}
                 onClose={this.handleClose}
@@ -144,5 +161,6 @@ export default connect(
     mapStateToProps,
     {
         getNoteHistoryItemDetails,
+        updateNote,
     },
 )(ShowHistoryItemDialog);
