@@ -7,42 +7,44 @@ import CodeRenderer from './CodeRenderer';
 import LinkRenderer from './LinkRenderer';
 import mainStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
-import AutoScrollButton from '../AutoScrollButton';
 
 export class NotePreview extends React.Component {
     componentDidMount() {
-        window.addEventListener('app:scrollEditor', this.handleScrollPreview);
+        window.addEventListener('app:scrollEditor', this.scrollPreview);
     }
 
-    handleScrollPreview = e => {
+    componentWillUnmount() {
+        window.removeEventListener('app:scrollEditor', this.scrollPreview);
+    }
+
+    scrollPreview = e => {
+        const { autoScroll } = this.props;
+        if (!autoScroll) {
+            return;
+        }
+
         const { position } = e.detail;
-        // console.log(`I have to scroll to ${  position}`);
+        if (!this.areaMainContainer) {
+            return;
+        }
 
         let nearDistance = Infinity;
         let nearestElement;
-        const markdownBodyEl = this.areaMainContainer.childNodes[0];
 
         // Отслеживаем самый близкий к верху элемент с атрибутом data-sourcepos
-        markdownBodyEl.childNodes.forEach(node => {
-            if (node.dataset.sourcepos) {
-                const nodePosition = node.dataset.sourcepos.match(/[\d]+/)[0];
+        document.querySelectorAll('[data-sourcepos]').forEach(node => {
+            const nodePosition = node.dataset.sourcepos.match(/[\d]+/)[0];
 
-                const distance = Math.abs(nodePosition - position);
-                if (distance < nearDistance) {
-                    nearestElement = node;
-                    nearDistance = distance;
-                }
+            const distance = Math.abs(nodePosition - position);
+            if (distance < nearDistance) {
+                nearestElement = node;
+                nearDistance = distance;
             }
         });
         if (nearestElement) {
-            // console.log(nearestElement);
-            this.areaMainContainer.scrollTop = nearestElement.offsetTop;
+            this.areaMainContainer.scrollTop = nearestElement.offsetTop - 30;
         }
     };
-
-    componentWillUnmount() {
-        window.removeEventListener('app:scrollEditor', this.handleScrollPreview);
-    }
 
     transformUri = uri => {
         const { fileToken } = this.props;
@@ -57,41 +59,6 @@ export class NotePreview extends React.Component {
         return uri;
     };
 
-    handleScroll = e => {
-        const { autoScroll } = this.props;
-        // Должна быть включена кнопка авто-скрола
-        if (!autoScroll) {
-            return;
-        }
-
-        const { scrollTop } = e.currentTarget;
-
-        let nearDistance = Infinity;
-        let nearestElement;
-        const markdownBodyEl = this.areaMainContainer.childNodes[0];
-
-        // Отслеживаем самый близкий к верху элемент с атрибутом data-sourcepos
-        markdownBodyEl.childNodes.forEach(node => {
-            if (node.dataset.sourcepos) {
-                const distance = Math.abs(scrollTop - node.offsetTop);
-
-                if (distance < nearDistance) {
-                    nearestElement = node;
-                    nearDistance = distance;
-                }
-            }
-        });
-
-        if (nearestElement && nearestElement.dataset.sourcepos) {
-            const event = new CustomEvent('app:scrollPreview', {
-                detail: {
-                    position: Number(nearestElement.dataset.sourcepos.match(/[\d]+/)[0]),
-                },
-            });
-            window.dispatchEvent(event);
-        }
-    };
-
     render() {
         const {
             input: { value },
@@ -101,13 +68,9 @@ export class NotePreview extends React.Component {
             <div className={mainStyles.areaInner}>
                 <div className={mainStyles.toolbar}>
                     <div className="toolbarFiller" />
-                    <div>
-                        <AutoScrollButton />
-                    </div>
                 </div>
                 <div
                     className={mainStyles.areaMainContainer}
-                    onScroll={this.handleScroll}
                     ref={i => {
                         this.areaMainContainer = i;
                     }}

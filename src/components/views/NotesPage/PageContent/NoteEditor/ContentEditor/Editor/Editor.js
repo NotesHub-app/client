@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import AceEditor from 'react-ace';
-import * as _ from 'lodash';
+import debounce from 'lodash/debounce';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
@@ -52,8 +51,8 @@ class CodeEditor extends React.Component {
     }
 }
 
-export class Editor extends React.Component {
-    setContent = _.debounce(content => {
+export default class Editor extends React.Component {
+    setContent = debounce(content => {
         const {
             input: { onChange },
         } = this.props;
@@ -68,13 +67,13 @@ export class Editor extends React.Component {
         this.setContent(content);
     };
 
-    shouldComponentUpdate(nextProps) {
-        if (nextProps.noteId === this.props.noteId) {
-            // Ререндим только если обновился внешний индекс изменений
-            return nextProps.externalChangesIndex !== this.props.externalChangesIndex;
-        }
-        return true;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     // if (nextProps.noteId === this.props.noteId) {
+    //     //     // Ререндим только если обновился внешний индекс изменений
+    //     //     return nextProps.externalChangesIndex !== this.props.externalChangesIndex;
+    //     // }
+    //     return false;
+    // }
 
     handleEditorMount = () => {
         const { editor } = this.reactAceComponent;
@@ -83,9 +82,11 @@ export class Editor extends React.Component {
         document.querySelector('.ace_editor').addEventListener('paste', this.handleContentPasteClick);
 
         editor.session.on('changeScrollTop', position => {
+            const linePosition = Math.round(position / editor.renderer.lineHeight) + 1;
+
             const event = new CustomEvent('app:scrollEditor', {
                 detail: {
-                    position,
+                    position: linePosition,
                 },
             });
             window.dispatchEvent(event);
@@ -331,14 +332,3 @@ export class Editor extends React.Component {
         );
     }
 }
-
-function mapStateToProps(state, ownProps) {
-    return {
-        autoScroll: state.uiSettings.get('autoScroll'),
-    };
-}
-
-export default connect(
-    mapStateToProps,
-    {},
-)(Editor);

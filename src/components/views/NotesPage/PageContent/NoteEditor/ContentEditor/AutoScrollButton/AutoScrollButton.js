@@ -24,6 +24,7 @@ export class AutoScrollButton extends React.Component {
                 icon="double-caret-vertical"
                 className="margin-right-5"
                 onClick={this.handleToggleAutoScroll}
+                title="Синхронизация скрола"
             />
         );
     }

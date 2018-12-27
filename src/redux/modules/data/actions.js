@@ -35,6 +35,7 @@ export function getNotes() {
  * Обновление заметки
  * @param noteId
  * @param noteContent
+ * @param isExternalChange
  */
 export function updateNote(noteId, noteContent, isExternalChange = false) {
     return async (dispatch, getState) => {

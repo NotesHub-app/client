@@ -43,7 +43,7 @@ export class NoteEditor extends React.Component {
                     content: note.get('content'),
                     externalChangesIndex: note.get('externalChangesIndex'),
                 }}
-                // subscription={{}}
+                subscription={{}}
                 render={({ handleSubmit, values }) => (
                     <div className={styles.root} onSubmit={handleSubmit}>
                         <AutoSave debounce={500} save={this.handleSubmit} />
@@ -89,7 +89,7 @@ export class NoteEditor extends React.Component {
                             name="content"
                             component={ContentEditor}
                             noteId={noteId}
-                            externalChangesIndex={values.externalChangesIndex}
+                            // externalChangesIndex={values.externalChangesIndex}
                         />
                         <Footer noteId={noteId} />
                     </div>
