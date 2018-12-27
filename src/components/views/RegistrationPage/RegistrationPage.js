@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { push } from 'connected-react-router';
 import { Intent } from '@blueprintjs/core';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
@@ -11,6 +10,7 @@ import AlreadyHaveAccountBlock from '../../common/AlreadyHaveAccountBlock';
 import { processServerValidationError, minLength, required } from '../../../utils/formValidation';
 import InputGroupField from '../../fields/InputGroupField';
 import config from '../../../config';
+import history from '../../../history';
 
 export class RegistrationPage extends Component {
     state = {
@@ -33,20 +33,20 @@ export class RegistrationPage extends Component {
     }
 
     withCodeBlockSubmit = async params => {
-        const { registration, push } = this.props;
+        const { registration } = this.props;
         if (!params.code) {
             return { code: 'Требуется ввести код для продолжения' };
         }
         try {
             await registration(params);
-            push(`/login?afterRegistration=1&email=${params.email}`);
+            history.push(`/login?afterRegistration=1&email=${params.email}`);
         } catch (e) {
             return { code: 'Указанный код неверный' };
         }
     };
 
     withoutCodeBlockSubmit = async params => {
-        const { registration, push } = this.props;
+        const { registration } = this.props;
         if (minLength(8)(params.password)) {
             return {
                 password: 'Длина пароля должна быть не менее 8 символов',
@@ -64,7 +64,7 @@ export class RegistrationPage extends Component {
             if (config.serverConfiguration.emailRegistrationConfirmation) {
                 this.setState({ showCodeBlock: true });
             } else {
-                push(`/login?afterRegistration=1&email=${params.email}`);
+                history.push(`/login?afterRegistration=1&email=${params.email}`);
             }
         } catch (e) {
             // Если проверка капчи не удалась
@@ -204,7 +204,6 @@ export default connect(
     mapStateToProps,
     {
         registration,
-        push,
         logout,
     },
 )(RegistrationPage);

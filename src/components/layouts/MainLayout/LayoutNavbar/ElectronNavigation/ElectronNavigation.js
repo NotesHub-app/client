@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { goBack, goForward } from 'connected-react-router';
 import classNames from 'classnames';
+import history from '../../../../../history';
 import styles from './styles.module.scss';
 
 export class ElectronNavigation extends React.Component {
@@ -25,13 +25,11 @@ export class ElectronNavigation extends React.Component {
     }
 
     handleGoBack = () => {
-        const { goBack } = this.props;
-        goBack();
+        history.goBack();
     };
 
     handleGoForward = () => {
-        const { goForward } = this.props;
-        goForward();
+        history.goForward();
     };
 
     render() {
@@ -64,8 +62,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
     mapStateToProps,
-    {
-        goBack,
-        goForward,
-    },
+    {},
 )(ElectronNavigation);

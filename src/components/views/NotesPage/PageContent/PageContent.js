@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { push } from 'connected-react-router';
 import { Spinner } from '@blueprintjs/core';
 import NoteEditor from './NoteEditor';
 import { getNoteDetails } from '../../../../redux/modules/data/actions';
+import history from '../../../../history';
 
 export class PageContent extends React.Component {
     static propTypes = {
@@ -25,7 +25,7 @@ export class PageContent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const { note, push } = this.props;
+        const { note } = this.props;
 
         if (prevProps.noteId !== this.props.noteId) {
             this.setState(
@@ -37,7 +37,7 @@ export class PageContent extends React.Component {
         }
 
         if (!note) {
-            push('/notes');
+            history.push('/notes');
             return;
         }
 
@@ -49,10 +49,10 @@ export class PageContent extends React.Component {
     }
 
     componentDidMount() {
-        const { note, push } = this.props;
+        const { note } = this.props;
 
         if (!note) {
-            push('/notes');
+            history.push('/notes');
             return;
         }
         this.checkNoteLoaded();
@@ -93,6 +93,5 @@ export default connect(
     mapStateToProps,
     {
         getNoteDetails,
-        push,
     },
 )(PageContent);

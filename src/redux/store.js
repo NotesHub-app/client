@@ -1,26 +1,14 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
-import createBrowserHistory from 'history/createBrowserHistory';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
-import createRootReducer from './modules';
+import rootReducer from './modules';
 import usersDataMiddleware from './middlewares/usersDataMiddleware';
 import saveUiSettingsMiddleware from './middlewares/saveUiSettingsMiddleware';
-import lastNoteMiddleware from './middlewares/lastNoteMiddleware';
-
-export const history = createBrowserHistory();
 
 const configureStore = () => {
     const initialState = {};
     const enhancers = [];
-    const middleware = [
-        thunk,
-        routerMiddleware(history),
-        batchDispatchMiddleware,
-        usersDataMiddleware,
-        saveUiSettingsMiddleware,
-        lastNoteMiddleware,
-    ];
+    const middleware = [thunk, batchDispatchMiddleware, usersDataMiddleware, saveUiSettingsMiddleware];
 
     if (process.env.NODE_ENV !== 'production') {
         const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__;
@@ -35,12 +23,12 @@ const configureStore = () => {
         ...enhancers,
     );
 
-    const store = createStore(createRootReducer(history), initialState, composedEnhancers);
+    const store = createStore(rootReducer, initialState, composedEnhancers);
 
     if (process.env.NODE_ENV !== 'production') {
         if (module.hot) {
             module.hot.accept('./modules', () => {
-                store.replaceReducer(createRootReducer(history));
+                store.replaceReducer(rootReducer);
             });
         }
     }

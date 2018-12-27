@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import { login } from '../../../redux/modules/user/actions';
 import LoadingPage from '../LoadingPage';
+import history from '../../../history';
 
 export class CallbackPage extends React.Component {
     static propTypes = {
@@ -11,7 +11,7 @@ export class CallbackPage extends React.Component {
     };
 
     async componentDidMount() {
-        const { login, push, provider } = this.props;
+        const { login, provider } = this.props;
 
         try {
             const params = {};
@@ -28,11 +28,10 @@ export class CallbackPage extends React.Component {
             }
             await login(params);
 
-            push('/');
+            history.push('/');
         } catch (e) {
             console.error(e);
-
-            push('/login');
+            history.push('/login');
         }
     }
 
@@ -49,6 +48,5 @@ export default connect(
     mapStateToProps,
     {
         login,
-        push,
     },
 )(CallbackPage);

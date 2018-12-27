@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import SizeMe from '@avinlab/react-size-me';
 import PropTypes from 'prop-types';
 import Tree from 'react-vt-tree';
-import { push } from 'connected-react-router';
 import classNames from 'classnames';
 import {
     expendNavigationTreeNode,
@@ -14,6 +13,7 @@ import { navigationNodesSelector } from '../../../../redux/selectors';
 import styles from './styles.module.scss';
 import NodeContent from './NodeContent';
 import GroupConfigurationDialog from '../../../dialogs/GroupConfigurationDialog';
+import history from '../../../../history';
 
 export class NotesNavigation extends React.Component {
     static propTypes = {
@@ -57,9 +57,9 @@ export class NotesNavigation extends React.Component {
     };
 
     handleNodeClick = (e, { node }) => {
-        const { push, toggleNavigationTreeNode } = this.props;
+        const { toggleNavigationTreeNode } = this.props;
         if (node.type === 'note') {
-            push(`/notes/${node.data.get('id')}`);
+            history.push(`/notes/${node.data.get('id')}`);
         }
         if (node.type === 'group' || node.type === 'personal') {
             toggleNavigationTreeNode(node.treeId);
@@ -135,6 +135,5 @@ export default connect(
         expendNavigationTreeNode,
         collapseNavigationTreeNode,
         toggleNavigationTreeNode,
-        push,
     },
 )(NotesNavigation);

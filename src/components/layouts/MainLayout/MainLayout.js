@@ -9,7 +9,7 @@ import { isElectron } from '../../../utils/electron-helpers';
 import { dataReadySelector, userSelector } from '../../../redux/selectors';
 import LoadingPage from '../../views/LoadingPage';
 
-export class MainLayout extends React.Component {
+export class MainLayout extends React.PureComponent {
     render() {
         const {
             children,

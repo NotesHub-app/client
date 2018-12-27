@@ -18,6 +18,8 @@ const initialState = new Immutable.Map({
     autoScroll: false,
     editorPosition: 0,
     previewPosition: 0,
+    previewNarrowValue: 20,
+    previewNarrowEnabled: false,
 });
 
 export default function reducer(state = initialState, action = {}) {

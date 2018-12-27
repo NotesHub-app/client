@@ -23,6 +23,9 @@ export const navigationNodesSelector = createSelector(
     state => state.data.get('notes'),
     state => state.data.get('groups'),
     (notes, groups) => {
+        if (!notes || !groups) {
+            return [];
+        }
         // TODO сначала отсортировать сущности по возрасту
 
         let results = [{ treeId: getRootPersonalNodeTreeId(), type: 'personal', parentTreeId: null }];

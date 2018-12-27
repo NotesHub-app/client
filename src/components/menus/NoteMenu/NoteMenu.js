@@ -3,6 +3,7 @@ import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import PropTypes from 'prop-types';
 import { getNoteNodeTreeId } from '../../../utils/navigation';
 import { copyTextToBuffer } from '../../../utils/browser';
+import history from '../../../history';
 
 export default class NoteMenu extends React.Component {
     static propTypes = {
@@ -10,11 +11,10 @@ export default class NoteMenu extends React.Component {
         setRemoveNoteAlertStatus: PropTypes.func.isRequired,
         expendNavigationTreeNode: PropTypes.func.isRequired,
         createNote: PropTypes.func.isRequired,
-        push: PropTypes.func.isRequired,
     };
 
     handleAddSubNote = async () => {
-        const { push, createNote, expendNavigationTreeNode, note } = this.props;
+        const { createNote, expendNavigationTreeNode, note } = this.props;
 
         const newNote = await createNote({ parentId: note.get('id') });
 
@@ -22,7 +22,7 @@ export default class NoteMenu extends React.Component {
         expendNavigationTreeNode(getNoteNodeTreeId(newNote.get('parentId')));
 
         // Перейти в созданную заметку
-        push(`/notes/${newNote.get('id')}`);
+        history.push(`/notes/${newNote.get('id')}`);
     };
 
     handleRemoveNote = () => {

@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { push } from 'connected-react-router';
 import { Intent } from '@blueprintjs/core';
 import styles from './styles.module.scss';
 import NotesNavigation from './NotesNavigation';
 import NavigationSidebarResizer from './NavigationSidebarResizer';
 import PageContent from './PageContent';
 import NavigationFilter from './NavigationFilter';
-import { setRemoveNoteAlertStatus } from '../../../redux/modules/uiSettings/actions';
+import { setRemoveNoteAlertStatus, setUiSettingsValues } from '../../../redux/modules/uiSettings/actions';
 import { removeNote } from '../../../redux/modules/data/actions';
 import RemoveItemAlert from '../../dialogs/RemoveItemAlert';
 import SelectNoteScreen from './SelectNoteScreen';
@@ -45,13 +44,22 @@ export class NotesPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        const { setUiSettingsValues } = this.props;
+
         if (prevProps.noteId !== this.props.noteId) {
             this.noteSubscribe();
+
+            setUiSettingsValues({ lastUsedNote: this.props.noteId });
         }
     }
 
     componentDidMount() {
         this.noteSubscribe();
+
+        const { setUiSettingsValues } = this.props;
+        if (this.props.noteId) {
+            setUiSettingsValues({ lastUsedNote: this.props.noteId });
+        }
     }
 
     render() {
@@ -107,6 +115,6 @@ export default connect(
     {
         setRemoveNoteAlertStatus,
         removeNote,
-        push,
+        setUiSettingsValues,
     },
 )(NotesPage);

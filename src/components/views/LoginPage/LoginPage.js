@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { push } from 'connected-react-router';
 import { FORM_ERROR } from 'final-form';
 import styles from './styles.module.scss';
 import { loginFormUrlParamsSelector, userSelector } from '../../../redux/selectors';
@@ -12,18 +11,19 @@ import CheckboxField from '../../fields/CheckboxField/CheckboxField';
 import { processServerValidationError } from '../../../utils/formValidation';
 import InputGroupField from '../../fields/InputGroupField';
 import AlternativeLogin from './AlternativeLogin';
+import history from '../../../history';
 
 export class LoginPage extends Component {
     componentDidMount() {
-        const { user, push } = this.props;
+        const { user } = this.props;
 
         if (user !== null) {
-            push('/');
+            history.push('/');
         }
     }
 
     handleSubmit = async params => {
-        const { login, push, back } = this.props;
+        const { login, back } = this.props;
 
         try {
             localStorage.setItem('noteshub:lastEmail', params.email);
@@ -31,9 +31,9 @@ export class LoginPage extends Component {
             await login(params);
 
             if (back) {
-                push(back);
+                history.push(back);
             } else {
-                push('/');
+                history.push('/');
             }
         } catch (e) {
             if (e.status === 401) {
@@ -156,6 +156,5 @@ export default connect(
     mapStateToProps,
     {
         login,
-        push,
     },
 )(LoginPage);

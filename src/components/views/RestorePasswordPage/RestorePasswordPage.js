@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import classNames from 'classnames';
-import { push } from 'connected-react-router';
 import { Button, Intent } from '@blueprintjs/core';
 import { userSelector } from '../../../redux/selectors';
 import InputGroupField from '../../fields/InputGroupField';
 import { restorePassword } from '../../../redux/modules/user/actions';
 import AlreadyHaveAccountBlock from '../../common/AlreadyHaveAccountBlock';
 import { processServerValidationError, minLength, required } from '../../../utils/formValidation';
+import history from '../../../history';
 
 export class RestorePasswordPage extends Component {
     state = {
@@ -16,15 +16,15 @@ export class RestorePasswordPage extends Component {
     };
 
     componentDidMount() {
-        const { user, push } = this.props;
+        const { user } = this.props;
 
         if (user !== null) {
-            push('/');
+            history.push('/');
         }
     }
 
     withCodeBlockSubmit = async params => {
-        const { restorePassword, push } = this.props;
+        const { restorePassword } = this.props;
         if (!params.code) {
             return { code: 'Требуется ввести код для продолжения' };
         }
@@ -35,7 +35,7 @@ export class RestorePasswordPage extends Component {
         }
         try {
             await restorePassword(params);
-            push(`/login?afterRestorePassword=1&email=${params.email}`);
+            history.push(`/login?afterRestorePassword=1&email=${params.email}`);
         } catch (e) {
             const serverValidationResult = processServerValidationError(e);
             if (serverValidationResult) {
@@ -175,6 +175,5 @@ export default connect(
     mapStateToProps,
     {
         restorePassword,
-        push,
     },
 )(RestorePasswordPage);

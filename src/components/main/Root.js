@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import MainToaster from './MainToaster';
 import MainLayout from '../layouts/MainLayout';
 import NotesPage from '../views/NotesPage';
@@ -31,7 +30,7 @@ export default class Root extends React.Component {
             <Provider store={store}>
                 <React.Fragment>
                     <MainToaster />
-                    <ConnectedRouter history={history}>
+                    <Router history={history}>
                         <Switch>
                             <Route exact path="/" component={RootPage} />
 
@@ -57,7 +56,7 @@ export default class Root extends React.Component {
                                 render={props => <CallbackPage {...props} provider="google" />}
                             />
                         </Switch>
-                    </ConnectedRouter>
+                    </Router>
                 </React.Fragment>
             </Provider>
         );

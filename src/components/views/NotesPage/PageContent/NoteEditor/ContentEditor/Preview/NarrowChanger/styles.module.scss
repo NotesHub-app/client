@@ -1,0 +1,30 @@
+@import 'src/styles/variables.scss';
+
+.root {
+    display: flex;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover{
+        background-color: $light-gray3;
+    }
+}
+
+.activeRoot{
+    background-color: $light-gray3;
+}
+
+.checkbox{
+    margin-right: 10px;
+    margin-bottom: 0 !important;
+}
+
+.icon{
+    margin-right: 10px;
+    color: $gray1;
+}
+
+.slider{
+    margin-top: 2px;
+}

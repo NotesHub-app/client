@@ -21,11 +21,11 @@ export class ContentEditor extends React.Component {
             case 'combo': {
                 return (
                     <React.Fragment>
-                        <div className={styles.area} style={{ width: `${noteEditorWidth}%` }}>
+                        <div className={styles.area} style={{ width: `calc(${noteEditorWidth}% - 2px)` }}>
                             <Editor {...this.props} />
                         </div>
                         <Delimiter />
-                        <div className={styles.area} style={{ width: `${100 - noteEditorWidth}%` }}>
+                        <div className={styles.area} style={{ width: `calc(${100 - noteEditorWidth}% - 3px)` }}>
                             <Preview {...this.props} />
                         </div>
                     </React.Fragment>

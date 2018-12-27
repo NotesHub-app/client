@@ -7,8 +7,9 @@ import CodeRenderer from './CodeRenderer';
 import LinkRenderer from './LinkRenderer';
 import mainStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
+import NarrowChanger from './NarrowChanger';
 
-export class NotePreview extends React.Component {
+export class NotePreview extends React.PureComponent {
     componentDidMount() {
         window.addEventListener('app:scrollEditor', this.scrollPreview);
     }
@@ -62,21 +63,27 @@ export class NotePreview extends React.Component {
     render() {
         const {
             input: { value },
+            previewNarrowValue,
+            previewNarrowEnabled,
         } = this.props;
 
         return (
             <div className={mainStyles.areaInner}>
                 <div className={mainStyles.toolbar}>
                     <div className="toolbarFiller" />
+                    <NarrowChanger />
                 </div>
                 <div
-                    className={mainStyles.areaMainContainer}
+                    className={classNames(mainStyles.areaMainContainer, styles.previewArea)}
+                    style={{
+                        padding: previewNarrowEnabled && previewNarrowValue ? `10px ${previewNarrowValue}%` : undefined,
+                    }}
                     ref={i => {
                         this.areaMainContainer = i;
                     }}
                 >
                     <ReactMarkdown
-                        className={classNames('markdown-body', styles.previewArea)}
+                        className={classNames('markdown-body')}
                         source={value}
                         transformImageUri={this.transformUri}
                         transformLinkUri={this.transformUri}
@@ -97,6 +104,8 @@ function mapStateToProps(state, ownProps) {
     return {
         fileToken: state.user.get('fileToken'),
         autoScroll: state.uiSettings.get('autoScroll'),
+        previewNarrowValue: state.uiSettings.get('previewNarrowValue'),
+        previewNarrowEnabled: state.uiSettings.get('previewNarrowEnabled'),
     };
 }
 

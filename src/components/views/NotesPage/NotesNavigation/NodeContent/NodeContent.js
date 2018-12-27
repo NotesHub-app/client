@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Icon, ContextMenuTarget, Position, Popover } from '@blueprintjs/core';
 import classNames from 'classnames';
-import { push } from 'connected-react-router';
 import Substring from 'react-substring';
 import styles from './styles.module.scss';
 import { expendNavigationTreeNode, setRemoveNoteAlertStatus } from '../../../../../redux/modules/uiSettings/actions';
@@ -93,7 +92,6 @@ export class NodeContent extends React.Component {
             setRemoveNoteAlertStatus,
             expendNavigationTreeNode,
             createNote,
-            push,
         } = this.props;
         const { isOpenControlPopover } = this.state;
 
@@ -138,7 +136,6 @@ export class NodeContent extends React.Component {
                                         setRemoveNoteAlertStatus,
                                         expendNavigationTreeNode,
                                         createNote,
-                                        push,
                                     }}
                                     note={node.data}
                                 />
@@ -233,7 +230,6 @@ export default connect(
     {
         createNote,
         expendNavigationTreeNode,
-        push,
         setRemoveNoteAlertStatus,
     },
 )(ContextMenuTarget(NodeContent));

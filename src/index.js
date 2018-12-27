@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import configureStore, { history } from './redux/store';
+import configureStore from './redux/store';
+import history from './history';
 import Root from './components/main/Root';
 import './styles/index.scss';
 import { prepareBrowserEnv } from './utils/browser';

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import { Button, Popover, Position } from '@blueprintjs/core';
-import { push } from 'connected-react-router';
 import styles from './styles.module.scss';
 import ContentEditor from './ContentEditor';
 import SelectIconField from '../../../../fields/SelectIconField';
@@ -32,7 +31,7 @@ export class NoteEditor extends React.Component {
     };
 
     render() {
-        const { noteId, note, setRemoveNoteAlertStatus, expendNavigationTreeNode, createNote, push } = this.props;
+        const { noteId, note, setRemoveNoteAlertStatus, expendNavigationTreeNode, createNote } = this.props;
         return (
             <Form
                 onSubmit={this.handleSubmit}
@@ -71,7 +70,6 @@ export class NoteEditor extends React.Component {
                                                 setRemoveNoteAlertStatus,
                                                 expendNavigationTreeNode,
                                                 createNote,
-                                                push,
                                             }}
                                             note={note}
                                         />
@@ -114,6 +112,5 @@ export default connect(
         setRemoveNoteAlertStatus,
         expendNavigationTreeNode,
         createNote,
-        push,
     },
 )(NoteEditor);

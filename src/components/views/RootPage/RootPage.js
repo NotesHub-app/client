@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
+import history from '../../../history';
 
 export class RootPage extends React.Component {
     componentDidMount() {
-        const { lastUsedNote, push } = this.props;
+        const { lastUsedNote } = this.props;
 
         if (lastUsedNote) {
-            push(`/notes/${lastUsedNote}`);
+            history.push(`/notes/${lastUsedNote}`);
         } else {
-            push(`/notes`);
+            history.push(`/notes`);
         }
     }
 
@@ -26,7 +26,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
     mapStateToProps,
-    {
-        push,
-    },
+    {},
 )(RootPage);

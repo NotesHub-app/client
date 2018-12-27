@@ -1,17 +1,19 @@
 @import 'src/styles/variables.scss';
 
-.root{
+.root {
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     display: flex;
     background-color: $white;
 }
-.area{
+.area {
     height: 100%;
     width: 100%;
     position: relative;
-}
 
+    flex-grow: 0;
+    flex-shrink: 0;
+}
 
 .areaInner {
     height: 100%;
@@ -35,7 +37,7 @@
             margin: 2px 10px 2px 5px;
         }
 
-        .toolbarFiller{
+        .toolbarFiller {
             flex-grow: 1;
         }
     }
