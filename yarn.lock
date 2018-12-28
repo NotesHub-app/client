@@ -9787,11 +9787,12 @@ react-transition-group@^2.2.1, react-transition-group@^2.5.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-vt-table@^0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/react-vt-table/-/react-vt-table-0.6.6.tgz#f6d143148144e840d3535b7d3264735eb9176061"
-  integrity sha512-eYyDXsOYVr2p/ZifZJRm1JVyG0//DXxeL1qLx/Jg1/TPiT1fk+ji3jcBlITuKnUsg06ZawGpg9ObSbzATlhQKA==
+react-vt-table@^0.6.7:
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/react-vt-table/-/react-vt-table-0.6.7.tgz#0b262a97772256f90bb49d31819683c0e39f6ac6"
+  integrity sha512-NjLbnTeTl3xpvR4MaRjj01L9dppSHlLWdLyyd4HDHCv0xol8ZoLatg/X3Y+BfDmbHPp98HwQDgKIesSjD4XH8w==
   dependencies:
+    "@babel/runtime" "^7.2.0"
     classnames "^2.2.6"
     memoize-one "^4.0.3"
     react-draggable "^3.0.5"
