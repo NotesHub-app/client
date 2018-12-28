@@ -21,7 +21,7 @@ class WS {
     connect() {
         this.io = socketIoClient(config.socketUrl, {
             query: {
-                token: localStorage.getItem('noteshub:token'),
+                token: localStorage.getItem('noteshub:accessToken'),
                 clientId: config.wsClientId,
             },
         });

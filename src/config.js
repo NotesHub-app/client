@@ -1,11 +1,11 @@
 import request from 'superagent';
 import { randomString } from './utils/string';
 
-const rootUrl = 'http://localhost:4000';
+const apiServerUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000';
+
 const config = {
-    socketUrl: rootUrl,
-    apiUrl: `${rootUrl}/api`,
-    siteUrl: `http://localhost:3000`,
+    socketUrl: apiServerUrl,
+    apiUrl: `${apiServerUrl}/api`,
     wsClientId: randomString(20),
 };
 

@@ -54,9 +54,16 @@ export class RegistrationPage extends Component {
         }
         try {
             if (config.serverConfiguration.useRecaptcha) {
-                params.recaptchaToken = await window.grecaptcha.execute(config.serverConfiguration.recaptchaClientKey, {
-                    action: 'registration',
-                });
+                try {
+                    params.recaptchaToken = await window.grecaptcha.execute(
+                        config.serverConfiguration.recaptchaClientKey,
+                        {
+                            action: 'registration',
+                        },
+                    );
+                } catch (e) {
+                    console.warn('Не удалось получить токен recaptcha', e);
+                }
             }
 
             await registration(params);
