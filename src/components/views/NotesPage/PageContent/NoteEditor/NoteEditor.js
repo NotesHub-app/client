@@ -35,12 +35,13 @@ export class NoteEditor extends React.Component {
         return (
             <Form
                 onSubmit={this.handleSubmit}
+                // keepDirtyOnReinitialize
                 initialValues={{
                     title: note.get('title'),
                     icon: note.get('icon'),
                     iconColor: note.get('iconColor'),
                     content: note.get('content'),
-                    externalChangesIndex: note.get('externalChangesIndex'),
+                    // externalChangesIndex: note.get('externalChangesIndex'),
                 }}
                 subscription={{}}
                 render={({ handleSubmit, values }) => (

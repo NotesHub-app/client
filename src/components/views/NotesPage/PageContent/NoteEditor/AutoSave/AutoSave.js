@@ -13,7 +13,11 @@ class AutoSave extends React.Component {
                 if (this.promise) {
                     await this.promise;
                 }
-                const { values, save } = this.props;
+                const { values, save, dirty } = this.props;
+
+                if (!dirty) {
+                    return;
+                }
 
                 const difference = formValuesDiff(this.state.values, values);
 
@@ -34,7 +38,7 @@ class AutoSave extends React.Component {
             clearTimeout(prevState.timeout);
         }
 
-        if (prevState.active && prevState.active !== nextProps.active) {
+        if (prevState.active && !nextProps.active) {
             // Какое-то поле потеряло фокус
             prevState.save();
             return {};
@@ -54,5 +58,7 @@ class AutoSave extends React.Component {
     }
 }
 
-const AutoSaveSpy = props => <FormSpy {...props} subscription={{ active: true, values: true }} component={AutoSave} />;
+const AutoSaveSpy = props => (
+    <FormSpy {...props} subscription={{ active: true, values: true, dirty: true }} component={AutoSave} />
+);
 export default AutoSaveSpy;

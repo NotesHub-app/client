@@ -8,6 +8,7 @@ import LinkRenderer from './LinkRenderer';
 import mainStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 import NarrowChanger from './NarrowChanger';
+import debounceRender from '../../../../../../hoc/debounceRender';
 
 export class NotePreview extends React.PureComponent {
     componentDidMount() {
@@ -100,6 +101,8 @@ export class NotePreview extends React.PureComponent {
     }
 }
 
+const debouncedNotePreview = debounceRender(NotePreview, 200, { leading: false });
+
 function mapStateToProps(state, ownProps) {
     return {
         fileToken: state.user.get('fileToken'),
@@ -112,4 +115,4 @@ function mapStateToProps(state, ownProps) {
 export default connect(
     mapStateToProps,
     {},
-)(NotePreview);
+)(debouncedNotePreview);

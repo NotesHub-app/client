@@ -1,6 +1,5 @@
 import React from 'react';
 import AceEditor from 'react-ace';
-import debounce from 'lodash/debounce';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
@@ -9,6 +8,11 @@ import SizeMe from '@avinlab/react-size-me';
 import styles from '../styles.module.scss';
 import { getNoteFileLink } from '../../../../../../../utils/data';
 import AutoScrollButton from '../AutoScrollButton';
+
+const aceOnBlur = onBlur => (_event, editor) => {
+    const value = editor.getValue();
+    onBlur(value);
+};
 
 class CodeEditor extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -52,29 +56,6 @@ class CodeEditor extends React.Component {
 }
 
 export default class Editor extends React.Component {
-    setContent = debounce(content => {
-        const {
-            input: { onChange },
-        } = this.props;
-
-        onChange(content);
-    }, 100);
-
-    handleChange = content => {
-        if (this.fromSetValue) {
-            return;
-        }
-        this.setContent(content);
-    };
-
-    // shouldComponentUpdate(nextProps) {
-    //     // if (nextProps.noteId === this.props.noteId) {
-    //     //     // Ререндим только если обновился внешний индекс изменений
-    //     //     return nextProps.externalChangesIndex !== this.props.externalChangesIndex;
-    //     // }
-    //     return false;
-    // }
-
     handleEditorMount = () => {
         const { editor } = this.reactAceComponent;
         editor.renderer.setScrollMargin(5, 5);
@@ -201,7 +182,7 @@ export default class Editor extends React.Component {
 
     render() {
         const {
-            input: { value },
+            input: { value, onChange, onBlur, onFocus },
         } = this.props;
 
         return (
@@ -312,7 +293,9 @@ export default class Editor extends React.Component {
                                 fontSize={14}
                                 mode="markdown"
                                 theme="github"
-                                onChange={this.handleChange}
+                                onBlur={aceOnBlur(onBlur)}
+                                onChange={onChange}
+                                onFocus={onFocus}
                                 showGutter={false}
                                 name="editor"
                                 editorProps={{ $blockScrolling: true }}
