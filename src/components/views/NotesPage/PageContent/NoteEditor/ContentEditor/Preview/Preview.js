@@ -101,7 +101,14 @@ export class NotePreview extends React.PureComponent {
     }
 }
 
-const debouncedNotePreview = debounceRender(NotePreview, 200, { leading: false });
+const debouncedNotePreview = debounceRender(
+    NotePreview,
+    200,
+    { leading: false },
+    (nextProps, nextState, thisProps, thisState) =>
+        thisProps.previewNarrowValue !== nextProps.previewNarrowValue ||
+        thisProps.previewNarrowEnabled !== nextProps.previewNarrowEnabled,
+);
 
 function mapStateToProps(state, ownProps) {
     return {

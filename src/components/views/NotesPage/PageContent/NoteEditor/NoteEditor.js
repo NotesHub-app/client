@@ -35,18 +35,16 @@ export class NoteEditor extends React.Component {
         return (
             <Form
                 onSubmit={this.handleSubmit}
-                // keepDirtyOnReinitialize
                 initialValues={{
                     title: note.get('title'),
                     icon: note.get('icon'),
                     iconColor: note.get('iconColor'),
                     content: note.get('content'),
-                    // externalChangesIndex: note.get('externalChangesIndex'),
                 }}
                 subscription={{}}
                 render={({ handleSubmit, values }) => (
                     <div className={styles.root} onSubmit={handleSubmit}>
-                        <AutoSave debounce={500} save={this.handleSubmit} />
+                        <AutoSave debounce={100} save={this.handleSubmit} />
 
                         <DragFileArea noteId={noteId} />
                         <div className={styles.header}>
@@ -84,12 +82,7 @@ export class NoteEditor extends React.Component {
                                 <ViewModeSelect />
                             </div>
                         </div>
-                        <Field
-                            name="content"
-                            component={ContentEditor}
-                            noteId={noteId}
-                            // externalChangesIndex={values.externalChangesIndex}
-                        />
+                        <Field name="content" component={ContentEditor} noteId={noteId} />
                         <Footer noteId={noteId} />
                     </div>
                 )}

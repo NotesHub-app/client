@@ -7,7 +7,7 @@ const processUserTokens = user => {
     // Держим токены в локалСторадже для того чтоб использовать
     // общие токены при использовании из нескольких вкладок
     localStorage.setItem('noteshub:refreshToken', user.get('refreshToken'));
-    localStorage.setItem('noteshub:token', user.get('token'));
+    localStorage.setItem('noteshub:accessToken', user.get('accessToken'));
 
     // Не будем их держать в общем объекте пользователя
     user = user.delete('refreshToken');

@@ -10,8 +10,10 @@ import { getNoteFileLink } from '../../../../../../../utils/data';
 import AutoScrollButton from '../AutoScrollButton';
 
 const aceOnBlur = onBlur => (_event, editor) => {
-    const value = editor.getValue();
-    onBlur(value);
+    if (editor) {
+        const value = editor.getValue();
+        onBlur(value);
+    }
 };
 
 class CodeEditor extends React.Component {

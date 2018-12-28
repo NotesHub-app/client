@@ -35,9 +35,8 @@ export function getNotes() {
  * Обновление заметки
  * @param noteId
  * @param noteContent
- * @param isExternalChange
  */
-export function updateNote(noteId, noteContent, isExternalChange = false) {
+export function updateNote(noteId, noteContent) {
     return async (dispatch, getState) => {
         const data = {};
         const currentNote = getState().data.getIn(['notes', noteId]);
@@ -55,10 +54,6 @@ export function updateNote(noteId, noteContent, isExternalChange = false) {
                 updatedNote = updatedNote.set(field, value);
             }
         });
-
-        if (isExternalChange) {
-            updatedNote = updatedNote.set('externalChangesIndex', updatedNote.get('externalChangesIndex', 0) + 1);
-        }
 
         // Только если что-то поменялось
         if (Object.keys(data).length) {
@@ -99,9 +94,6 @@ export function patchNote(noteId, notePatch) {
             }
             note = note.set(field, newValue);
         }
-
-        // Инкрементируем индекс внешних изменений для проверки неоьбходимости ререндера формы редактирования заметки
-        note = note.set('externalChangesIndex', note.get('externalChangesIndex', 0) + 1);
 
         dispatch({
             type: SET_NOTE,

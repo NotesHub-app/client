@@ -49,9 +49,9 @@ export function callApi({
                 if (useRefreshToken) {
                     token = localStorage.getItem('noteshub:refreshToken');
                 } else {
-                    token = localStorage.getItem('noteshub:token');
+                    token = localStorage.getItem('noteshub:accessToken');
                 }
-                request = request.set('Authorization', token);
+                request = request.set('Authorization', `JWT ${token}`);
             }
 
             if (uploadFile) {
