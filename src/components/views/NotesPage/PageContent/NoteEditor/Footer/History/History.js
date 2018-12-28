@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Table from 'react-vt-table/dist/Table';
-import Column from 'react-vt-table/dist/Column';
+import { Table, Column } from 'react-vt-table';
 import classNames from 'classnames';
 import { Button, Position, Tooltip } from '@blueprintjs/core';
 import SizeMe from '@avinlab/react-size-me';
