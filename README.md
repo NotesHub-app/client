@@ -1,6 +1,3 @@
-# NotesHub (client)
-## Docker build
+# NotesHub Client
 
-```sh
-docker build -f ./docker/Dockerfile . -t carcinogen75/noteshub-client
-```
+![build](https://travis-ci.org/NotesHub-app/client.svg?branch=master)
