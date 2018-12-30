@@ -1,0 +1,11 @@
+dist: xenial
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -f ./docker/Dockerfile . -t noteshub-client
+        - docker images
+        - docker tag noteshub-client $DOCKER_USERNAME/noteshub-client
+        - docker push $DOCKER_USERNAME/noteshub-client
