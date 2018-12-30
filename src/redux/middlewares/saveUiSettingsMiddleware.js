@@ -17,7 +17,7 @@ const saveUiSettings = debounce((store, beforeUiSettings, afterUiSettings) => {
             params: { uiSettings: Immutable.fromJS(diffSettings) },
         }),
     );
-}, 3000);
+}, 1000);
 
 export default store => next => action => {
     const beforeUiSettings = store.getState().uiSettings;
